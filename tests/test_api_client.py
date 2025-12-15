@@ -184,6 +184,177 @@ class TestGetHeight:
         assert df.iloc[0]["TeamName"] == "Duke"
 
 
+class TestGetMiscStats:
+    """Tests for the get_misc_stats method."""
+
+    def test_get_misc_stats_by_year(self, mock_api):
+        """Test getting misc stats by year."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "TeamName": "Duke",
+                "Season": 2025,
+                "ConfShort": "ACC",
+                "DataThrough": "2025-03-01",
+                "ConfOnly": "false",
+                "FG3Pct": 36.5,
+                "RankFG3Pct": 50,
+                "FG2Pct": 52.1,
+                "RankFG2Pct": 25,
+                "FTPct": 75.2,
+                "RankFTPct": 100,
+                "BlockPct": 10.5,
+                "RankBlockPct": 30,
+                "StlRate": 9.2,
+                "RankStlRate": 75,
+                "NSTRate": 11.3,
+                "RankNSTRate": 150,
+                "ARate": 58.5,
+                "RankARate": 40,
+                "F3GRate": 35.0,
+                "RankF3GRate": 120,
+                "AdjOE": 118.5,
+                "RankAdjOE": 10,
+                "OppFG3Pct": 32.1,
+                "RankOppFG3Pct": 60,
+                "OppFG2Pct": 48.5,
+                "RankOppFG2Pct": 35,
+                "OppFTPct": 70.0,
+                "RankOppFTPct": 200,
+                "OppBlockPct": 8.5,
+                "RankOppBlockPct": 150,
+                "OppStlRate": 8.0,
+                "RankOppStlRate": 180,
+                "OppNSTRate": 12.0,
+                "RankOppNSTRate": 50,
+                "OppARate": 52.0,
+                "RankOppARate": 100,
+                "OppF3GRate": 33.5,
+                "RankOppF3GRate": 90,
+                "AdjDE": 95.2,
+                "RankAdjDE": 15,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(year=2025)
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "misc-stats"
+        assert call_args[1]["params"]["y"] == 2025
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 1
+        assert result.data[0]["TeamName"] == "Duke"
+        assert result.data[0]["FG3Pct"] == 36.5
+
+    def test_get_misc_stats_by_team_id(self, mock_api):
+        """Test getting misc stats by team_id for historical data."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "Season": 2024, "FG3Pct": 35.0, "AdjOE": 115.0},
+            {"TeamName": "Duke", "Season": 2025, "FG3Pct": 36.5, "AdjOE": 118.5},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(team_id=73)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["team_id"] == 73
+        assert "y" not in call_args[1]["params"]
+        assert len(result.data) == 2
+
+    def test_get_misc_stats_with_conference(self, mock_api):
+        """Test getting misc stats filtered by conference."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "ConfShort": "ACC", "FG3Pct": 36.5},
+            {"TeamName": "North Carolina", "ConfShort": "ACC", "FG3Pct": 34.2},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(year=2025, conference="ACC")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert call_args[1]["params"]["c"] == "ACC"
+        assert len(result.data) == 2
+
+    def test_get_misc_stats_conference_requires_year(self, mock_api):
+        """Test that conference filter requires year parameter."""
+        with pytest.raises(
+            ValidationError, match="'year' parameter is required when filtering"
+        ):
+            mock_api.get_misc_stats(conference="ACC")
+
+    def test_get_misc_stats_with_conf_only(self, mock_api):
+        """Test getting conference-only misc stats."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "ConfOnly": "true", "FG3Pct": 37.0},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(year=2025, conf_only=True)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["conf_only"] == "true"
+        assert result.data[0]["ConfOnly"] == "true"
+
+    def test_get_misc_stats_no_params_raises_error(self, mock_api):
+        """Test that missing year and team_id raises ValidationError."""
+        with pytest.raises(
+            ValidationError, match="Either 'year' or 'team_id' parameter is required"
+        ):
+            mock_api.get_misc_stats()
+
+    def test_get_misc_stats_conf_only_alone_raises_error(self, mock_api):
+        """Test that conf_only without year/team_id raises ValidationError."""
+        with pytest.raises(
+            ValidationError, match="Either 'year' or 'team_id' parameter is required"
+        ):
+            mock_api.get_misc_stats(conf_only=True)
+
+    def test_get_misc_stats_all_params(self, mock_api):
+        """Test with all optional params combined."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [{"TeamName": "Duke"}]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(
+            year=2025, team_id=73, conference="ACC", conf_only=True
+        )
+
+        call_args = mock_api._client.get.call_args
+        params = call_args[1]["params"]
+        assert params["y"] == 2025
+        assert params["team_id"] == 73
+        assert params["c"] == "ACC"
+        assert params["conf_only"] == "true"
+
+    def test_get_misc_stats_to_dataframe(self, mock_api):
+        """Test converting misc stats response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "FG3Pct": 36.5, "AdjOE": 118.5},
+            {"TeamName": "Kansas", "FG3Pct": 35.2, "AdjOE": 116.0},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_misc_stats(year=2025)
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert list(df.columns) == ["TeamName", "FG3Pct", "AdjOE"]
+        assert df.iloc[0]["TeamName"] == "Duke"
+
+
 class TestGetPointDistribution:
     """Tests for the get_point_distribution method."""
 
