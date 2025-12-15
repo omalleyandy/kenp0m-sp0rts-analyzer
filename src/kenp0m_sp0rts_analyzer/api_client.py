@@ -510,35 +510,96 @@ class KenPomAPI:
 
     # ==================== Statistical Analysis ====================
 
-    def get_four_factors(self, year: int) -> APIResponse:
-        """Get Four Factors analysis for all teams.
+    def get_four_factors(
+        self,
+        year: int | None = None,
+        team_id: int | None = None,
+        conference: str | None = None,
+        conf_only: bool = False,
+    ) -> APIResponse:
+        """Get Four Factors analysis for teams.
 
         The Four Factors (Dean Oliver) are the key stats that determine
         basketball success: shooting, turnovers, rebounding, and free throws.
 
+        Either `year` or `team_id` must be provided. If `year` is provided,
+        returns Four Factors for all teams in that season. If `team_id` is
+        provided, returns historical Four Factors for that team across all seasons.
+
         Args:
-            year: Season year.
+            year: Season year (e.g., 2025 for 2024-25 season).
+            team_id: Team ID for historical data. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
+                'SEC', 'A10'). Requires `year` to be specified. Use get_conferences()
+                to find valid abbreviations.
+            conf_only: If True, returns conference-only statistics instead of all
+                games. Defaults to False.
 
         Returns:
             APIResponse with Four Factors data including:
-            - eFG_Pct: Effective Field Goal Percentage
-            - TO_Pct: Turnover Percentage
-            - OR_Pct: Offensive Rebound Percentage
-            - FT_Rate: Free Throw Rate
-            - DeFG_Pct/DTO_Pct/DOR_Pct/DFT_Rate: Defensive versions
-            - AdjOE/AdjDE: Adjusted efficiencies
-            - Rank* columns for each metric
+            - DataThrough: Date through which data is current
+            - ConfOnly: Whether this is conference-only data ("true" or "false")
+            - TeamName: Team name
+            - Season: Ending year of the season
+            - eFG_Pct/RankeFG_Pct: Effective Field Goal Percentage (offense)
+            - TO_Pct/RankTO_Pct: Turnover Percentage (offense)
+            - OR_Pct/RankOR_Pct: Offensive Rebound Percentage
+            - FT_Rate/RankFT_Rate: Free Throw Rate (offense)
+            - DeFG_Pct/RankDeFG_Pct: Effective FG% allowed (defense)
+            - DTO_Pct/RankDTO_Pct: Turnover Percentage forced (defense)
+            - DOR_Pct/RankDOR_Pct: Defensive Rebound Percentage
+            - DFT_Rate/RankDFT_Rate: Free Throw Rate allowed (defense)
+            - OE/RankOE: Offensive Efficiency
+            - DE/RankDE: Defensive Efficiency
+            - Tempo/RankTempo: Tempo (possessions per 40 minutes)
+            - AdjOE/RankAdjOE: Adjusted Offensive Efficiency
+            - AdjDE/RankAdjDE: Adjusted Defensive Efficiency
+            - AdjTempo/RankAdjTempo: Adjusted Tempo
+
+        Raises:
+            ValidationError: If neither year nor team_id is provided, or if
+                conference is specified without year.
 
         Example:
             ```python
+            # Get 2025 season Four Factors
             ff = api.get_four_factors(year=2025)
             df = ff.to_dataframe()
 
             # Find best shooting teams
             best_shooting = df.nsmallest(10, 'RankeFG_Pct')
+
+            # Get Duke's historical Four Factors
+            duke_ff = api.get_four_factors(team_id=73)
+
+            # Get Big 12 conference teams
+            big12_ff = api.get_four_factors(year=2025, conference="B12")
+
+            # Get conference-only stats
+            conf_stats = api.get_four_factors(year=2025, conf_only=True)
             ```
         """
-        return self._request("four-factors", {"y": year})
+        params: dict[str, Any] = {}
+        if year is not None:
+            params["y"] = year
+        if team_id is not None:
+            params["team_id"] = team_id
+        if conference is not None:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when filtering by conference"
+                )
+            params["c"] = conference
+        if conf_only:
+            params["conf_only"] = "true"
+
+        if not params or (conf_only and len(params) == 1):
+            raise ValidationError(
+                "Either 'year' or 'team_id' parameter is required for "
+                "four-factors endpoint"
+            )
+
+        return self._request("four-factors", params)
 
     def get_misc_stats(self, year: int) -> APIResponse:
         """Get miscellaneous team statistics.
