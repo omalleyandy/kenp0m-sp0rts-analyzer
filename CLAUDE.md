@@ -31,6 +31,7 @@ kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/
 │   ├── __init__.py          # Package init with version
 │   ├── api_client.py        # Official KenPom API client (recommended)
+│   ├── mcp_server.py        # MCP server for Claude integration
 │   ├── client.py            # KenPom client wrapper (kenpompy)
 │   ├── browser.py           # Stealth browser automation (Playwright)
 │   ├── scraper.py           # KenPom web scraper
@@ -38,6 +39,8 @@ kenp0m-sp0rts-analyzer/
 │   ├── analysis.py          # Analytics functions
 │   └── utils.py             # Utility functions
 ├── tests/                   # Test suite
+│   ├── test_api_client.py   # API client tests
+│   └── test_mcp_server.py   # MCP server tests
 ├── examples/                # Usage examples
 ├── .claude/                 # Claude Code settings
 ├── pyproject.toml          # Project configuration
@@ -196,14 +199,15 @@ The official KenPom API provides direct JSON access to KenPom data. It requires 
 
 | Endpoint | Parameters | Description |
 |----------|------------|-------------|
-| `ratings` | `y` (year) or `team_id` | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS, etc.) |
-| `teams` | `y` (year) | Team list with TeamID, coach, arena info |
+| `ratings` | `y` (year), `team_id`, `c` (conference) | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS, etc.) |
+| `archive` | `d` (date), `preseason`, `y` (year), `team_id`, `c` | Historical ratings from specific dates or preseason |
+| `teams` | `y` (year), `c` (conference) | Team list with TeamID, coach, arena info |
 | `conferences` | `y` (year) | Conference list with IDs |
 | `fanmatch` | `d` (date: YYYY-MM-DD) | Game predictions with win probability |
-| `four-factors` | `y` (year) | Four Factors (eFG%, TO%, OR%, FT Rate) |
-| `misc-stats` | `y` (year) | Shooting %, blocks, steals, assists |
-| `height` | `y` (year) | Team height and experience data |
-| `pointdist` | `y` (year) | Point distribution breakdown |
+| `four-factors` | `y` (year), `team_id`, `c`, `conf_only` | Four Factors (eFG%, TO%, OR%, FT Rate) |
+| `misc-stats` | `y` (year), `team_id`, `c`, `conf_only` | Shooting %, blocks, steals, assists |
+| `height` | `y` (year), `team_id`, `c` | Team height and experience data |
+| `pointdist` | `y` (year), `team_id`, `c`, `conf_only` | Point distribution breakdown |
 
 ### API Client Usage
 ```python
@@ -219,12 +223,21 @@ print(f"#1 team: {ratings.data[0]['TeamName']}")
 # Get team historical data
 duke_history = api.get_ratings(team_id=73)  # Duke's TeamID
 
+# Filter by conference
+big12 = api.get_ratings(year=2025, conference="B12")
+
+# Get archived ratings from a specific date
+archive = api.get_archive(archive_date="2025-02-15")
+
+# Get preseason ratings
+preseason = api.get_archive(preseason=True, year=2025)
+
 # Get game predictions
 games = api.get_fanmatch("2025-03-15")
 close_games = [g for g in games.data if 40 <= g['HomeWP'] <= 60]
 
-# Get Four Factors
-four_factors = api.get_four_factors(year=2025)
+# Get Four Factors (conference-only stats)
+four_factors = api.get_four_factors(year=2025, conf_only=True)
 df = four_factors.to_dataframe()
 
 # Find team by name
@@ -257,12 +270,24 @@ curl "https://kenpom.com/api.php?endpoint=ratings&y=2025" \
 curl "https://kenpom.com/api.php?endpoint=ratings&team_id=73" \
   -H "Authorization: Bearer $KENPOM_API_KEY"
 
+# Filter by conference
+curl "https://kenpom.com/api.php?endpoint=ratings&y=2025&c=SEC" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
+# Get archived ratings from a specific date
+curl "https://kenpom.com/api.php?endpoint=archive&d=2025-02-15" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
+# Get preseason ratings
+curl "https://kenpom.com/api.php?endpoint=archive&preseason=true&y=2025" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
 # Get game predictions for a date
 curl "https://kenpom.com/api.php?endpoint=fanmatch&d=2025-03-15" \
   -H "Authorization: Bearer $KENPOM_API_KEY"
 
-# Get Four Factors
-curl "https://kenpom.com/api.php?endpoint=four-factors&y=2025" \
+# Get Four Factors (conference-only stats)
+curl "https://kenpom.com/api.php?endpoint=four-factors&y=2025&conf_only=true" \
   -H "Authorization: Bearer $KENPOM_API_KEY"
 ```
 
@@ -287,3 +312,50 @@ playwright install chromium
 - Provides Chrome DevTools Protocol (CDP) access
 - Supports persistent sessions via `user_data_dir`
 - Human-like delays and interactions
+
+## MCP Server (Claude Integration)
+
+The MCP (Model Context Protocol) server exposes KenPom analytics tools for use with Claude and other MCP clients.
+
+### Installation
+```bash
+pip install -e ".[mcp]"
+```
+
+### Running the Server
+```bash
+python -m kenp0m_sp0rts_analyzer.mcp_server
+```
+
+### Configuration with Claude Code
+Add to `.claude/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "kenpom": {
+      "command": "python",
+      "args": ["-m", "kenp0m_sp0rts_analyzer.mcp_server"],
+      "env": {
+        "KENPOM_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_team_efficiency` | Adjusted offensive/defensive efficiency ratings |
+| `get_four_factors` | Four Factors analysis (eFG%, TO%, OR%, FTRate) |
+| `get_team_schedule` | Team schedule with results and opponent metrics |
+| `get_scouting_report` | Comprehensive team scouting report |
+| `get_pomeroy_ratings` | Full KenPom ratings table |
+| `analyze_matchup` | Head-to-head matchup analysis with predictions |
+| `get_home_court_advantage` | Home court advantage data |
+| `get_game_predictions` | Game predictions for a specific date |
+
+### Authentication Priority
+1. **Official API** (`KENPOM_API_KEY`) - Recommended, faster, more reliable
+2. **Scraper** (`KENPOM_EMAIL`/`KENPOM_PASSWORD`) - Fallback if no API key
