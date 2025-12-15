@@ -239,6 +239,7 @@ class KenPomAPI:
         self,
         year: int | None = None,
         team_id: int | None = None,
+        conference: str | None = None,
     ) -> APIResponse:
         """Get team ratings.
 
@@ -249,6 +250,9 @@ class KenPomAPI:
         Args:
             year: Season year (e.g., 2025 for 2024-25 season).
             team_id: Team ID for historical data. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
+                'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
+                to find valid abbreviations.
 
         Returns:
             APIResponse with team ratings including:
@@ -264,7 +268,8 @@ class KenPomAPI:
             - Seed: NCAA Tournament seed (if applicable)
 
         Raises:
-            ValidationError: If neither year nor team_id is provided.
+            ValidationError: If neither year nor team_id is provided, or if
+                conference is specified without year.
 
         Example:
             ```python
@@ -274,6 +279,12 @@ class KenPomAPI:
 
             # Get Duke's historical ratings
             duke = api.get_ratings(team_id=73)
+
+            # Get Big 12 conference teams for 2025
+            big12 = api.get_ratings(year=2025, conference="B12")
+
+            # Get SEC teams for 2025
+            sec = api.get_ratings(year=2025, conference="SEC")
             ```
         """
         params: dict[str, Any] = {}
@@ -281,6 +292,12 @@ class KenPomAPI:
             params["y"] = year
         if team_id is not None:
             params["team_id"] = team_id
+        if conference is not None:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when filtering by conference"
+                )
+            params["c"] = conference
 
         if not params:
             raise ValidationError(
