@@ -628,28 +628,86 @@ class KenPomAPI:
         """
         return self._request("misc-stats", {"y": year})
 
-    def get_height(self, year: int) -> APIResponse:
+    def get_height(
+        self,
+        year: int | None = None,
+        team_id: int | None = None,
+        conference: str | None = None,
+    ) -> APIResponse:
         """Get team height and experience data.
 
+        Retrieve team height statistics including average height, effective height,
+        position-specific heights, team experience, bench strength, and continuity.
+
+        Either `year` or `team_id` must be provided. If `year` is provided,
+        returns height data for all teams in that season. If `team_id` is
+        provided, returns historical height data for that team across all seasons.
+
         Args:
-            year: Season year.
+            year: Season year (e.g., 2025 for 2024-25 season).
+            team_id: Team ID for historical data. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'WCC', 'ACC',
+                'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
+                to find valid abbreviations.
 
         Returns:
             APIResponse with height/experience data including:
-            - AvgHgt: Average height (inches)
-            - HgtEff: Height effectiveness
-            - Experience metrics
+            - DataThrough: Date through which data is current
+            - Season: Ending year of the season
+            - TeamName: Team name
+            - ConfShort: Conference short name
+            - AvgHgt/AvgHgtRank: Average team height in inches
+            - HgtEff/HgtEffRank: Effective height
+            - Hgt5/Hgt5Rank: Center position height
+            - Hgt4/Hgt4Rank: Power forward position height
+            - Hgt3/Hgt3Rank: Small forward position height
+            - Hgt2/Hgt2Rank: Shooting guard position height
+            - Hgt1/Hgt1Rank: Point guard position height
+            - Exp/ExpRank: Experience rating
+            - Bench/BenchRank: Bench strength rating
+            - Continuity/RankContinuity: Team continuity rating
+
+        Raises:
+            ValidationError: If neither year nor team_id is provided, or if
+                conference is specified without year.
 
         Example:
             ```python
+            # Get 2025 season height data
             height = api.get_height(year=2025)
             df = height.to_dataframe()
 
             # Tallest teams
             tallest = df.nsmallest(10, 'AvgHgtRank')
+
+            # Most experienced teams
+            experienced = df.nsmallest(10, 'ExpRank')
+
+            # Get Duke's historical height data
+            duke_height = api.get_height(team_id=73)
+
+            # Get WCC conference teams
+            wcc_height = api.get_height(year=2025, conference="WCC")
             ```
         """
-        return self._request("height", {"y": year})
+        params: dict[str, Any] = {}
+        if year is not None:
+            params["y"] = year
+        if team_id is not None:
+            params["team_id"] = team_id
+        if conference is not None:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when filtering by conference"
+                )
+            params["c"] = conference
+
+        if not params:
+            raise ValidationError(
+                "Either 'year' or 'team_id' parameter is required for height endpoint"
+            )
+
+        return self._request("height", params)
 
     def get_point_distribution(
         self,
