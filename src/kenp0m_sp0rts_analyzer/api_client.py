@@ -478,14 +478,15 @@ class KenPomAPI:
 
         Returns:
             APIResponse with game predictions including:
+            - Season: Ending year of the season (integer)
             - GameID: Unique game identifier
-            - DateOfGame: Game date
+            - DateOfGame: Game date (YYYY-MM-DD format)
             - Visitor/Home: Team names
-            - VisitorRank/HomeRank: KenPom rankings
+            - VisitorRank/HomeRank: KenPom rankings on the day of the game
             - VisitorPred/HomePred: Predicted scores
             - HomeWP: Home team win probability (%)
             - PredTempo: Predicted game tempo
-            - ThrillScore: Expected game excitement (0-100)
+            - ThrillScore: Expected game excitement score
 
         Example:
             ```python

@@ -497,3 +497,321 @@ class TestGetPointDistribution:
         assert len(df) == 2
         assert list(df.columns) == ["TeamName", "OffFg3"]
         assert df.iloc[0]["TeamName"] == "Duke"
+
+
+class TestGetFanmatch:
+    """Tests for the get_fanmatch method."""
+
+    def test_get_fanmatch_with_string_date(self, mock_api):
+        """Test getting fanmatch predictions with string date."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12345,
+                "DateOfGame": "2025-03-15",
+                "Visitor": "Duke",
+                "Home": "North Carolina",
+                "HomeRank": 5,
+                "VisitorRank": 3,
+                "HomePred": 78.5,
+                "VisitorPred": 75.2,
+                "HomeWP": 55.3,
+                "PredTempo": 68.5,
+                "ThrillScore": 82.1,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-15")
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "fanmatch"
+        assert call_args[1]["params"]["d"] == "2025-03-15"
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 1
+        assert result.data[0]["Season"] == 2025
+        assert result.data[0]["GameID"] == 12345
+        assert result.data[0]["Visitor"] == "Duke"
+        assert result.data[0]["Home"] == "North Carolina"
+
+    def test_get_fanmatch_with_date_object(self, mock_api):
+        """Test getting fanmatch predictions with date object."""
+        from datetime import date
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12346,
+                "DateOfGame": "2025-03-16",
+                "Visitor": "Kansas",
+                "Home": "Kentucky",
+                "HomeRank": 10,
+                "VisitorRank": 8,
+                "HomePred": 72.0,
+                "VisitorPred": 70.5,
+                "HomeWP": 52.1,
+                "PredTempo": 65.2,
+                "ThrillScore": 75.0,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch(date(2025, 3, 16))
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["d"] == "2025-03-16"
+        assert result.data[0]["DateOfGame"] == "2025-03-16"
+
+    def test_get_fanmatch_all_response_fields(self, mock_api):
+        """Test that all documented response fields are present."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12347,
+                "DateOfGame": "2025-03-17",
+                "Visitor": "Gonzaga",
+                "Home": "UCLA",
+                "HomeRank": 15,
+                "VisitorRank": 12,
+                "HomePred": 68.3,
+                "VisitorPred": 65.8,
+                "HomeWP": 58.7,
+                "PredTempo": 70.1,
+                "ThrillScore": 68.9,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-17")
+        game = result.data[0]
+
+        # Verify all documented fields
+        assert "Season" in game
+        assert "GameID" in game
+        assert "DateOfGame" in game
+        assert "Visitor" in game
+        assert "Home" in game
+        assert "HomeRank" in game
+        assert "VisitorRank" in game
+        assert "HomePred" in game
+        assert "VisitorPred" in game
+        assert "HomeWP" in game
+        assert "PredTempo" in game
+        assert "ThrillScore" in game
+
+        # Verify types
+        assert isinstance(game["Season"], int)
+        assert isinstance(game["GameID"], int)
+        assert isinstance(game["DateOfGame"], str)
+        assert isinstance(game["Visitor"], str)
+        assert isinstance(game["Home"], str)
+        assert isinstance(game["HomeRank"], int)
+        assert isinstance(game["VisitorRank"], int)
+        assert isinstance(game["HomePred"], float)
+        assert isinstance(game["VisitorPred"], float)
+        assert isinstance(game["HomeWP"], float)
+        assert isinstance(game["PredTempo"], float)
+        assert isinstance(game["ThrillScore"], float)
+
+    def test_get_fanmatch_multiple_games(self, mock_api):
+        """Test getting multiple games for a date."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12348,
+                "DateOfGame": "2025-03-18",
+                "Visitor": "Auburn",
+                "Home": "Tennessee",
+                "HomeRank": 4,
+                "VisitorRank": 6,
+                "HomePred": 75.0,
+                "VisitorPred": 72.0,
+                "HomeWP": 62.5,
+                "PredTempo": 66.0,
+                "ThrillScore": 79.5,
+            },
+            {
+                "Season": 2025,
+                "GameID": 12349,
+                "DateOfGame": "2025-03-18",
+                "Visitor": "Arizona",
+                "Home": "Oregon",
+                "HomeRank": 20,
+                "VisitorRank": 18,
+                "HomePred": 70.0,
+                "VisitorPred": 68.5,
+                "HomeWP": 54.0,
+                "PredTempo": 72.5,
+                "ThrillScore": 65.0,
+            },
+            {
+                "Season": 2025,
+                "GameID": 12350,
+                "DateOfGame": "2025-03-18",
+                "Visitor": "Purdue",
+                "Home": "Indiana",
+                "HomeRank": 25,
+                "VisitorRank": 2,
+                "HomePred": 65.0,
+                "VisitorPred": 78.0,
+                "HomeWP": 28.5,
+                "PredTempo": 64.0,
+                "ThrillScore": 72.0,
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-18")
+
+        assert len(result.data) == 3
+        assert result.data[0]["Visitor"] == "Auburn"
+        assert result.data[1]["Visitor"] == "Arizona"
+        assert result.data[2]["Visitor"] == "Purdue"
+
+    def test_get_fanmatch_find_close_games(self, mock_api):
+        """Test finding close games (HomeWP between 40-60%)."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12351,
+                "DateOfGame": "2025-03-19",
+                "Visitor": "Team A",
+                "Home": "Team B",
+                "HomeRank": 30,
+                "VisitorRank": 35,
+                "HomePred": 70.0,
+                "VisitorPred": 68.0,
+                "HomeWP": 55.0,  # Close game
+                "PredTempo": 68.0,
+                "ThrillScore": 70.0,
+            },
+            {
+                "Season": 2025,
+                "GameID": 12352,
+                "DateOfGame": "2025-03-19",
+                "Visitor": "Team C",
+                "Home": "Team D",
+                "HomeRank": 5,
+                "VisitorRank": 100,
+                "HomePred": 85.0,
+                "VisitorPred": 60.0,
+                "HomeWP": 92.0,  # Not close
+                "PredTempo": 70.0,
+                "ThrillScore": 45.0,
+            },
+            {
+                "Season": 2025,
+                "GameID": 12353,
+                "DateOfGame": "2025-03-19",
+                "Visitor": "Team E",
+                "Home": "Team F",
+                "HomeRank": 40,
+                "VisitorRank": 42,
+                "HomePred": 65.0,
+                "VisitorPred": 64.5,
+                "HomeWP": 50.5,  # Close game
+                "PredTempo": 65.0,
+                "ThrillScore": 60.0,
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-19")
+
+        # Filter for close games as shown in docstring example
+        close_games = [g for g in result.data if 40 <= g["HomeWP"] <= 60]
+
+        assert len(close_games) == 2
+        assert close_games[0]["GameID"] == 12351
+        assert close_games[1]["GameID"] == 12353
+
+    def test_get_fanmatch_to_dataframe(self, mock_api):
+        """Test converting fanmatch response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "GameID": 12354,
+                "DateOfGame": "2025-03-20",
+                "Visitor": "Duke",
+                "Home": "UNC",
+                "HomeRank": 10,
+                "VisitorRank": 8,
+                "HomePred": 75.0,
+                "VisitorPred": 73.0,
+                "HomeWP": 54.0,
+                "PredTempo": 68.0,
+                "ThrillScore": 85.0,
+            },
+            {
+                "Season": 2025,
+                "GameID": 12355,
+                "DateOfGame": "2025-03-20",
+                "Visitor": "Kansas",
+                "Home": "Missouri",
+                "HomeRank": 50,
+                "VisitorRank": 15,
+                "HomePred": 65.0,
+                "VisitorPred": 72.0,
+                "HomeWP": 35.0,
+                "PredTempo": 66.0,
+                "ThrillScore": 70.0,
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-20")
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert "Season" in df.columns
+        assert "GameID" in df.columns
+        assert "Visitor" in df.columns
+        assert "Home" in df.columns
+        assert "HomeWP" in df.columns
+        assert "ThrillScore" in df.columns
+        assert df.iloc[0]["Visitor"] == "Duke"
+        assert df.iloc[1]["Visitor"] == "Kansas"
+
+    def test_get_fanmatch_empty_date(self, mock_api):
+        """Test getting fanmatch for a date with no games."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = []
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-07-15")
+
+        assert len(result.data) == 0
+        assert isinstance(result.data, list)
+
+    def test_get_fanmatch_iteration(self, mock_api):
+        """Test that APIResponse supports iteration."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"Season": 2025, "GameID": 1, "Visitor": "A", "Home": "B", "HomeWP": 50.0},
+            {"Season": 2025, "GameID": 2, "Visitor": "C", "Home": "D", "HomeWP": 60.0},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch("2025-03-21")
+
+        # Test iteration
+        game_ids = [game["GameID"] for game in result]
+        assert game_ids == [1, 2]
+
+        # Test len
+        assert len(result) == 2
