@@ -3,6 +3,25 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# KenPom Sports Analyzer specific
+# Credentials and secrets
+.env
+.env.local
+.env.*.local
+credentials.json
+secrets.json
+
+# Data cache
+.kenpom_cache/
+data/cache/
+*.pickle
+*.pkl
+
+# Analysis outputs
+output/
+reports/
+exports/
+
 # C extensions
 *.so
 

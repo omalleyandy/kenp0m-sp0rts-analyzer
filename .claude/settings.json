@@ -1,0 +1,53 @@
+{
+  "project": {
+    "name": "kenp0m-sp0rts-analyzer",
+    "description": "KenPom advanced analytics integration with Billy Walters betting methodology for NCAA Division I Men's Basketball research",
+    "type": "python",
+    "python_version": "3.11"
+  },
+  "preferences": {
+    "coding_style": {
+      "max_line_length": 88,
+      "use_type_hints": true,
+      "docstring_style": "google",
+      "import_style": "isort"
+    },
+    "testing": {
+      "framework": "pytest",
+      "min_coverage": 80
+    },
+    "formatting": {
+      "tool": "ruff",
+      "on_save": true
+    }
+  },
+  "context": {
+    "primary_files": [
+      "CLAUDE.md",
+      "README.md",
+      "pyproject.toml"
+    ],
+    "key_directories": [
+      "src/kenp0m_sp0rts_analyzer",
+      "tests",
+      "examples"
+    ]
+  },
+  "external_resources": {
+    "kenpom": {
+      "website": "https://kenpom.com/",
+      "documentation": "https://kenpompy.readthedocs.io/",
+      "requires_subscription": true
+    }
+  },
+  "environment_variables": {
+    "required": [
+      "KENPOM_EMAIL",
+      "KENPOM_PASSWORD"
+    ],
+    "optional": [
+      "KENPOM_CACHE_DIR",
+      "LOG_LEVEL"
+    ]
+  }
+}

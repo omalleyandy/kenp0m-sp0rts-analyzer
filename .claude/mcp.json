@@ -1,0 +1,112 @@
+{
+  "mcpServers": {
+    "kenpom-analyzer": {
+      "command": "python",
+      "args": ["-m", "kenp0m_sp0rts_analyzer.mcp_server"],
+      "env": {
+        "KENPOM_EMAIL": "${KENPOM_EMAIL}",
+        "KENPOM_PASSWORD": "${KENPOM_PASSWORD}"
+      },
+      "description": "MCP server for KenPom basketball analytics",
+      "tools": [
+        {
+          "name": "get_team_efficiency",
+          "description": "Get adjusted offensive and defensive efficiency ratings for teams",
+          "parameters": {
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "get_four_factors",
+          "description": "Get Four Factors analysis (eFG%, TO%, OR%, FTRate) for teams",
+          "parameters": {
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "get_team_schedule",
+          "description": "Get a team's schedule with results and KenPom metrics",
+          "parameters": {
+            "team": {
+              "type": "string",
+              "description": "Team name (e.g., 'Duke', 'North Carolina')",
+              "required": true
+            },
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "get_scouting_report",
+          "description": "Get comprehensive scouting report for a team",
+          "parameters": {
+            "team": {
+              "type": "string",
+              "description": "Team name (e.g., 'Duke', 'North Carolina')",
+              "required": true
+            },
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "get_pomeroy_ratings",
+          "description": "Get full KenPom ratings table with all teams",
+          "parameters": {
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "analyze_matchup",
+          "description": "Analyze a head-to-head matchup between two teams",
+          "parameters": {
+            "team1": {
+              "type": "string",
+              "description": "First team name",
+              "required": true
+            },
+            "team2": {
+              "type": "string",
+              "description": "Second team name",
+              "required": true
+            },
+            "neutral_site": {
+              "type": "boolean",
+              "description": "Whether the game is at a neutral site",
+              "required": false
+            }
+          }
+        },
+        {
+          "name": "get_home_court_advantage",
+          "description": "Get home court advantage data for all teams",
+          "parameters": {
+            "season": {
+              "type": "integer",
+              "description": "Season year (e.g., 2024)",
+              "required": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}
