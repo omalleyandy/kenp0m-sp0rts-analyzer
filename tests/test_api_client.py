@@ -1019,3 +1019,257 @@ class TestGetFanmatch:
 
         # Test len
         assert len(result) == 2
+
+
+class TestGetConferences:
+    """Tests for the get_conferences method."""
+
+    def test_get_conferences_by_year(self, mock_api):
+        """Test getting conferences by year."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 2,
+                "ConfShort": "B10",
+                "ConfLong": "Big Ten Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 3,
+                "ConfShort": "B12",
+                "ConfLong": "Big 12 Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "conferences"
+        assert call_args[1]["params"]["y"] == 2025
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 3
+        assert result.data[0]["ConfShort"] == "ACC"
+        assert result.data[1]["ConfShort"] == "B10"
+        assert result.data[2]["ConfShort"] == "B12"
+
+    def test_get_conferences_all_response_fields(self, mock_api):
+        """Test that all documented response fields are present."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 4,
+                "ConfShort": "SEC",
+                "ConfLong": "Southeastern Conference",
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+        conf = result.data[0]
+
+        # Verify all documented fields
+        assert "Season" in conf
+        assert "ConfID" in conf
+        assert "ConfShort" in conf
+        assert "ConfLong" in conf
+
+        # Verify types
+        assert isinstance(conf["Season"], int)
+        assert isinstance(conf["ConfID"], int)
+        assert isinstance(conf["ConfShort"], str)
+        assert isinstance(conf["ConfLong"], str)
+
+    def test_get_conferences_to_dataframe(self, mock_api):
+        """Test converting conferences response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 2,
+                "ConfShort": "BE",
+                "ConfLong": "Big East Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert "Season" in df.columns
+        assert "ConfID" in df.columns
+        assert "ConfShort" in df.columns
+        assert "ConfLong" in df.columns
+        assert df.iloc[0]["ConfShort"] == "ACC"
+        assert df.iloc[1]["ConfShort"] == "BE"
+
+    def test_get_conferences_iteration(self, mock_api):
+        """Test that APIResponse supports iteration for conferences."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"Season": 2025, "ConfID": 1, "ConfShort": "ACC", "ConfLong": "ACC"},
+            {"Season": 2025, "ConfID": 2, "ConfShort": "SEC", "ConfLong": "SEC"},
+            {"Season": 2025, "ConfID": 3, "ConfShort": "B10", "ConfLong": "Big Ten"},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+
+        # Test iteration
+        conf_shorts = [conf["ConfShort"] for conf in result]
+        assert conf_shorts == ["ACC", "SEC", "B10"]
+
+        # Test len
+        assert len(result) == 3
+
+    def test_get_conferences_find_by_short_name(self, mock_api):
+        """Test finding a conference by short name from response."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 2,
+                "ConfShort": "BE",
+                "ConfLong": "Big East Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 3,
+                "ConfShort": "WCC",
+                "ConfLong": "West Coast Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+
+        # Find specific conference as shown in docstring example pattern
+        wcc = [c for c in result.data if c["ConfShort"] == "WCC"][0]
+        assert wcc["ConfID"] == 3
+        assert wcc["ConfLong"] == "West Coast Conference"
+
+    def test_get_conferences_all_major_conferences(self, mock_api):
+        """Test response includes major conferences with correct data."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 2,
+                "ConfShort": "B10",
+                "ConfLong": "Big Ten Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 3,
+                "ConfShort": "B12",
+                "ConfLong": "Big 12 Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 4,
+                "ConfShort": "SEC",
+                "ConfLong": "Southeastern Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 5,
+                "ConfShort": "BE",
+                "ConfLong": "Big East Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2025)
+
+        # Verify major conferences are present
+        conf_shorts = {c["ConfShort"] for c in result.data}
+        assert "ACC" in conf_shorts
+        assert "B10" in conf_shorts
+        assert "B12" in conf_shorts
+        assert "SEC" in conf_shorts
+        assert "BE" in conf_shorts
+
+    def test_get_conferences_different_season(self, mock_api):
+        """Test getting conferences for different seasons."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2024,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_conferences(year=2024)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2024
+        assert result.data[0]["Season"] == 2024
+
+    def test_get_conferences_docstring_example(self, mock_api):
+        """Test the example shown in the docstring works correctly."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "ConfID": 1,
+                "ConfShort": "ACC",
+                "ConfLong": "Atlantic Coast Conference",
+            },
+            {
+                "Season": 2025,
+                "ConfID": 2,
+                "ConfShort": "SEC",
+                "ConfLong": "Southeastern Conference",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        # Replicate docstring example
+        conferences = mock_api.get_conferences(year=2025)
+        output_lines = []
+        for conf in conferences.data:
+            output_lines.append(f"{conf['ConfShort']}: {conf['ConfLong']}")
+
+        assert output_lines == [
+            "ACC: Atlantic Coast Conference",
+            "SEC: Southeastern Conference",
+        ]
