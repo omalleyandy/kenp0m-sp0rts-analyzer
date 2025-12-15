@@ -43,3 +43,21 @@ __all__ = [
     "normalize_team_name",
     "setup_logging",
 ]
+
+# Optional browser/scraper exports (require optional dependencies)
+try:
+    from .browser import BrowserConfig, StealthBrowser, create_stealth_browser
+    from .scraper import KenPomScraper, scrape_kenpom
+
+    __all__.extend([
+        # Browser automation
+        "BrowserConfig",
+        "StealthBrowser",
+        "create_stealth_browser",
+        # Scraper
+        "KenPomScraper",
+        "scrape_kenpom",
+    ])
+except ImportError:
+    # Browser dependencies not installed
+    pass

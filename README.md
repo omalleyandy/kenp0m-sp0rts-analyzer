@@ -13,6 +13,7 @@ This project provides tools for analyzing college basketball using Ken Pomeroy's
 - **Matchup Analysis**: Head-to-head comparisons with predicted outcomes
 - **Historical Trends**: Track team and conference performance over time
 - **Billy Walters Integration**: Sharp money analysis and value identification
+- **Stealth Browser Scraping**: Playwright-based browser with stealth techniques for reliable data access
 
 ## Requirements
 
@@ -29,7 +30,25 @@ cd kenp0m-sp0rts-analyzer
 pip install -e ".[dev]"
 ```
 
-### Dependencies
+### With Browser Automation (Stealth Scraping)
+
+```bash
+# Install with browser dependencies
+pip install -e ".[browser]"
+
+# Install Chromium for Playwright
+playwright install chromium
+```
+
+### All Dependencies
+
+```bash
+# Install everything
+pip install -e ".[all]"
+playwright install chromium
+```
+
+### Core Dependencies
 
 ```bash
 pip install kenpompy pandas numpy pydantic httpx
@@ -144,6 +163,78 @@ arenas = get_arenas(browser)
 | **Luck** | Close game performance vs expected outcomes |
 | **NetRtg** | Net Efficiency Rating |
 
+## Stealth Browser Scraping
+
+For more reliable data access, the package includes a Playwright-based stealth browser that mimics real user behavior.
+
+### Basic Stealth Scraper Usage
+
+```python
+import asyncio
+from kenp0m_sp0rts_analyzer import KenPomScraper
+
+async def main():
+    # headless=False shows the browser window
+    async with KenPomScraper(headless=False) as scraper:
+        # Login with credentials from environment
+        await scraper.login()
+
+        # Get ratings data
+        ratings = await scraper.get_ratings()
+        print(ratings.head(10))
+
+        # Take a screenshot
+        await scraper.screenshot("kenpom.png")
+
+        # Access Chrome DevTools Protocol
+        cdp = await scraper.get_cdp_session()
+        await cdp.send("Network.enable")
+
+asyncio.run(main())
+```
+
+### Stealth Browser Features
+
+| Feature | Description |
+|---------|-------------|
+| **Visible Browser** | `headless=False` opens a visible Chrome window |
+| **Stealth Mode** | Removes automation detection flags |
+| **CDP Access** | Full Chrome DevTools Protocol access |
+| **Session Persistence** | Save login sessions across runs |
+| **Randomization** | Random viewport sizes and user agents |
+
+### Low-Level Browser API
+
+```python
+from kenp0m_sp0rts_analyzer import create_stealth_browser
+
+async with create_stealth_browser(headless=False) as browser:
+    page = await browser.new_page()
+    await page.goto("https://kenpom.com")
+
+    # CDP session for advanced control
+    cdp = await browser.get_cdp_session(page)
+    await cdp.send("Network.enable")
+```
+
+### Stealth Configuration
+
+```python
+from kenp0m_sp0rts_analyzer.browser import BrowserConfig, StealthBrowser
+
+config = BrowserConfig(
+    headless=False,              # Show browser window
+    slow_mo=100,                 # Slow down actions (ms)
+    timeout=30000,               # Default timeout (ms)
+    randomize_viewport=True,     # Random screen size
+    randomize_user_agent=True,   # Random user agent
+    enable_cdp=True,             # Chrome DevTools access
+    disable_webdriver=True,      # Remove webdriver flag
+)
+
+browser = StealthBrowser(config=config)
+```
+
 ## kenpompy Module Reference
 
 ### Summary Module (`kenpompy.summary`)
@@ -223,12 +314,18 @@ mypy src/
 kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/
 │   ├── __init__.py        # Package initialization
-│   ├── client.py          # KenPom client wrapper
+│   ├── client.py          # KenPom client wrapper (kenpompy)
+│   ├── browser.py         # Stealth browser automation
+│   ├── scraper.py         # KenPom web scraper
 │   ├── models.py          # Pydantic data models
 │   ├── analysis.py        # Analytics functions
 │   └── utils.py           # Utility functions
 ├── tests/                 # Test suite
-├── examples/              # Usage examples
+├── examples/
+│   ├── basic_usage.py     # Getting started
+│   ├── matchup_analysis.py # CLI matchup tool
+│   └── stealth_scraper.py # Stealth browser example
+├── .claude/               # Claude Code settings
 ├── pyproject.toml        # Project configuration
 ├── CLAUDE.md             # AI assistant guidelines
 └── README.md             # This file

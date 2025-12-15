@@ -30,12 +30,15 @@ ruff format src/ tests/
 kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/
 │   ├── __init__.py          # Package init with version
-│   ├── client.py            # KenPom client wrapper
+│   ├── client.py            # KenPom client wrapper (kenpompy)
+│   ├── browser.py           # Stealth browser automation (Playwright)
+│   ├── scraper.py           # KenPom web scraper
 │   ├── models.py            # Pydantic data models
 │   ├── analysis.py          # Analytics functions
 │   └── utils.py             # Utility functions
 ├── tests/                   # Test suite
 ├── examples/                # Usage examples
+├── .claude/                 # Claude Code settings
 ├── pyproject.toml          # Project configuration
 └── CLAUDE.md               # This file
 ```
@@ -159,3 +162,43 @@ from kenp0m_sp0rts_analyzer.analysis import analyze_matchup
 
 result = analyze_matchup(team1="Duke", team2="North Carolina", season=2024)
 ```
+
+### Stealth Browser Scraping (Advanced)
+```python
+import asyncio
+from kenp0m_sp0rts_analyzer import KenPomScraper
+
+async def scrape_data():
+    # headless=False shows the browser window
+    async with KenPomScraper(headless=False) as scraper:
+        await scraper.login()
+        ratings = await scraper.get_ratings()
+
+        # Chrome DevTools Protocol access
+        cdp = await scraper.get_cdp_session()
+        await cdp.send("Network.enable")
+
+asyncio.run(scrape_data())
+```
+
+## Stealth Browser Module
+
+### Installation
+```bash
+pip install -e ".[browser]"
+playwright install chromium
+```
+
+### Key Components
+| Component | Description |
+|-----------|-------------|
+| `StealthBrowser` | Playwright browser with stealth configuration |
+| `BrowserConfig` | Configuration for viewport, user agent, CDP |
+| `KenPomScraper` | High-level scraper with login and data extraction |
+
+### Stealth Features
+- Removes `navigator.webdriver` detection flag
+- Randomizes viewport sizes and user agents
+- Provides Chrome DevTools Protocol (CDP) access
+- Supports persistent sessions via `user_data_dir`
+- Human-like delays and interactions

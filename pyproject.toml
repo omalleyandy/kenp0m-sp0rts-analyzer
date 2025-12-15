@@ -30,13 +30,23 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+browser = [
+    "playwright>=1.40",
+    "playwright-stealth>=1.0.6",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=4.0",
     "pytest-asyncio>=0.23",
+    "pytest-playwright>=0.4",
     "ruff>=0.4",
     "mypy>=1.10",
     "pandas-stubs>=2.0",
+]
+all = [
+    "kenp0m-sp0rts-analyzer[browser,dev]",
 ]
 
 [project.urls]
