@@ -249,7 +249,7 @@ class KenPomAPI:
         team_id: int | None = None,
         conference: str | None = None,
     ) -> APIResponse:
-        """Get team ratings.
+        """Get team ratings, strength of schedule, tempo, and possession length data.
 
         Either `year` or `team_id` must be provided. If `year` is provided,
         returns ratings for all teams in that season. If `team_id` is provided,
@@ -264,16 +264,42 @@ class KenPomAPI:
 
         Returns:
             APIResponse with team ratings including:
-            - AdjEM: Adjusted Efficiency Margin
-            - AdjOE: Adjusted Offensive Efficiency
-            - AdjDE: Adjusted Defensive Efficiency
-            - AdjTempo: Adjusted Tempo
-            - Pythag: Pythagorean win expectation
-            - Luck: Luck factor
-            - SOS/SOSO/SOSD: Strength of schedule metrics
-            - NCSOS: Non-conference SOS
-            - APL_Off/APL_Def: Average Possession Length
-            - Seed: NCAA Tournament seed (if applicable)
+
+            Core Information:
+            - DataThrough: Date or description of games included in data
+            - Season: Season year
+            - TeamName: Team name
+            - Seed: Tournament seed (if applicable)
+            - ConfShort: Conference abbreviation
+            - Coach: Head coach name
+            - Wins: Number of wins
+            - Losses: Number of losses
+
+            Efficiency Metrics:
+            - AdjEM/RankAdjEM: Adjusted Efficiency Margin
+            - Pythag/RankPythag: Pythagorean expectation
+            - AdjOE/RankAdjOE: Adjusted Offensive Efficiency
+            - OE/RankOE: Offensive Efficiency (raw)
+            - AdjDE/RankAdjDE: Adjusted Defensive Efficiency
+            - DE/RankDE: Defensive Efficiency (raw)
+
+            Tempo:
+            - Tempo/RankTempo: Tempo (possessions per 40 minutes)
+            - AdjTempo/RankAdjTempo: Adjusted Tempo
+
+            Other Metrics:
+            - Luck/RankLuck: Luck rating
+            - SOS/RankSOS: Strength of Schedule
+            - SOSO/RankSOSO: Strength of Schedule (Offense)
+            - SOSD/RankSOSD: Strength of Schedule (Defense)
+            - NCSOS/RankNCSOS: Non-Conference Strength of Schedule
+            - Event: Tournament event/round
+
+            Average Possession Length:
+            - APL_Off/RankAPL_Off: Average Possession Length (Offense)
+            - APL_Def/RankAPL_Def: Average Possession Length (Defense)
+            - ConfAPL_Off/RankConfAPL_Off: Conference Average Possession Length (Offense)
+            - ConfAPL_Def/RankConfAPL_Def: Conference Average Possession Length (Defense)
 
         Raises:
             ValidationError: If neither year nor team_id is provided, or if

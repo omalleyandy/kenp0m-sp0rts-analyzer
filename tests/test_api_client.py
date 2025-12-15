@@ -1271,3 +1271,377 @@ class TestGetConferences:
             "ACC: Atlantic Coast Conference",
             "SEC: Southeastern Conference",
         ]
+
+
+class TestGetRatings:
+    """Tests for the get_ratings method - Ratings API endpoint."""
+
+    def test_get_ratings_by_year(self, mock_api):
+        """Test getting ratings by year."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "DataThrough": "Games through 2025-03-01",
+                "Season": 2025,
+                "TeamName": "Auburn",
+                "Seed": 1,
+                "ConfShort": "SEC",
+                "Coach": "Bruce Pearl",
+                "Wins": 25,
+                "Losses": 3,
+                "AdjEM": 32.5,
+                "RankAdjEM": 1,
+                "Pythag": 0.975,
+                "RankPythag": 1,
+                "AdjOE": 120.5,
+                "RankAdjOE": 5,
+                "OE": 118.2,
+                "RankOE": 8,
+                "AdjDE": 88.0,
+                "RankAdjDE": 1,
+                "DE": 90.1,
+                "RankDE": 3,
+                "Tempo": 68.5,
+                "RankTempo": 150,
+                "AdjTempo": 69.2,
+                "RankAdjTempo": 140,
+                "Luck": 0.02,
+                "RankLuck": 100,
+                "SOS": 8.5,
+                "RankSOS": 15,
+                "SOSO": 5.2,
+                "RankSOSO": 20,
+                "SOSD": 3.3,
+                "RankSOSD": 12,
+                "NCSOS": 4.1,
+                "RankNCSOS": 50,
+                "Event": None,
+                "APL_Off": 16.8,
+                "RankAPL_Off": 200,
+                "APL_Def": 17.2,
+                "RankAPL_Def": 180,
+                "ConfAPL_Off": 16.5,
+                "RankConfAPL_Off": 5,
+                "ConfAPL_Def": 17.0,
+                "RankConfAPL_Def": 8,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025)
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "ratings"
+        assert call_args[1]["params"]["y"] == 2025
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 1
+        assert result.data[0]["TeamName"] == "Auburn"
+        assert result.data[0]["AdjEM"] == 32.5
+
+    def test_get_ratings_by_team_id(self, mock_api):
+        """Test getting historical ratings by team_id."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"Season": 2023, "TeamName": "Duke", "AdjEM": 28.5, "RankAdjEM": 3},
+            {"Season": 2024, "TeamName": "Duke", "AdjEM": 25.2, "RankAdjEM": 8},
+            {"Season": 2025, "TeamName": "Duke", "AdjEM": 27.1, "RankAdjEM": 5},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(team_id=73)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["team_id"] == 73
+        assert "y" not in call_args[1]["params"]
+        assert len(result.data) == 3
+        # Historical data should span multiple seasons
+        seasons = [r["Season"] for r in result.data]
+        assert seasons == [2023, 2024, 2025]
+
+    def test_get_ratings_by_year_and_team_id(self, mock_api):
+        """Test getting ratings with both year and team_id."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"Season": 2025, "TeamName": "Duke", "AdjEM": 27.1, "RankAdjEM": 5}
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025, team_id=73)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert call_args[1]["params"]["team_id"] == 73
+        assert len(result.data) == 1
+
+    def test_get_ratings_with_conference(self, mock_api):
+        """Test getting ratings filtered by conference."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Auburn", "ConfShort": "SEC", "AdjEM": 32.5},
+            {"TeamName": "Tennessee", "ConfShort": "SEC", "AdjEM": 28.1},
+            {"TeamName": "Kentucky", "ConfShort": "SEC", "AdjEM": 25.5},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025, conference="SEC")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert call_args[1]["params"]["c"] == "SEC"
+        assert len(result.data) == 3
+        assert all(team["ConfShort"] == "SEC" for team in result.data)
+
+    def test_get_ratings_conference_requires_year(self, mock_api):
+        """Test that conference filter requires year parameter."""
+        with pytest.raises(
+            ValidationError, match="'year' parameter is required when filtering"
+        ):
+            mock_api.get_ratings(conference="B12")
+
+    def test_get_ratings_no_params_raises_error(self, mock_api):
+        """Test that missing year and team_id raises ValidationError."""
+        with pytest.raises(
+            ValidationError, match="Either 'year' or 'team_id' parameter is required"
+        ):
+            mock_api.get_ratings()
+
+    def test_get_ratings_all_response_fields(self, mock_api):
+        """Test that all documented response fields are properly returned."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                # Core info
+                "DataThrough": "Games through 2025-03-15",
+                "Season": 2025,
+                "TeamName": "Houston",
+                "Seed": 2,
+                "ConfShort": "B12",
+                "Coach": "Kelvin Sampson",
+                "Wins": 28,
+                "Losses": 4,
+                # Efficiency metrics
+                "AdjEM": 30.2,
+                "RankAdjEM": 2,
+                "Pythag": 0.965,
+                "RankPythag": 2,
+                # Offensive efficiency
+                "AdjOE": 118.5,
+                "RankAdjOE": 10,
+                "OE": 115.8,
+                "RankOE": 15,
+                # Defensive efficiency
+                "AdjDE": 88.3,
+                "RankAdjDE": 2,
+                "DE": 89.5,
+                "RankDE": 5,
+                # Tempo
+                "Tempo": 65.2,
+                "RankTempo": 280,
+                "AdjTempo": 66.1,
+                "RankAdjTempo": 270,
+                # Luck
+                "Luck": -0.01,
+                "RankLuck": 180,
+                # Strength of schedule
+                "SOS": 10.2,
+                "RankSOS": 5,
+                "SOSO": 6.5,
+                "RankSOSO": 8,
+                "SOSD": 3.7,
+                "RankSOSD": 10,
+                "NCSOS": 5.5,
+                "RankNCSOS": 25,
+                # Event
+                "Event": "Elite Eight",
+                # Average possession length
+                "APL_Off": 15.5,
+                "RankAPL_Off": 50,
+                "APL_Def": 18.2,
+                "RankAPL_Def": 300,
+                "ConfAPL_Off": 15.8,
+                "RankConfAPL_Off": 3,
+                "ConfAPL_Def": 17.8,
+                "RankConfAPL_Def": 5,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025)
+        team = result.data[0]
+
+        # Verify all documented fields are present
+        # Core info
+        assert team["DataThrough"] == "Games through 2025-03-15"
+        assert team["Season"] == 2025
+        assert team["TeamName"] == "Houston"
+        assert team["Seed"] == 2
+        assert team["ConfShort"] == "B12"
+        assert team["Coach"] == "Kelvin Sampson"
+        assert team["Wins"] == 28
+        assert team["Losses"] == 4
+
+        # Efficiency metrics
+        assert team["AdjEM"] == 30.2
+        assert team["RankAdjEM"] == 2
+        assert team["Pythag"] == 0.965
+        assert team["RankPythag"] == 2
+
+        # Offensive efficiency
+        assert team["AdjOE"] == 118.5
+        assert team["RankAdjOE"] == 10
+        assert team["OE"] == 115.8
+        assert team["RankOE"] == 15
+
+        # Defensive efficiency
+        assert team["AdjDE"] == 88.3
+        assert team["RankAdjDE"] == 2
+        assert team["DE"] == 89.5
+        assert team["RankDE"] == 5
+
+        # Tempo
+        assert team["Tempo"] == 65.2
+        assert team["RankTempo"] == 280
+        assert team["AdjTempo"] == 66.1
+        assert team["RankAdjTempo"] == 270
+
+        # Luck
+        assert team["Luck"] == -0.01
+        assert team["RankLuck"] == 180
+
+        # Strength of schedule
+        assert team["SOS"] == 10.2
+        assert team["RankSOS"] == 5
+        assert team["SOSO"] == 6.5
+        assert team["RankSOSO"] == 8
+        assert team["SOSD"] == 3.7
+        assert team["RankSOSD"] == 10
+        assert team["NCSOS"] == 5.5
+        assert team["RankNCSOS"] == 25
+
+        # Event
+        assert team["Event"] == "Elite Eight"
+
+        # Average possession length
+        assert team["APL_Off"] == 15.5
+        assert team["RankAPL_Off"] == 50
+        assert team["APL_Def"] == 18.2
+        assert team["RankAPL_Def"] == 300
+        assert team["ConfAPL_Off"] == 15.8
+        assert team["RankConfAPL_Off"] == 3
+        assert team["ConfAPL_Def"] == 17.8
+        assert team["RankConfAPL_Def"] == 5
+
+    def test_get_ratings_to_dataframe(self, mock_api):
+        """Test converting ratings response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "TeamName": "Auburn",
+                "AdjEM": 32.5,
+                "RankAdjEM": 1,
+                "AdjOE": 120.5,
+                "AdjDE": 88.0,
+            },
+            {
+                "Season": 2025,
+                "TeamName": "Houston",
+                "AdjEM": 30.2,
+                "RankAdjEM": 2,
+                "AdjOE": 118.5,
+                "AdjDE": 88.3,
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025)
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert "Season" in df.columns
+        assert "TeamName" in df.columns
+        assert "AdjEM" in df.columns
+        assert "RankAdjEM" in df.columns
+        assert df.iloc[0]["TeamName"] == "Auburn"
+        assert df.iloc[1]["TeamName"] == "Houston"
+
+    def test_get_ratings_iteration(self, mock_api):
+        """Test that APIResponse supports iteration for ratings."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Auburn", "RankAdjEM": 1},
+            {"TeamName": "Houston", "RankAdjEM": 2},
+            {"TeamName": "Duke", "RankAdjEM": 3},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025)
+
+        # Test iteration
+        rankings = [team["RankAdjEM"] for team in result]
+        assert rankings == [1, 2, 3]
+
+        # Test len
+        assert len(result) == 3
+
+    def test_get_ratings_multiple_conferences(self, mock_api):
+        """Test getting ratings for different conference filters."""
+        # Test B12 conference
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Houston", "ConfShort": "B12", "AdjEM": 30.2},
+            {"TeamName": "Kansas", "ConfShort": "B12", "AdjEM": 26.1},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025, conference="B12")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["c"] == "B12"
+        assert len(result.data) == 2
+
+    def test_get_ratings_all_params(self, mock_api):
+        """Test with year, team_id, and conference combined."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "Season": 2025, "ConfShort": "ACC"}
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(year=2025, team_id=73, conference="ACC")
+
+        call_args = mock_api._client.get.call_args
+        params = call_args[1]["params"]
+        assert params["y"] == 2025
+        assert params["team_id"] == 73
+        assert params["c"] == "ACC"
+        assert len(result.data) == 1
+
+    def test_get_ratings_docstring_example(self, mock_api):
+        """Test the examples shown in the docstring work correctly."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Auburn", "RankAdjEM": 1, "AdjEM": 32.5},
+            {"TeamName": "Houston", "RankAdjEM": 2, "AdjEM": 30.2},
+            {"TeamName": "Duke", "RankAdjEM": 3, "AdjEM": 29.8},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        # Replicate docstring example: get top_10
+        ratings = mock_api.get_ratings(year=2025)
+        top_10 = ratings.data[:10]
+
+        assert len(top_10) == 3  # Only 3 in mock
+        assert top_10[0]["TeamName"] == "Auburn"
+        assert top_10[0]["RankAdjEM"] == 1
