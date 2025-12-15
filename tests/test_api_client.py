@@ -26,7 +26,7 @@ ValidationError = _api_client.ValidationError
 @pytest.fixture
 def mock_api():
     """Create a KenPomAPI instance with mocked HTTP client."""
-    with patch.object(KenPomAPI, "__init__", lambda self, **kwargs: None):
+    with patch.object(KenPomAPI, "__init__", lambda self, **kwargs: None):  # noqa: ARG005
         api = KenPomAPI()
         api.api_key = "test-key"
         api._client = MagicMock()
@@ -328,7 +328,7 @@ class TestGetMiscStats:
         mock_response.raise_for_status = MagicMock()
         mock_api._client.get.return_value = mock_response
 
-        result = mock_api.get_misc_stats(
+        mock_api.get_misc_stats(
             year=2025, team_id=73, conference="ACC", conf_only=True
         )
 
@@ -424,7 +424,7 @@ class TestGetPointDistribution:
         mock_response.raise_for_status = MagicMock()
         mock_api._client.get.return_value = mock_response
 
-        result = mock_api.get_point_distribution(year=2025, conference="ACC")
+        mock_api.get_point_distribution(year=2025, conference="ACC")
 
         call_args = mock_api._client.get.call_args
         assert call_args[1]["params"]["y"] == 2025
@@ -473,9 +473,7 @@ class TestGetPointDistribution:
         mock_response.raise_for_status = MagicMock()
         mock_api._client.get.return_value = mock_response
 
-        result = mock_api.get_point_distribution(
-            year=2025, conference="B10", conf_only=True
-        )
+        mock_api.get_point_distribution(year=2025, conference="B10", conf_only=True)
 
         call_args = mock_api._client.get.call_args
         params = call_args[1]["params"]

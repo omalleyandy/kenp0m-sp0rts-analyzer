@@ -4,6 +4,7 @@
       "command": "python",
       "args": ["-m", "kenp0m_sp0rts_analyzer.mcp_server"],
       "env": {
+        "KENPOM_API_KEY": "${KENPOM_API_KEY}",
         "KENPOM_EMAIL": "${KENPOM_EMAIL}",
         "KENPOM_PASSWORD": "${KENPOM_PASSWORD}"
       },
@@ -103,6 +104,17 @@
               "type": "integer",
               "description": "Season year (e.g., 2024)",
               "required": false
+            }
+          }
+        },
+        {
+          "name": "get_game_predictions",
+          "description": "Get KenPom game predictions for a specific date",
+          "parameters": {
+            "date": {
+              "type": "string",
+              "description": "Date in YYYY-MM-DD format (e.g., '2025-03-15')",
+              "required": true
             }
           }
         }

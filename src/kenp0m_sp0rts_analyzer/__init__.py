@@ -46,18 +46,24 @@ __all__ = [
 
 # Optional browser/scraper exports (require optional dependencies)
 try:
-    from .browser import BrowserConfig, StealthBrowser, create_stealth_browser
-    from .scraper import KenPomScraper, scrape_kenpom
+    from .browser import (  # noqa: F401
+        BrowserConfig,
+        StealthBrowser,
+        create_stealth_browser,
+    )
+    from .scraper import KenPomScraper, scrape_kenpom  # noqa: F401
 
-    __all__.extend([
-        # Browser automation
-        "BrowserConfig",
-        "StealthBrowser",
-        "create_stealth_browser",
-        # Scraper
-        "KenPomScraper",
-        "scrape_kenpom",
-    ])
+    __all__.extend(
+        [
+            # Browser automation
+            "BrowserConfig",
+            "StealthBrowser",
+            "create_stealth_browser",
+            # Scraper
+            "KenPomScraper",
+            "scrape_kenpom",
+        ]
+    )
 except ImportError:
     # Browser dependencies not installed
     pass

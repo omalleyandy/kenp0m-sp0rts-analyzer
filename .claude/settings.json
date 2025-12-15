@@ -41,7 +41,10 @@
     }
   },
   "environment_variables": {
-    "required": [
+    "required_for_api": [
+      "KENPOM_API_KEY"
+    ],
+    "required_for_scraper": [
       "KENPOM_EMAIL",
       "KENPOM_PASSWORD"
     ],
