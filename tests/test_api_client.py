@@ -54,6 +54,136 @@ class TestKenPomAPIInit:
             KenPomAPI()
 
 
+class TestGetHeight:
+    """Tests for the get_height method."""
+
+    def test_get_height_by_year(self, mock_api):
+        """Test getting height data by year."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "TeamName": "Duke",
+                "Season": 2025,
+                "AvgHgt": 77.5,
+                "AvgHgtRank": 10,
+                "HgtEff": 78.2,
+                "HgtEffRank": 15,
+                "Hgt5": 82.0,
+                "Hgt5Rank": 5,
+                "Hgt4": 79.5,
+                "Hgt4Rank": 12,
+                "Hgt3": 77.0,
+                "Hgt3Rank": 20,
+                "Hgt2": 75.5,
+                "Hgt2Rank": 25,
+                "Hgt1": 73.0,
+                "Hgt1Rank": 30,
+                "Exp": 2.5,
+                "ExpRank": 50,
+                "Bench": 0.8,
+                "BenchRank": 75,
+                "Continuity": 0.65,
+                "RankContinuity": 100,
+                "ConfShort": "ACC",
+                "DataThrough": "2025-03-01",
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_height(year=2025)
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "height"
+        assert call_args[1]["params"]["y"] == 2025
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 1
+        assert result.data[0]["TeamName"] == "Duke"
+        assert result.data[0]["AvgHgt"] == 77.5
+
+    def test_get_height_by_team_id(self, mock_api):
+        """Test getting height data by team_id for historical data."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "Season": 2024, "AvgHgt": 76.5, "Exp": 2.2},
+            {"TeamName": "Duke", "Season": 2025, "AvgHgt": 77.5, "Exp": 2.5},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_height(team_id=73)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["team_id"] == 73
+        assert "y" not in call_args[1]["params"]
+        assert len(result.data) == 2
+
+    def test_get_height_with_conference(self, mock_api):
+        """Test getting height data filtered by conference."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Gonzaga", "ConfShort": "WCC", "AvgHgt": 78.0},
+            {"TeamName": "Saint Mary's", "ConfShort": "WCC", "AvgHgt": 77.0},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_height(year=2025, conference="WCC")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert call_args[1]["params"]["c"] == "WCC"
+        assert len(result.data) == 2
+
+    def test_get_height_conference_requires_year(self, mock_api):
+        """Test that conference filter requires year parameter."""
+        with pytest.raises(
+            ValidationError, match="'year' parameter is required when filtering"
+        ):
+            mock_api.get_height(conference="WCC")
+
+    def test_get_height_no_params_raises_error(self, mock_api):
+        """Test that missing year and team_id raises ValidationError."""
+        with pytest.raises(
+            ValidationError, match="Either 'year' or 'team_id' parameter is required"
+        ):
+            mock_api.get_height()
+
+    def test_get_height_all_params(self, mock_api):
+        """Test with year, team_id, and conference combined."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [{"TeamName": "Duke"}]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_height(year=2025, team_id=73, conference="ACC")
+
+        call_args = mock_api._client.get.call_args
+        params = call_args[1]["params"]
+        assert params["y"] == 2025
+        assert params["team_id"] == 73
+        assert params["c"] == "ACC"
+        assert len(result.data) == 1
+
+    def test_get_height_to_dataframe(self, mock_api):
+        """Test converting height response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "AvgHgt": 77.5, "Exp": 2.5},
+            {"TeamName": "Kansas", "AvgHgt": 76.8, "Exp": 2.8},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_height(year=2025)
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert list(df.columns) == ["TeamName", "AvgHgt", "Exp"]
+        assert df.iloc[0]["TeamName"] == "Duke"
+
+
 class TestGetPointDistribution:
     """Tests for the get_point_distribution method."""
 
