@@ -601,32 +601,102 @@ class KenPomAPI:
 
         return self._request("four-factors", params)
 
-    def get_misc_stats(self, year: int) -> APIResponse:
+    def get_misc_stats(
+        self,
+        year: int | None = None,
+        team_id: int | None = None,
+        conference: str | None = None,
+        conf_only: bool = False,
+    ) -> APIResponse:
         """Get miscellaneous team statistics.
 
+        Retrieve miscellaneous statistics including shooting percentages, block
+        percentages, steal rates, assist rates, and other advanced metrics for
+        both offense and defense.
+
+        Either `year` or `team_id` must be provided. If `year` is provided,
+        returns misc stats for all teams in that season. If `team_id` is
+        provided, returns historical misc stats for that team across all seasons.
+
         Args:
-            year: Season year.
+            year: Season year (e.g., 2025 for 2024-25 season).
+            team_id: Team ID for historical data. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
+                'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
+                to find valid abbreviations.
+            conf_only: If True, returns conference-only statistics instead of all
+                games. Defaults to False.
 
         Returns:
             APIResponse with misc stats including:
-            - FG3Pct/FG2Pct/FTPct: Shooting percentages
-            - BlockPct: Block percentage
-            - StlRate: Steal rate
-            - NSTRate: Non-steal turnover rate
-            - ARate: Assist rate
-            - F3GRate: Three-point attempt rate
-            - Opp* versions for opponent stats
+            - DataThrough: Date through which data is current
+            - ConfOnly: Whether this is conference-only data ("true" or "false")
+            - Season: Ending year of the season
+            - TeamName: Team name
+            - ConfShort: Conference short name
+            - FG3Pct/RankFG3Pct: 3-point field goal percentage (offense)
+            - FG2Pct/RankFG2Pct: 2-point field goal percentage (offense)
+            - FTPct/RankFTPct: Free throw percentage (offense)
+            - BlockPct/RankBlockPct: Block percentage (offense)
+            - StlRate/RankStlRate: Steal rate (offense)
+            - NSTRate/RankNSTRate: Non-steal turnover rate (offense)
+            - ARate/RankARate: Assist rate (offense)
+            - F3GRate/RankF3GRate: 3-point attempt rate (offense)
+            - AdjOE/RankAdjOE: Adjusted offensive efficiency
+            - OppFG3Pct/RankOppFG3Pct: Opponent 3-point FG% (defense)
+            - OppFG2Pct/RankOppFG2Pct: Opponent 2-point FG% (defense)
+            - OppFTPct/RankOppFTPct: Opponent free throw percentage (defense)
+            - OppBlockPct/RankOppBlockPct: Opponent block percentage (defense)
+            - OppStlRate/RankOppStlRate: Opponent steal rate (defense)
+            - OppNSTRate/RankOppNSTRate: Opponent non-steal turnover rate (defense)
+            - OppARate/RankOppARate: Opponent assist rate (defense)
+            - OppF3GRate/RankOppF3GRate: Opponent 3-point attempt rate (defense)
+            - AdjDE/RankAdjDE: Adjusted defensive efficiency
+
+        Raises:
+            ValidationError: If neither year nor team_id is provided, or if
+                conference is specified without year.
 
         Example:
             ```python
+            # Get 2025 season misc stats
             stats = api.get_misc_stats(year=2025)
             df = stats.to_dataframe()
 
             # Find best 3-point shooting teams
             best_3pt = df.nsmallest(10, 'RankFG3Pct')
+
+            # Get Duke's historical misc stats
+            duke_stats = api.get_misc_stats(team_id=73)
+
+            # Get ACC conference teams
+            acc_stats = api.get_misc_stats(year=2025, conference="ACC")
+
+            # Get conference-only stats
+            conf_stats = api.get_misc_stats(year=2025, conf_only=True)
             ```
         """
-        return self._request("misc-stats", {"y": year})
+        params: dict[str, Any] = {}
+        if year is not None:
+            params["y"] = year
+        if team_id is not None:
+            params["team_id"] = team_id
+        if conference is not None:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when filtering by conference"
+                )
+            params["c"] = conference
+        if conf_only:
+            params["conf_only"] = "true"
+
+        if not params or (conf_only and len(params) == 1):
+            raise ValidationError(
+                "Either 'year' or 'team_id' parameter is required for "
+                "misc-stats endpoint"
+            )
+
+        return self._request("misc-stats", params)
 
     def get_height(
         self,
