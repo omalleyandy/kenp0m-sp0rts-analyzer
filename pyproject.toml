@@ -1,0 +1,94 @@
+[project]
+name = "kenp0m-sp0rts-analyzer"
+version = "0.1.0"
+description = "KenPom advanced analytics integration with Billy Walters betting methodology for NCAA Division I Men's Basketball research"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Andy O'Malley" }
+]
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Typing :: Typed",
+]
+keywords = ["kenpom", "sports-analytics", "basketball", "ncaa", "betting", "statistics"]
+dependencies = [
+    "httpx>=0.27",
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pandas-stubs>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/omalleyandy/kenp0m-sp0rts-analyzer"
+Repository = "https://github.com/omalleyandy/kenp0m-sp0rts-analyzer"
+Issues = "https://github.com/omalleyandy/kenp0m-sp0rts-analyzer/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kenp0m_sp0rts_analyzer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["kenp0m_sp0rts_analyzer"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
