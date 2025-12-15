@@ -5,6 +5,7 @@ which requires a separate API key purchase from kenpom.com.
 
 API Documentation discovered endpoints:
 - ratings: Team ratings with efficiency metrics
+- archive: Historical ratings from specific dates or preseason
 - teams: Team list with IDs, coaches, arenas
 - conferences: Conference list
 - fanmatch: Game predictions
@@ -28,6 +29,12 @@ Example:
 
     # Get game predictions
     games = api.get_fanmatch(date="2025-03-15")
+
+    # Get archived ratings from a specific date
+    archive = api.get_archive(archive_date="2025-02-15")
+
+    # Get preseason ratings
+    preseason = api.get_archive(preseason=True, year=2025)
     ```
 """
 
@@ -121,6 +128,7 @@ class KenPomAPI:
 
     ENDPOINTS = [
         "ratings",
+        "archive",
         "teams",
         "conferences",
         "fanmatch",
@@ -305,6 +313,113 @@ class KenPomAPI:
             )
 
         return self._request("ratings", params)
+
+    def get_archive(
+        self,
+        archive_date: str | date | None = None,
+        year: int | None = None,
+        preseason: bool = False,
+        team_id: int | None = None,
+        conference: str | None = None,
+    ) -> APIResponse:
+        """Get historical team ratings from a specific date or preseason.
+
+        Retrieve archived ratings data, allowing you to see team ratings at any
+        point during the season or before the season starts.
+
+        Args:
+            archive_date: Date in YYYY-MM-DD format or date object to retrieve
+                archived ratings for. Required unless using preseason mode.
+            year: Season year (e.g., 2025 for 2024-25 season). Required when
+                using preseason=True.
+            preseason: If True, retrieves preseason ratings for the specified year.
+                Requires the year parameter to be set.
+            team_id: Team ID to filter results. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC').
+                Use get_conferences() to find valid abbreviations.
+
+        Returns:
+            APIResponse with archived ratings including:
+            - ArchiveDate: Date of the archived ratings
+            - Season: Ending year of the season
+            - Preseason: Whether this is preseason data ("true" or "false")
+            - TeamName: Team name
+            - Seed: NCAA tournament seed (if applicable)
+            - Event: Tournament event description
+            - ConfShort: Conference short name
+            - AdjEM/RankAdjEM: Adjusted efficiency margin on archive date
+            - AdjOE/RankAdjOE: Adjusted offensive efficiency on archive date
+            - AdjDE/RankAdjDE: Adjusted defensive efficiency on archive date
+            - AdjTempo/RankAdjTempo: Adjusted tempo on archive date
+            - AdjEMFinal/RankAdjEMFinal: Final adjusted efficiency margin
+            - AdjOEFinal/RankAdjOEFinal: Final adjusted offensive efficiency
+            - AdjDEFinal/RankAdjDEFinal: Final adjusted defensive efficiency
+            - AdjTempoFinal/RankAdjTempoFinal: Final adjusted tempo
+            - RankChg: Change in efficiency margin rank from archive date to final
+            - AdjEMChg: Change in efficiency margin from archive date to final
+            - AdjTChg: Change in tempo from archive date to final
+
+        Raises:
+            ValidationError: If neither archive_date nor (preseason + year) is provided,
+                or if preseason=True but year is not specified.
+
+        Example:
+            ```python
+            from datetime import date
+
+            # Get ratings from a specific date
+            ratings = api.get_archive(archive_date="2025-02-15")
+
+            # Using date object
+            ratings = api.get_archive(archive_date=date(2025, 2, 15))
+
+            # Get preseason ratings
+            preseason = api.get_archive(preseason=True, year=2025)
+
+            # Filter by team
+            duke_history = api.get_archive(archive_date="2025-03-01", team_id=73)
+
+            # Filter by conference
+            sec_archive = api.get_archive(archive_date="2025-02-15", conference="SEC")
+
+            # Compare preseason to final rankings
+            preseason = api.get_archive(preseason=True, year=2025)
+            for team in preseason.data[:10]:
+                print(f"{team['TeamName']}: {team['RankAdjEM']} -> {team['RankAdjEMFinal']} ({team['RankChg']:+d})")
+            ```
+        """
+        params: dict[str, Any] = {}
+
+        # Handle date parameter
+        if archive_date is not None:
+            if isinstance(archive_date, date):
+                params["d"] = archive_date.strftime("%Y-%m-%d")
+            else:
+                params["d"] = archive_date
+
+        # Handle preseason parameters
+        if preseason:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when preseason=True"
+                )
+            params["preseason"] = "true"
+            params["y"] = year
+
+        # Validate that we have either date or preseason+year
+        if "d" not in params and "preseason" not in params:
+            raise ValidationError(
+                "Either 'archive_date' or 'preseason=True' with 'year' is required "
+                "for the archive endpoint"
+            )
+
+        # Optional filters
+        if team_id is not None:
+            params["team_id"] = team_id
+        if conference is not None:
+            params["c"] = conference
+
+        return self._request("archive", params)
 
     # ==================== Teams & Conferences ====================
 
