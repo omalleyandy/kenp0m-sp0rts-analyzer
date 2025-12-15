@@ -651,23 +651,89 @@ class KenPomAPI:
         """
         return self._request("height", {"y": year})
 
-    def get_point_distribution(self, year: int) -> APIResponse:
-        """Get point distribution data for all teams.
+    def get_point_distribution(
+        self,
+        year: int | None = None,
+        team_id: int | None = None,
+        conference: str | None = None,
+        conf_only: bool = False,
+    ) -> APIResponse:
+        """Get point distribution data for teams.
+
+        Retrieve the percentage of points scored from free throws, two-point
+        field goals, and three-point field goals for both offense and defense.
+
+        Either `year` or `team_id` must be provided. If `year` is provided,
+        returns point distribution for all teams in that season. If `team_id`
+        is provided, returns historical point distribution for that team.
 
         Args:
-            year: Season year.
+            year: Season year (e.g., 2025 for 2024-25 season).
+            team_id: Team ID for historical data. Use get_teams() to find IDs.
+            conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
+                'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
+                to find valid abbreviations.
+            conf_only: If True, returns conference-only statistics instead of all
+                games. Defaults to False.
 
         Returns:
-            APIResponse with point distribution data showing
-            how teams score their points (2PT, 3PT, FT breakdown).
+            APIResponse with point distribution data including:
+            - DataThrough: Date through which data is current
+            - ConfOnly: Whether this is conference-only data ("true" or "false")
+            - Season: Ending year of the season
+            - TeamName: Team name
+            - ConfShort: Conference short name
+            - OffFt/RankOffFt: Percentage of points from free throws (offense)
+            - OffFg2/RankOffFg2: Percentage of points from 2-point FG (offense)
+            - OffFg3/RankOffFg3: Percentage of points from 3-point FG (offense)
+            - DefFt/RankDefFt: Percentage of points allowed from FT (defense)
+            - DefFg2/RankDefFg2: Percentage of points allowed from 2-point FG (defense)
+            - DefFg3/RankDefFg3: Percentage of points allowed from 3-point FG (defense)
+
+        Raises:
+            ValidationError: If neither year nor team_id is provided, or if
+                conference is specified without year.
 
         Example:
             ```python
+            # Get 2025 season point distribution
             dist = api.get_point_distribution(year=2025)
             df = dist.to_dataframe()
+
+            # Find teams that rely heavily on 3-pointers
+            three_heavy = df.nsmallest(10, 'RankOffFg3')
+
+            # Get Duke's historical point distribution
+            duke_dist = api.get_point_distribution(team_id=73)
+
+            # Get Big 10 conference teams
+            big10_dist = api.get_point_distribution(year=2025, conference="B10")
+
+            # Get conference-only stats
+            conf_stats = api.get_point_distribution(year=2025, conf_only=True)
             ```
         """
-        return self._request("pointdist", {"y": year})
+        params: dict[str, Any] = {}
+        if year is not None:
+            params["y"] = year
+        if team_id is not None:
+            params["team_id"] = team_id
+        if conference is not None:
+            if year is None:
+                raise ValidationError(
+                    "The 'year' parameter is required when filtering by conference"
+                )
+            params["c"] = conference
+        if conf_only:
+            params["conf_only"] = "true"
+
+        if not params or (conf_only and len(params) == 1):
+            raise ValidationError(
+                "Either 'year' or 'team_id' parameter is required for "
+                "pointdist endpoint"
+            )
+
+        return self._request("pointdist", params)
 
     # ==================== Convenience Methods ====================
 
