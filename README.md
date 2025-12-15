@@ -8,10 +8,13 @@ This project provides tools for analyzing college basketball using Ken Pomeroy's
 
 ## Features
 
+- **Official KenPom API**: Direct JSON access to KenPom data (recommended)
+- **MCP Server**: Claude integration for AI-assisted basketball analytics
 - **KenPom Data Integration**: Full access to efficiency ratings, four factors, and tempo metrics
 - **Team Analysis**: Comprehensive scouting reports and schedule analysis
 - **Matchup Analysis**: Head-to-head comparisons with predicted outcomes
-- **Historical Trends**: Track team and conference performance over time
+- **Historical/Archive Data**: Track team ratings from specific dates or preseason
+- **Conference Filtering**: Filter data by conference for focused analysis
 - **Billy Walters Integration**: Sharp money analysis and value identification
 - **Stealth Browser Scraping**: Playwright-based browser with stealth techniques for reliable data access
 
@@ -40,6 +43,13 @@ pip install -e ".[browser]"
 playwright install chromium
 ```
 
+### With MCP Server (Claude Integration)
+
+```bash
+# Install with MCP dependencies
+pip install -e ".[mcp]"
+```
+
 ### All Dependencies
 
 ```bash
@@ -61,6 +71,10 @@ pip install kenpompy pandas numpy pydantic httpx
 Create a `.env` file in your project root:
 
 ```bash
+# Official API (recommended)
+KENPOM_API_KEY=your-api-key
+
+# Scraper credentials (alternative)
 KENPOM_EMAIL=your-email@example.com
 KENPOM_PASSWORD=your-password
 ```
@@ -235,6 +249,102 @@ config = BrowserConfig(
 browser = StealthBrowser(config=config)
 ```
 
+## Official KenPom API (Recommended)
+
+The official KenPom API provides direct JSON access to KenPom data. It requires a separate API key purchase from https://kenpom.com/register-api.php.
+
+### API Setup
+
+```bash
+export KENPOM_API_KEY="your-api-key"
+```
+
+### API Client Usage
+
+```python
+from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
+
+api = KenPomAPI()
+
+# Get 2025 ratings
+ratings = api.get_ratings(year=2025)
+
+# Filter by conference
+sec = api.get_ratings(year=2025, conference="SEC")
+
+# Get archived ratings from a specific date
+archive = api.get_archive(archive_date="2025-02-15")
+
+# Get preseason ratings
+preseason = api.get_archive(preseason=True, year=2025)
+
+# Get game predictions
+games = api.get_fanmatch("2025-03-15")
+
+# Get Four Factors (conference-only stats)
+four_factors = api.get_four_factors(year=2025, conf_only=True)
+df = four_factors.to_dataframe()
+
+# Get team by name
+duke = api.get_team_by_name("Duke", 2025)
+print(f"Duke TeamID: {duke['TeamID']}")
+```
+
+### API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `ratings` | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS) |
+| `archive` | Historical ratings from specific dates or preseason |
+| `teams` | Team list with IDs, coaches, arenas |
+| `conferences` | Conference list with IDs |
+| `fanmatch` | Game predictions with win probability |
+| `four-factors` | Four Factors (eFG%, TO%, OR%, FT Rate) |
+| `misc-stats` | Shooting %, blocks, steals, assists |
+| `height` | Team height and experience data |
+| `pointdist` | Point distribution breakdown |
+
+## MCP Server (Claude Integration)
+
+The MCP (Model Context Protocol) server exposes KenPom analytics tools for use with Claude and other MCP clients.
+
+### Running the MCP Server
+
+```bash
+python -m kenp0m_sp0rts_analyzer.mcp_server
+```
+
+### Configuration with Claude Code
+
+Add to `.claude/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "kenpom": {
+      "command": "python",
+      "args": ["-m", "kenp0m_sp0rts_analyzer.mcp_server"],
+      "env": {
+        "KENPOM_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Available MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_team_efficiency` | Adjusted offensive/defensive efficiency ratings |
+| `get_four_factors` | Four Factors analysis (eFG%, TO%, OR%, FTRate) |
+| `get_team_schedule` | Team schedule with results and opponent metrics |
+| `get_scouting_report` | Comprehensive team scouting report |
+| `get_pomeroy_ratings` | Full KenPom ratings table |
+| `analyze_matchup` | Head-to-head matchup analysis with predictions |
+| `get_home_court_advantage` | Home court advantage data |
+| `get_game_predictions` | Game predictions for a specific date |
+
 ## kenpompy Module Reference
 
 ### Summary Module (`kenpompy.summary`)
@@ -314,6 +424,8 @@ mypy src/
 kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/
 │   ├── __init__.py        # Package initialization
+│   ├── api_client.py      # Official KenPom API client (recommended)
+│   ├── mcp_server.py      # MCP server for Claude integration
 │   ├── client.py          # KenPom client wrapper (kenpompy)
 │   ├── browser.py         # Stealth browser automation
 │   ├── scraper.py         # KenPom web scraper
@@ -321,6 +433,8 @@ kenp0m-sp0rts-analyzer/
 │   ├── analysis.py        # Analytics functions
 │   └── utils.py           # Utility functions
 ├── tests/                 # Test suite
+│   ├── test_api_client.py # API client tests
+│   └── test_mcp_server.py # MCP server tests
 ├── examples/
 │   ├── basic_usage.py     # Getting started
 │   ├── matchup_analysis.py # CLI matchup tool
