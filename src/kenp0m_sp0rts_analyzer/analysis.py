@@ -1,7 +1,6 @@
 """Analytics functions for KenPom basketball data."""
 
 import logging
-from typing import Any
 
 import pandas as pd
 
@@ -107,7 +106,7 @@ def analyze_matchup(
 
 
 def find_value_games(
-    min_em_diff: float = 5.0,
+    min_em_diff: float = 5.0,  # noqa: ARG001 - TODO: implement filtering by EM diff
     season: int | None = None,
     client: KenPomClient | None = None,
 ) -> pd.DataFrame:

@@ -1,7 +1,6 @@
 """Pydantic models for KenPom basketball analytics data."""
 
 from datetime import date
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -76,14 +75,14 @@ class TeamScheduleGame(BaseModel):
     result: str = Field(..., description="W or L")
     score: str = Field(..., description="Final score (e.g., '85-72')")
     location: str = Field(..., description="Home, Away, or Neutral")
-    opponent_rank: Optional[int] = Field(
+    opponent_rank: int | None = Field(
         None, description="Opponent's KenPom rank at time of game"
     )
-    pace: Optional[float] = Field(None, description="Game pace (possessions)")
-    offensive_efficiency: Optional[float] = Field(
+    pace: float | None = Field(None, description="Game pace (possessions)")
+    offensive_efficiency: float | None = Field(
         None, alias="oEff", description="Team's offensive efficiency in game"
     )
-    defensive_efficiency: Optional[float] = Field(
+    defensive_efficiency: float | None = Field(
         None, alias="dEff", description="Team's defensive efficiency in game"
     )
 
@@ -113,9 +112,7 @@ class MatchupAnalysis(BaseModel):
     # Predictions
     predicted_winner: str = Field(..., description="Predicted winner")
     predicted_margin: float = Field(..., description="Predicted margin of victory")
-    predicted_total: Optional[float] = Field(
-        None, description="Predicted total score"
-    )
+    predicted_total: float | None = Field(None, description="Predicted total score")
 
     # Tempo analysis
     team1_tempo: float = Field(..., description="Team 1 adjusted tempo")
@@ -155,6 +152,6 @@ class ScoutingReport(BaseModel):
     luck: float = Field(..., description="Luck factor")
 
     # Additional metrics
-    experience: Optional[float] = Field(None, description="Experience rating")
-    bench: Optional[float] = Field(None, description="Bench minutes percentage")
-    continuity: Optional[float] = Field(None, description="Roster continuity")
+    experience: float | None = Field(None, description="Experience rating")
+    bench: float | None = Field(None, description="Bench minutes percentage")
+    continuity: float | None = Field(None, description="Roster continuity")

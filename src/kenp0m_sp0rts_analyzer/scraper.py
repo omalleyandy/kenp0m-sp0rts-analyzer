@@ -18,7 +18,7 @@ from typing import Any
 
 import pandas as pd
 
-from .browser import BrowserConfig, StealthBrowser, create_stealth_browser, run_sync
+from .browser import BrowserConfig, StealthBrowser, run_sync
 from .utils import get_credentials
 
 logger = logging.getLogger(__name__)
@@ -173,6 +173,7 @@ class KenPomScraper:
     async def _random_delay(self) -> float:
         """Generate random delay for human-like behavior."""
         import random
+
         return random.random()
 
     async def _ensure_logged_in(self) -> None:
@@ -254,7 +255,9 @@ class KenPomScraper:
         page = await self.get_page(url)
         return self._parse_stats_table(page.html)
 
-    async def get_team_schedule(self, team: str, season: int | None = None) -> pd.DataFrame:
+    async def get_team_schedule(
+        self, team: str, season: int | None = None
+    ) -> pd.DataFrame:
         """Get a team's schedule with game-by-game data.
 
         Args:
@@ -331,7 +334,9 @@ class KenPomScraper:
         headers = []
         header_row = table.find("tr")
         if header_row:
-            headers = [th.get_text(strip=True) for th in header_row.find_all(["th", "td"])]
+            headers = [
+                th.get_text(strip=True) for th in header_row.find_all(["th", "td"])
+            ]
 
         # Extract data rows
         rows = []
@@ -405,10 +410,12 @@ class KenPomScraper:
 
             # Find headers and sections
             for header in content.find_all(["h1", "h2", "h3"]):
-                docs["sections"].append({
-                    "level": header.name,
-                    "title": header.get_text(strip=True),
-                })
+                docs["sections"].append(
+                    {
+                        "level": header.name,
+                        "title": header.get_text(strip=True),
+                    }
+                )
 
             # Look for code blocks or API endpoint patterns
             for code in content.find_all(["code", "pre"]):
@@ -431,11 +438,15 @@ class KenPomScraper:
         # Get headers
         header_row = table.find("thead")
         if header_row:
-            headers = [th.get_text(strip=True) for th in header_row.find_all(["th", "td"])]
+            headers = [
+                th.get_text(strip=True) for th in header_row.find_all(["th", "td"])
+            ]
         else:
             first_row = table.find("tr")
             if first_row:
-                headers = [th.get_text(strip=True) for th in first_row.find_all(["th", "td"])]
+                headers = [
+                    th.get_text(strip=True) for th in first_row.find_all(["th", "td"])
+                ]
 
         # Get data rows
         body = table.find("tbody") or table
@@ -446,10 +457,7 @@ class KenPomScraper:
                 if len(row) == len(headers) or not headers:
                     rows.append(row)
 
-        if headers:
-            df = pd.DataFrame(rows, columns=headers)
-        else:
-            df = pd.DataFrame(rows)
+        df = pd.DataFrame(rows, columns=headers) if headers else pd.DataFrame(rows)
 
         return df
 

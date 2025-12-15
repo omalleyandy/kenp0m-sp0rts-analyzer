@@ -274,7 +274,6 @@ class KenPomClient:
         team2 = normalize_team_name(team2)
 
         efficiency = self.get_efficiency(season=season)
-        four_factors = self.get_fourfactors(season=season)
 
         team1_eff = efficiency[efficiency["Team"] == team1]
         team2_eff = efficiency[efficiency["Team"] == team2]

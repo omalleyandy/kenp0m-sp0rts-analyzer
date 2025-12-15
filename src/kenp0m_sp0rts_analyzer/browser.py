@@ -11,10 +11,11 @@ Requirements:
 import asyncio
 import logging
 import random
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, AsyncGenerator
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,9 @@ class BrowserConfig:
     headless: bool = False
     slow_mo: int = 50  # Milliseconds between actions
     timeout: int = 30000  # Default timeout in ms
-    viewport: dict[str, int] = field(default_factory=lambda: {"width": 1920, "height": 1080})
+    viewport: dict[str, int] = field(
+        default_factory=lambda: {"width": 1920, "height": 1080}
+    )
     user_agent: str | None = None
     locale: str = "en-US"
     timezone_id: str = "America/New_York"
@@ -212,7 +215,9 @@ class StealthBrowser:
             Playwright Page object with stealth configuration.
         """
         if not self._context:
-            raise RuntimeError("Browser not started. Call start() or use async context manager.")
+            raise RuntimeError(
+                "Browser not started. Call start() or use async context manager."
+            )
 
         page = await self._context.new_page()
 
