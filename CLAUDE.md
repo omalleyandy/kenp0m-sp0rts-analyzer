@@ -30,6 +30,7 @@ ruff format src/ tests/
 kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/
 │   ├── __init__.py          # Package init with version
+│   ├── api_client.py        # Official KenPom API client (recommended)
 │   ├── client.py            # KenPom client wrapper (kenpompy)
 │   ├── browser.py           # Stealth browser automation (Playwright)
 │   ├── scraper.py           # KenPom web scraper
@@ -136,8 +137,9 @@ browser = login(email, password)
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `KENPOM_EMAIL` | KenPom subscription email | Yes |
-| `KENPOM_PASSWORD` | KenPom subscription password | Yes |
+| `KENPOM_API_KEY` | Official KenPom API key (for api_client.py) | For API |
+| `KENPOM_EMAIL` | KenPom subscription email (for scraper) | For scraper |
+| `KENPOM_PASSWORD` | KenPom subscription password (for scraper) | For scraper |
 | `KENPOM_CACHE_DIR` | Directory for cached data | No |
 | `LOG_LEVEL` | Logging level (DEBUG, INFO, etc.) | No |
 
@@ -179,6 +181,89 @@ async def scrape_data():
         await cdp.send("Network.enable")
 
 asyncio.run(scrape_data())
+```
+
+## Official KenPom API (Recommended)
+
+The official KenPom API provides direct JSON access to KenPom data. It requires a separate API key purchase from https://kenpom.com/register-api.php.
+
+### API Authentication
+- **Base URL**: `https://kenpom.com/api.php`
+- **Auth Method**: `Authorization: Bearer <API_KEY>` header
+- Store your API key in `KENPOM_API_KEY` environment variable
+
+### Available Endpoints
+
+| Endpoint | Parameters | Description |
+|----------|------------|-------------|
+| `ratings` | `y` (year) or `team_id` | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS, etc.) |
+| `teams` | `y` (year) | Team list with TeamID, coach, arena info |
+| `conferences` | `y` (year) | Conference list with IDs |
+| `fanmatch` | `d` (date: YYYY-MM-DD) | Game predictions with win probability |
+| `four-factors` | `y` (year) | Four Factors (eFG%, TO%, OR%, FT Rate) |
+| `misc-stats` | `y` (year) | Shooting %, blocks, steals, assists |
+| `height` | `y` (year) | Team height and experience data |
+| `pointdist` | `y` (year) | Point distribution breakdown |
+
+### API Client Usage
+```python
+from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
+
+# Initialize (uses KENPOM_API_KEY env var)
+api = KenPomAPI()
+
+# Get 2025 ratings
+ratings = api.get_ratings(year=2025)
+print(f"#1 team: {ratings.data[0]['TeamName']}")
+
+# Get team historical data
+duke_history = api.get_ratings(team_id=73)  # Duke's TeamID
+
+# Get game predictions
+games = api.get_fanmatch("2025-03-15")
+close_games = [g for g in games.data if 40 <= g['HomeWP'] <= 60]
+
+# Get Four Factors
+four_factors = api.get_four_factors(year=2025)
+df = four_factors.to_dataframe()
+
+# Find team by name
+duke = api.get_team_by_name("Duke", 2025)
+print(f"Duke TeamID: {duke['TeamID']}")  # 73
+```
+
+### API Response Fields (Ratings)
+
+| Field | Description |
+|-------|-------------|
+| `AdjEM` | Adjusted Efficiency Margin |
+| `AdjOE` | Adjusted Offensive Efficiency |
+| `AdjDE` | Adjusted Defensive Efficiency |
+| `AdjTempo` | Adjusted Tempo |
+| `Pythag` | Pythagorean win expectation |
+| `Luck` | Luck factor |
+| `SOS` / `SOSO` / `SOSD` | Strength of schedule metrics |
+| `NCSOS` | Non-conference SOS |
+| `APL_Off` / `APL_Def` | Average Possession Length |
+| `Seed` | NCAA Tournament seed |
+
+### Raw API Examples (curl)
+```bash
+# Get 2025 ratings
+curl "https://kenpom.com/api.php?endpoint=ratings&y=2025" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
+# Get Duke's historical data (team_id=73)
+curl "https://kenpom.com/api.php?endpoint=ratings&team_id=73" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
+# Get game predictions for a date
+curl "https://kenpom.com/api.php?endpoint=fanmatch&d=2025-03-15" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
+
+# Get Four Factors
+curl "https://kenpom.com/api.php?endpoint=four-factors&y=2025" \
+  -H "Authorization: Bearer $KENPOM_API_KEY"
 ```
 
 ## Stealth Browser Module
