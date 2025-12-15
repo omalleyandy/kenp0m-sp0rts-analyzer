@@ -423,29 +423,42 @@ class KenPomAPI:
 
     # ==================== Teams & Conferences ====================
 
-    def get_teams(self, year: int) -> APIResponse:
+    def get_teams(self, year: int, conference: str | None = None) -> APIResponse:
         """Get list of all teams for a season.
 
         Args:
-            year: Season year.
+            year: Season year (e.g., 2025 for 2024-25 season).
+            conference: Conference short name to filter results (e.g., 'BE', 'ACC',
+                'SEC', 'B10'). Use get_conferences() to find valid abbreviations.
 
         Returns:
             APIResponse with team data including:
+            - Season: Ending year of the season
             - TeamID: Unique team identifier
             - TeamName: Team name
             - ConfShort: Conference abbreviation
             - Coach: Head coach name
             - Arena: Home arena name
-            - ArenaCity/ArenaState: Arena location
+            - ArenaCity: City where the arena is located
+            - ArenaState: State where the arena is located
 
         Example:
             ```python
+            # Get all teams for 2025 season
             teams = api.get_teams(year=2025)
             duke = [t for t in teams.data if t['TeamName'] == 'Duke'][0]
             print(f"Duke's TeamID: {duke['TeamID']}")  # 73
+
+            # Get only Big East conference teams
+            big_east = api.get_teams(year=2025, conference="BE")
+            for team in big_east.data:
+                print(f"{team['TeamName']} - {team['Coach']}")
             ```
         """
-        return self._request("teams", {"y": year})
+        params: dict[str, Any] = {"y": year}
+        if conference is not None:
+            params["c"] = conference
+        return self._request("teams", params)
 
     def get_conferences(self, year: int) -> APIResponse:
         """Get list of all conferences for a season.

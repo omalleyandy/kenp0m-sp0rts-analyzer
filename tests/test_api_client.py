@@ -8,7 +8,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Import directly from the api_client module to avoid package dependencies
-_api_client_path = Path(__file__).parent.parent / "src/kenp0m_sp0rts_analyzer/api_client.py"
+_api_client_path = (
+    Path(__file__).parent.parent / "src/kenp0m_sp0rts_analyzer/api_client.py"
+)
 _spec = importlib.util.spec_from_file_location("api_client", _api_client_path)
 _api_client = importlib.util.module_from_spec(_spec)
 # Register module in sys.modules before execution (needed for dataclasses)
@@ -497,6 +499,208 @@ class TestGetPointDistribution:
         assert len(df) == 2
         assert list(df.columns) == ["TeamName", "OffFg3"]
         assert df.iloc[0]["TeamName"] == "Duke"
+
+
+class TestGetTeams:
+    """Tests for the get_teams method."""
+
+    def test_get_teams_by_year(self, mock_api):
+        """Test getting teams by year."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "TeamName": "Duke",
+                "TeamID": 73,
+                "ConfShort": "ACC",
+                "Coach": "Jon Scheyer",
+                "Arena": "Cameron Indoor Stadium",
+                "ArenaCity": "Durham",
+                "ArenaState": "NC",
+            },
+            {
+                "Season": 2025,
+                "TeamName": "North Carolina",
+                "TeamID": 216,
+                "ConfShort": "ACC",
+                "Coach": "Hubert Davis",
+                "Arena": "Dean E. Smith Center",
+                "ArenaCity": "Chapel Hill",
+                "ArenaState": "NC",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025)
+
+        mock_api._client.get.assert_called_once()
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["endpoint"] == "teams"
+        assert call_args[1]["params"]["y"] == 2025
+        assert "c" not in call_args[1]["params"]
+        assert isinstance(result, APIResponse)
+        assert len(result.data) == 2
+        assert result.data[0]["TeamName"] == "Duke"
+        assert result.data[0]["TeamID"] == 73
+
+    def test_get_teams_with_conference(self, mock_api):
+        """Test getting teams filtered by conference."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "TeamName": "Villanova",
+                "TeamID": 347,
+                "ConfShort": "BE",
+                "Coach": "Kyle Neptune",
+                "Arena": "Finneran Pavilion",
+                "ArenaCity": "Villanova",
+                "ArenaState": "PA",
+            },
+            {
+                "Season": 2025,
+                "TeamName": "UConn",
+                "TeamID": 63,
+                "ConfShort": "BE",
+                "Coach": "Dan Hurley",
+                "Arena": "Harry A. Gampel Pavilion",
+                "ArenaCity": "Storrs",
+                "ArenaState": "CT",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025, conference="BE")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert call_args[1]["params"]["c"] == "BE"
+        assert len(result.data) == 2
+        assert all(team["ConfShort"] == "BE" for team in result.data)
+
+    def test_get_teams_all_response_fields(self, mock_api):
+        """Test that all documented response fields are present."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "TeamName": "Kansas",
+                "TeamID": 140,
+                "ConfShort": "B12",
+                "Coach": "Bill Self",
+                "Arena": "Allen Fieldhouse",
+                "ArenaCity": "Lawrence",
+                "ArenaState": "KS",
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025)
+        team = result.data[0]
+
+        # Verify all documented fields
+        assert "Season" in team
+        assert "TeamName" in team
+        assert "TeamID" in team
+        assert "ConfShort" in team
+        assert "Coach" in team
+        assert "Arena" in team
+        assert "ArenaCity" in team
+        assert "ArenaState" in team
+
+        # Verify types
+        assert isinstance(team["Season"], int)
+        assert isinstance(team["TeamName"], str)
+        assert isinstance(team["TeamID"], int)
+        assert isinstance(team["ConfShort"], str)
+        assert isinstance(team["Coach"], str)
+        assert isinstance(team["Arena"], str)
+        assert isinstance(team["ArenaCity"], str)
+        assert isinstance(team["ArenaState"], str)
+
+    def test_get_teams_to_dataframe(self, mock_api):
+        """Test converting teams response to DataFrame."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "Season": 2025,
+                "TeamName": "Duke",
+                "TeamID": 73,
+                "ConfShort": "ACC",
+                "Coach": "Jon Scheyer",
+                "Arena": "Cameron Indoor Stadium",
+                "ArenaCity": "Durham",
+                "ArenaState": "NC",
+            },
+            {
+                "Season": 2025,
+                "TeamName": "Kentucky",
+                "TeamID": 143,
+                "ConfShort": "SEC",
+                "Coach": "Mark Pope",
+                "Arena": "Rupp Arena",
+                "ArenaCity": "Lexington",
+                "ArenaState": "KY",
+            },
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025)
+        df = result.to_dataframe()
+
+        assert len(df) == 2
+        assert "Season" in df.columns
+        assert "TeamName" in df.columns
+        assert "TeamID" in df.columns
+        assert "ConfShort" in df.columns
+        assert "Coach" in df.columns
+        assert "Arena" in df.columns
+        assert "ArenaCity" in df.columns
+        assert "ArenaState" in df.columns
+        assert df.iloc[0]["TeamName"] == "Duke"
+        assert df.iloc[1]["TeamName"] == "Kentucky"
+
+    def test_get_teams_iteration(self, mock_api):
+        """Test that APIResponse supports iteration for teams."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "TeamID": 73, "ConfShort": "ACC"},
+            {"TeamName": "UNC", "TeamID": 216, "ConfShort": "ACC"},
+            {"TeamName": "NC State", "TeamID": 217, "ConfShort": "ACC"},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025)
+
+        # Test iteration
+        team_ids = [team["TeamID"] for team in result]
+        assert team_ids == [73, 216, 217]
+
+        # Test len
+        assert len(result) == 3
+
+    def test_get_teams_find_by_name(self, mock_api):
+        """Test finding a team by name from teams response."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"TeamName": "Duke", "TeamID": 73, "ConfShort": "ACC"},
+            {"TeamName": "Kentucky", "TeamID": 143, "ConfShort": "SEC"},
+            {"TeamName": "Kansas", "TeamID": 140, "ConfShort": "B12"},
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_teams(year=2025)
+
+        # Find Duke as shown in docstring example
+        duke = [t for t in result.data if t["TeamName"] == "Duke"][0]
+        assert duke["TeamID"] == 73
+        assert duke["ConfShort"] == "ACC"
 
 
 class TestGetFanmatch:
