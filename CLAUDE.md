@@ -86,6 +86,44 @@ browser = login(email, password)
 | team | `get_schedule()` | Team schedules |
 | team | `get_scouting_report()` | Team statistics dictionary |
 
+## Official KenPom API Reference
+
+See `docs/KENPOM_API.md` for complete API documentation including:
+- All 9 endpoint specifications (ratings, archive, four-factors, pointdist, height, misc-stats, fanmatch, teams, conferences)
+- Parameter requirements and aliases
+- Response field definitions
+- Example requests
+
+The API client in `src/kenp0m_sp0rts_analyzer/api_client.py` implements all documented endpoints with full parameter alias support for backward compatibility.
+
+### Parameter Aliases
+
+The Python API client supports both Python-style and official API parameter names:
+
+| Python Style | Official API | Endpoints |
+|--------------|--------------|-----------|
+| `year` | `y` | ratings, four-factors, misc-stats, height, pointdist, archive, teams, conferences |
+| `conference` | `c` | ratings, four-factors, misc-stats, height, pointdist |
+| `archive_date` | `d` | archive |
+| `game_date` | `d` | fanmatch |
+
+**Example**:
+```python
+from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
+
+api = KenPomAPI()
+
+# Both work identically
+ratings1 = api.get_ratings(year=2025, conference="ACC")
+ratings2 = api.get_ratings(y=2025, c="ACC")
+```
+
+### String-Boolean Conversion
+
+The API automatically converts string boolean fields to Python booleans:
+- `Preseason` (archive endpoint): "true"/"false" → True/False
+- `ConfOnly` (four-factors, pointdist, misc-stats): "true"/"false" → True/False
+
 ## Code Style Guidelines
 
 ### Python Standards

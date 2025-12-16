@@ -2184,3 +2184,120 @@ class TestGetRatings:
         assert len(top_10) == 3  # Only 3 in mock
         assert top_10[0]["TeamName"] == "Auburn"
         assert top_10[0]["RankAdjEM"] == 1
+
+
+class TestParameterAliases:
+    """Tests for parameter aliases (y, c, d)."""
+
+    def test_ratings_with_y_alias(self, mock_api):
+        """Test get_ratings with 'y' parameter alias."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [{"TeamName": "Duke", "Season": 2025}]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(y=2025)
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["y"] == 2025
+        assert len(result) == 1
+
+    def test_ratings_with_c_alias(self, mock_api):
+        """Test get_ratings with 'c' parameter alias."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [{"TeamName": "Duke", "ConfShort": "ACC"}]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_ratings(y=2025, c="ACC")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["c"] == "ACC"
+
+    def test_archive_with_d_alias(self, mock_api):
+        """Test get_archive with 'd' parameter alias."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [{"ArchiveDate": "2025-02-15"}]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_archive(d="2025-02-15")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["d"] == "2025-02-15"
+        assert len(result) == 1
+
+    def test_fanmatch_with_d_alias(self, mock_api):
+        """Test get_fanmatch with 'd' parameter alias."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"GameID": 12345, "DateOfGame": "2025-03-15"}
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_fanmatch(d="2025-03-15")
+
+        call_args = mock_api._client.get.call_args
+        assert call_args[1]["params"]["d"] == "2025-03-15"
+        assert len(result) == 1
+
+
+class TestStringBooleanConversion:
+    """Tests for string-to-boolean conversion."""
+
+    def test_archive_preseason_converts_to_bool(self, mock_api):
+        """Test that Preseason field converts from string to bool."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "ArchiveDate": "2024-11-01",
+                "Season": 2025,
+                "Preseason": "true",
+                "TeamName": "Duke",
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_archive(preseason=True, year=2025)
+
+        # Check that "true" string was converted to Python True
+        assert result.data[0]["Preseason"] is True
+        assert isinstance(result.data[0]["Preseason"], bool)
+
+    def test_four_factors_confonly_converts_to_bool(self, mock_api):
+        """Test that ConfOnly field converts from string to bool."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {
+                "ConfOnly": "true",
+                "TeamName": "Duke",
+                "Season": 2025,
+                "eFG_Pct": 55.5,
+            }
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_four_factors(year=2025, conf_only=True)
+
+        assert result.data[0]["ConfOnly"] is True
+        assert isinstance(result.data[0]["ConfOnly"], bool)
+
+    def test_boolean_conversion_case_insensitive(self, mock_api):
+        """Test that boolean conversion is case-insensitive."""
+        mock_response = MagicMock()
+        mock_response.json.return_value = [
+            {"Preseason": "TRUE", "TeamName": "Duke"},  # Uppercase
+            {"Preseason": "True", "TeamName": "UNC"},  # Title case
+            {"Preseason": "FALSE", "TeamName": "State"},  # Uppercase false
+        ]
+        mock_response.raise_for_status = MagicMock()
+        mock_api._client.get.return_value = mock_response
+
+        result = mock_api.get_archive(d="2025-02-15")
+
+        assert result.data[0]["Preseason"] is True
+        assert result.data[1]["Preseason"] is True
+        assert result.data[2]["Preseason"] is False

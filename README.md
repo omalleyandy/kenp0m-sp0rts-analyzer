@@ -304,6 +304,23 @@ print(f"Duke TeamID: {duke['TeamID']}")
 | `height` | Team height and experience data |
 | `pointdist` | Point distribution breakdown |
 
+### API Documentation
+
+See **[docs/KENPOM_API.md](docs/KENPOM_API.md)** for complete API documentation including:
+- All 9 endpoint specifications with parameters and response fields
+- Official API parameter names and Python-style aliases
+- Example requests and usage patterns
+- String-boolean conversion details
+
+The Python API client supports both naming conventions:
+```python
+# Python-style parameters
+ratings = api.get_ratings(year=2025, conference="ACC")
+
+# Official API parameters (both work identically)
+ratings = api.get_ratings(y=2025, c="ACC")
+```
+
 ## MCP Server (Claude Integration)
 
 The MCP (Model Context Protocol) server exposes KenPom analytics tools for use with Claude and other MCP clients.
