@@ -8,6 +8,11 @@ from .analysis import (
     get_conference_standings,
 )
 from .client import KenPomClient
+from .defensive_analysis import (
+    DefensiveAnalyzer,
+    DefensiveMatchup,
+    DefensiveProfile,
+)
 from .four_factors_matchup import (
     FactorMatchup,
     FourFactorsAnalysis,
@@ -20,6 +25,11 @@ from .models import (
     ScoutingReport,
     TeamEfficiency,
     TeamScheduleGame,
+)
+from .point_distribution_analysis import (
+    PointDistributionAnalyzer,
+    ScoringStyleMatchup,
+    ScoringStyleProfile,
 )
 from .utils import get_credentials, normalize_team_name, setup_logging
 
@@ -40,6 +50,14 @@ __all__ = [
     "FactorMatchup",
     "FourFactorsAnalysis",
     "FourFactorsMatchup",
+    # Point Distribution Analysis
+    "PointDistributionAnalyzer",
+    "ScoringStyleMatchup",
+    "ScoringStyleProfile",
+    # Defensive Analysis
+    "DefensiveAnalyzer",
+    "DefensiveMatchup",
+    "DefensiveProfile",
     # Models
     "FourFactors",
     "HomeCourtAdvantage",
