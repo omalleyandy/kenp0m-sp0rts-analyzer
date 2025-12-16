@@ -75,9 +75,7 @@ class BracketRecommendation:
 class TournamentSimulator:
     """Monte Carlo simulator for NCAA tournament."""
 
-    def __init__(
-        self, api_key: str | None = None, random_seed: int | None = None
-    ):
+    def __init__(self, api_key: str | None = None, random_seed: int | None = None):
         """Initialize tournament simulator.
 
         Args:
