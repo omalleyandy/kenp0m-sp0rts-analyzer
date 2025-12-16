@@ -8,6 +8,12 @@ from .analysis import (
     get_conference_standings,
 )
 from .client import KenPomClient
+from .comprehensive_matchup_analysis import (
+    ComprehensiveMatchupAnalyzer,
+    ComprehensiveMatchupReport,
+    DimensionScore,
+    MatchupWeights,
+)
 from .defensive_analysis import (
     DefensiveAnalyzer,
     DefensiveMatchup,
@@ -71,6 +77,11 @@ __all__ = [
     "DefensiveAnalyzer",
     "DefensiveMatchup",
     "DefensiveProfile",
+    # Comprehensive Integration (All 7 Modules)
+    "ComprehensiveMatchupAnalyzer",
+    "ComprehensiveMatchupReport",
+    "DimensionScore",
+    "MatchupWeights",
     # Size & Athleticism Analysis (TIER 2)
     "SizeAthleticismAnalyzer",
     "SizeProfile",
