@@ -173,7 +173,7 @@ class ConferenceAnalytics:
         for conf in conferences.data:
             try:
                 rating = self._calculate_single_conference_rating(
-                    conf["ConfShort"], conf["ConfName"], year
+                    conf["ConfShort"], conf["ConfLong"], year
                 )
                 all_ratings.append(rating)
             except Exception:
