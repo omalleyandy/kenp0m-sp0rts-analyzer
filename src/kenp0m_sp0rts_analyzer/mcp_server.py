@@ -250,6 +250,28 @@ async def list_tools() -> list[Tool]:
                 "required": ["date"],
             },
         ),
+        Tool(
+            name="analyze_tempo_matchup",
+            description="Analyze tempo and pace advantages in a matchup. Returns detailed tempo profiles, style mismatches, pace control, APL (Average Possession Length) insights, and tempo impact on game outcome.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "team1": {
+                        "type": "string",
+                        "description": "First team name",
+                    },
+                    "team2": {
+                        "type": "string",
+                        "description": "Second team name",
+                    },
+                    "season": {
+                        "type": "integer",
+                        "description": "Season year (e.g., 2025 for 2024-25 season). Defaults to current season.",
+                    },
+                },
+                "required": ["team1", "team2"],
+            },
+        ),
     ]
 
 
@@ -278,6 +300,7 @@ async def _handle_tool(name: str, arguments: dict[str, Any]) -> str:
         "analyze_matchup": _handle_analyze_matchup,
         "get_home_court_advantage": _handle_get_home_court_advantage,
         "get_game_predictions": _handle_get_game_predictions,
+        "analyze_tempo_matchup": _handle_analyze_tempo_matchup,
     }
 
     handler = handlers.get(name)
@@ -651,6 +674,93 @@ async def _handle_get_game_predictions(arguments: dict[str, Any]) -> str:
             return f"Error retrieving predictions: {e}"
 
     return "Error: Game predictions require API authentication (KENPOM_API_KEY)."
+
+
+async def _handle_analyze_tempo_matchup(arguments: dict[str, Any]) -> str:
+    """Analyze tempo and pace matchup between two teams."""
+    team1 = arguments.get("team1")
+    team2 = arguments.get("team2")
+
+    if not team1 or not team2:
+        return "Error: Both 'team1' and 'team2' parameters are required"
+
+    season = arguments.get("season", get_current_season())
+
+    api = _get_api_client()
+    if api:
+        try:
+            from .tempo_analysis import TempoMatchupAnalyzer
+
+            analyzer = TempoMatchupAnalyzer(api)
+
+            # Get team stats
+            team1_stats = api.get_team_by_name(team1, season)
+            team2_stats = api.get_team_by_name(team2, season)
+
+            if not team1_stats:
+                return f"Error: Team '{team1}' not found"
+            if not team2_stats:
+                return f"Error: Team '{team2}' not found"
+
+            # Analyze tempo matchup
+            analysis = analyzer.analyze_pace_matchup(team1_stats, team2_stats)
+
+            # Format comprehensive report
+            report = [
+                f"# Tempo/Pace Matchup: {team1} vs {team2}",
+                "=" * 70,
+                "",
+                "## Team Profiles",
+                "",
+                f"### {analysis.team1_profile.team_name}",
+                f"- Adjusted Tempo: {analysis.team1_profile.adj_tempo} (Rank: {analysis.team1_profile.rank_tempo})",
+                f"- Pace Style: {analysis.team1_profile.pace_style}",
+                f"- Offensive Style: {analysis.team1_profile.off_style} (APL: {analysis.team1_profile.apl_off}s)",
+                f"- Defensive Style: {analysis.team1_profile.def_style} (APL: {analysis.team1_profile.apl_def}s)",
+                "",
+                f"### {analysis.team2_profile.team_name}",
+                f"- Adjusted Tempo: {analysis.team2_profile.adj_tempo} (Rank: {analysis.team2_profile.rank_tempo})",
+                f"- Pace Style: {analysis.team2_profile.pace_style}",
+                f"- Offensive Style: {analysis.team2_profile.off_style} (APL: {analysis.team2_profile.apl_off}s)",
+                f"- Defensive Style: {analysis.team2_profile.def_style} (APL: {analysis.team2_profile.apl_def}s)",
+                "",
+                "## Matchup Analysis",
+                "",
+                f"- **Tempo Differential**: {analysis.tempo_differential:+.1f} possessions ({team1} {'faster' if analysis.tempo_differential > 0 else 'slower'})",
+                f"- **Expected Game Pace**: {analysis.expected_possessions} possessions",
+                f"- **Style Mismatch Score**: {analysis.style_mismatch_score}/10",
+                f"- **Pace Control**: {analysis.pace_advantage}",
+                f"- **Tempo Control Factor**: {analysis.tempo_control_factor:+.2f}",
+                "",
+                "## APL Matchup Insights",
+                "",
+                f"### {team1} Offensive Disruption: {analysis.offensive_disruption_team1}",
+                f"  - {team1} offense ({analysis.team1_profile.apl_off}s) vs {team2} defense ({analysis.team2_profile.apl_def}s)",
+                f"  - Mismatch: {analysis.apl_off_mismatch_team1:+.1f} seconds",
+                "",
+                f"### {team2} Offensive Disruption: {analysis.offensive_disruption_team2}",
+                f"  - {team2} offense ({analysis.team2_profile.apl_off}s) vs {team1} defense ({analysis.team1_profile.apl_def}s)",
+                f"  - Mismatch: {analysis.apl_off_mismatch_team2:+.1f} seconds",
+                "",
+                "## Impact Estimates",
+                "",
+                f"- **Tempo Impact on Margin**: {analysis.tempo_impact_on_margin:+.2f} points",
+                f"- **Confidence Adjustment**: {analysis.confidence_adjustment:.3f}x variance",
+                f"- **Optimal Pace ({team1})**: {analysis.optimal_pace_team1} possessions",
+                f"- **Optimal Pace ({team2})**: {analysis.optimal_pace_team2} possessions",
+                "",
+                "## Pace Scenario Analysis",
+                "",
+                f"- **Fast Pace Favors**: {analysis.fast_pace_favors}",
+                f"- **Slow Pace Favors**: {analysis.slow_pace_favors}",
+            ]
+
+            return "\n".join(report)
+        except Exception as e:
+            logger.warning(f"Tempo analysis failed: {e}")
+            return f"Error analyzing tempo matchup: {e}"
+
+    return "Error: Tempo analysis requires API authentication (KENPOM_API_KEY)."
 
 
 # ==================== Server Entry Point ====================

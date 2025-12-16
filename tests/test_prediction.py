@@ -20,20 +20,38 @@ def sample_team_stats():
     """Sample team statistics for testing."""
     return {
         "team1": {
+            "TeamName": "Duke",
             "AdjEM": 20.5,
             "AdjO": 115.2,
             "AdjD": 94.7,
             "AdjT": 68.5,
+            "AdjTempo": 68.5,
+            "AdjOE": 115.2,
+            "AdjDE": 94.7,
             "Pythag": 0.85,
             "SOS": 5.2,
+            "APL_Off": 17.2,
+            "APL_Def": 17.5,
+            "RankAdjTempo": 150,
+            "ConfAPL_Off": 17.5,
+            "ConfAPL_Def": 17.5,
         },
         "team2": {
+            "TeamName": "UNC",
             "AdjEM": 15.3,
             "AdjO": 110.8,
             "AdjD": 95.5,
             "AdjT": 70.2,
+            "AdjTempo": 70.2,
+            "AdjOE": 110.8,
+            "AdjDE": 95.5,
             "Pythag": 0.78,
             "SOS": 4.8,
+            "APL_Off": 17.8,
+            "APL_Def": 17.3,
+            "RankAdjTempo": 80,
+            "ConfAPL_Off": 17.5,
+            "ConfAPL_Def": 17.5,
         },
     }
 
@@ -63,6 +81,13 @@ def sample_training_data():
             "sos_diff": np.random.normal(0, 2, n_games),
             "home_advantage": np.random.choice([-1, 0, 1], n_games),
             "em_tempo_interaction": em_diff * tempo_avg,
+            # APL features (new)
+            "apl_off_diff": np.random.normal(0, 1, n_games),
+            "apl_def_diff": np.random.normal(0, 1, n_games),
+            "apl_off_mismatch_team1": np.random.normal(0, 2, n_games),
+            "apl_off_mismatch_team2": np.random.normal(0, 2, n_games),
+            "tempo_control_factor": np.random.uniform(-0.5, 0.5, n_games),
+            # Outcomes
             "actual_margin": margins,
             "actual_total": totals,
         }
@@ -480,6 +505,13 @@ class TestBacktestingFramework:
                 "sos_diff": [1, 2, 1.5, 2.5, 1.2],
                 "home_advantage": [0, 1, -1, 0, 1],
                 "em_tempo_interaction": [68, 138, -70, 284, 144],
+                # APL features
+                "apl_off_diff": [0, 0.5, -0.5, 1, -1],
+                "apl_def_diff": [0, 0.3, -0.3, 0.8, -0.8],
+                "apl_off_mismatch_team1": [0, 1, -1, 2, -2],
+                "apl_off_mismatch_team2": [0, -1, 1, -2, 2],
+                "tempo_control_factor": [0, 0.2, -0.2, 0.4, -0.4],
+                # Outcomes
                 "actual_margin": [5, 10, -5, 15, 8],
                 "actual_total": [140, 145, 138, 150, 142],
             }

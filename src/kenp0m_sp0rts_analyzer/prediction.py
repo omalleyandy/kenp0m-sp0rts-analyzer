@@ -91,6 +91,12 @@ class FeatureEngineer:
         "sos_diff",
         "home_advantage",
         "em_tempo_interaction",
+        # APL (Average Possession Length) features
+        "apl_off_diff",
+        "apl_def_diff",
+        "apl_off_mismatch_team1",
+        "apl_off_mismatch_team2",
+        "tempo_control_factor",
     ]
 
     @staticmethod
@@ -142,6 +148,33 @@ class FeatureEngineer:
 
         # Interaction terms (high tempo favors better team)
         features["em_tempo_interaction"] = features["em_diff"] * features["tempo_avg"]
+
+        # APL (Average Possession Length) features
+        # Use .get() with defaults for APL fields (may not be available in all data)
+        team1_apl_off = float(team1_stats.get("APL_Off", 17.5))
+        team2_apl_off = float(team2_stats.get("APL_Off", 17.5))
+        team1_apl_def = float(team1_stats.get("APL_Def", 17.5))
+        team2_apl_def = float(team2_stats.get("APL_Def", 17.5))
+
+        features["apl_off_diff"] = team1_apl_off - team2_apl_off
+        features["apl_def_diff"] = team1_apl_def - team2_apl_def
+
+        # APL mismatch: Team's offensive pace vs opponent's defensive pace allowed
+        features["apl_off_mismatch_team1"] = team1_apl_off - team2_apl_def
+        features["apl_off_mismatch_team2"] = team2_apl_off - team1_apl_def
+
+        # Tempo control factor using tempo_analysis module
+        # Only calculate if APL data is available
+        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjEM"]) and all(
+            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjEM"]
+        ):
+            from .tempo_analysis import TempoMatchupAnalyzer
+
+            analyzer = TempoMatchupAnalyzer()
+            control = analyzer.calculate_tempo_control(team1_stats, team2_stats)
+            features["tempo_control_factor"] = control
+        else:
+            features["tempo_control_factor"] = 0.0
 
         return features
 
@@ -269,6 +302,28 @@ class GamePredictor:
         # Ensure confidence interval is properly ordered (handle quantile crossing)
         if lower_margin > upper_margin:
             lower_margin, upper_margin = upper_margin, lower_margin
+
+        # Apply tempo-based confidence adjustment
+        # Slow games have higher variance (fewer possessions = more randomness)
+        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]) and all(
+            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]
+        ):
+            from .tempo_analysis import TempoMatchupAnalyzer
+
+            tempo_analyzer = TempoMatchupAnalyzer()
+            tempo_analysis = tempo_analyzer.analyze_pace_matchup(
+                team1_stats, team2_stats
+            )
+
+            # Adjust confidence interval width based on tempo
+            # confidence_adjustment > 1 means wider CI (slower game)
+            # confidence_adjustment < 1 means narrower CI (faster game)
+            base_interval_width = upper_margin - lower_margin
+            adjusted_width = base_interval_width * tempo_analysis.confidence_adjustment
+
+            # Recalculate bounds
+            lower_margin = predicted_margin - (adjusted_width / 2)
+            upper_margin = predicted_margin + (adjusted_width / 2)
 
         # Predict total
         predicted_total = float(self.total_model.predict(feature_array)[0])

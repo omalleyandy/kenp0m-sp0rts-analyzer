@@ -343,13 +343,13 @@ def mock_api_client():
 # ==================== Tool Listing Tests ====================
 
 class TestMCPToolListing:
-    """Test that all 8 MCP tools are properly defined."""
+    """Test that all 9 MCP tools are properly defined."""
 
     @pytest.mark.asyncio
-    async def test_list_tools_returns_8_tools(self):
-        """Verify that list_tools returns exactly 8 tools."""
+    async def test_list_tools_returns_9_tools(self):
+        """Verify that list_tools returns exactly 9 tools."""
         tools = await list_tools()
-        assert len(tools) == 8
+        assert len(tools) == 9
 
     @pytest.mark.asyncio
     async def test_all_tool_names_present(self):
@@ -366,6 +366,7 @@ class TestMCPToolListing:
             "analyze_matchup",
             "get_home_court_advantage",
             "get_game_predictions",
+            "analyze_tempo_matchup",
         }
 
         assert tool_names == expected_tools
