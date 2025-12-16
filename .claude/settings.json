@@ -50,7 +50,7 @@
   },
   "project": {
     "name": "kenp0m-sp0rts-analyzer",
-    "description": "KenPom advanced analytics integration with Billy Walters betting methodology for NCAA Division I Men's Basketball research",
+    "description": "KenPom advanced analytics platform for NCAA Division I Men's Basketball research and statistical modeling",
     "type": "python",
     "python_version": "3.11"
   },

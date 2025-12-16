@@ -1,4 +1,4 @@
-"""KenPom Sports Analyzer - NCAA Basketball analytics with Billy Walters methodology."""
+"""KenPom Sports Analyzer - NCAA Division I Men's Basketball advanced analytics."""
 
 from .analysis import (
     analyze_matchup,

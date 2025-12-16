@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Python project for NCAA Division I Men's Basketball analytics using KenPom data. It integrates the kenpompy library for data retrieval with Billy Walters betting methodology for college basketball research.
+This is a Python project for NCAA Division I Men's Basketball analytics using KenPom data. It provides comprehensive tools for analyzing college basketball through KenPom's advanced efficiency metrics, machine learning predictions, and statistical modeling.
 
 ## Quick Reference
 
@@ -164,12 +164,6 @@ The API automatically converts string boolean fields to Python booleans:
 2. **TO%** - Turnover Percentage
 3. **OR%** - Offensive Rebound Percentage
 4. **FTRate** - Free Throw Rate
-
-### Billy Walters Methodology Integration
-- Focus on line movement analysis
-- Track sharp money vs public money
-- Identify value opportunities via efficiency differentials
-- Consider home court advantage adjustments
 
 ### Research Methodology
 When conducting complex analysis:
