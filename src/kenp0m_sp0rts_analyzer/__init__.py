@@ -8,6 +8,11 @@ from .analysis import (
     get_conference_standings,
 )
 from .client import KenPomClient
+from .four_factors_matchup import (
+    FactorMatchup,
+    FourFactorsAnalysis,
+    FourFactorsMatchup,
+)
 from .models import (
     FourFactors,
     HomeCourtAdvantage,
@@ -31,6 +36,10 @@ __all__ = [
     "calculate_tournament_seed_line",
     "find_value_games",
     "get_conference_standings",
+    # Four Factors Matchup
+    "FactorMatchup",
+    "FourFactorsAnalysis",
+    "FourFactorsMatchup",
     # Models
     "FourFactors",
     "HomeCourtAdvantage",
