@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git diff)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(uv:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)",
+      "Bash(pyrefly:*)",
+      "Bash(ruff:*)",
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "Bash(type:*)",
+      "Bash(playwright:*)",
+      "Read(./**/*.py)",
+      "Read(./**/*.ipynb)",
+      "Read(./**/*.md)",
+      "Read(./**/*.txt)",
+      "Read(./**/*.json)",
+      "Read(./**/*.toml)",
+      "Read(./**/*.yaml)",
+      "Read(./**/*.yml)",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(pip:*)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(ssh:*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/.env)",
+      "Read(./**/credentials*)",
+      "Read(./**/secrets*)"
+    ],
+    "ask": []
+  }
+}
