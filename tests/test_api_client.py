@@ -305,7 +305,7 @@ class TestGetMiscStats:
 
         call_args = mock_api._client.get.call_args
         assert call_args[1]["params"]["conf_only"] == "true"
-        assert result.data[0]["ConfOnly"] == "true"
+        assert result.data[0]["ConfOnly"] is True
 
     def test_get_misc_stats_no_params_raises_error(self, mock_api):
         """Test that missing year and team_id raises ValidationError."""
@@ -450,7 +450,7 @@ class TestGetPointDistribution:
 
         call_args = mock_api._client.get.call_args
         assert call_args[1]["params"]["conf_only"] == "true"
-        assert result.data[0]["ConfOnly"] == "true"
+        assert result.data[0]["ConfOnly"] is True
 
     def test_get_point_distribution_no_params_raises_error(self, mock_api):
         """Test that missing year and team_id raises ValidationError."""
@@ -1364,7 +1364,7 @@ class TestGetArchive:
         call_args = mock_api._client.get.call_args
         assert call_args[1]["params"]["preseason"] == "true"
         assert call_args[1]["params"]["y"] == 2025
-        assert result.data[0]["Preseason"] == "true"
+        assert result.data[0]["Preseason"] is True
 
     def test_get_archive_preseason_requires_year(self, mock_api):
         """Test that preseason mode requires year parameter."""
@@ -1456,7 +1456,7 @@ class TestGetArchive:
         # Verify all documented fields
         assert team["ArchiveDate"] == "2025-02-15"
         assert team["Season"] == 2025
-        assert team["Preseason"] == "false"
+        assert team["Preseason"] is False
         assert team["TeamName"] == "Houston"
         assert team["Seed"] == 2
         assert team["Event"] == "Elite Eight"
@@ -1657,7 +1657,7 @@ class TestGetFourFactors:
 
         call_args = mock_api._client.get.call_args
         assert call_args[1]["params"]["conf_only"] == "true"
-        assert result.data[0]["ConfOnly"] == "true"
+        assert result.data[0]["ConfOnly"] is True
 
     def test_get_four_factors_no_params_raises_error(self, mock_api):
         """Test that missing year and team_id raises ValidationError."""
@@ -1720,7 +1720,7 @@ class TestGetFourFactors:
 
         # Verify all documented fields
         assert team["DataThrough"] == "2025-03-15"
-        assert team["ConfOnly"] == "false"
+        assert team["ConfOnly"] is False
         assert team["TeamName"] == "Auburn"
         assert team["Season"] == 2025
         # Offensive Four Factors
