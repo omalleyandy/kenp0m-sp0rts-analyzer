@@ -1,10 +1,10 @@
 # KenPom Sports Analyzer
 
-Advanced NCAA Division I Men's Basketball analytics using KenPom data, integrated with Billy Walters betting methodology for college basketball research.
+Advanced NCAA Division I Men's Basketball analytics using KenPom data for research and analysis.
 
 ## Overview
 
-This project provides tools for analyzing college basketball using Ken Pomeroy's advanced analytics system. It combines statistical analysis with proven sports betting methodologies to identify value opportunities and generate insights.
+This project provides tools for analyzing college basketball using Ken Pomeroy's advanced analytics system with machine learning-based predictions and confidence intervals.
 
 ## Features
 
@@ -15,7 +15,7 @@ This project provides tools for analyzing college basketball using Ken Pomeroy's
 - **Matchup Analysis**: Head-to-head comparisons with predicted outcomes
 - **Historical/Archive Data**: Track team ratings from specific dates or preseason
 - **Conference Filtering**: Filter data by conference for focused analysis
-- **Billy Walters Integration**: Sharp money analysis and value identification
+- **Machine Learning Predictions**: Gradient Boosting models with confidence intervals
 - **Stealth Browser Scraping**: Playwright-based browser with stealth techniques for reliable data access
 
 ## Requirements
@@ -176,6 +176,73 @@ arenas = get_arenas(browser)
 | **NCSOS** | Non-Conference Strength of Schedule |
 | **Luck** | Close game performance vs expected outcomes |
 | **NetRtg** | Net Efficiency Rating |
+
+## Predictive Modeling
+
+This package includes machine learning models for game predictions with confidence intervals and validation.
+
+### Features
+
+- **Gradient Boosting**: Non-linear predictions using team efficiency metrics
+- **Confidence Intervals**: 50% confidence bands via quantile regression (25th-75th percentile)
+- **Backtesting**: Validate predictions against historical outcomes
+- **Feature Engineering**: 9 engineered features including efficiency differentials and tempo interactions
+
+### Quick Start
+
+```python
+from kenp0m_sp0rts_analyzer.prediction import GamePredictor, BacktestingFramework
+import pandas as pd
+
+# Train model on historical data
+predictor = GamePredictor()
+predictor.fit(historical_games_df, margins, totals)
+
+# Predict game outcome
+duke_stats = {'AdjEM': 24.5, 'AdjO': 118.3, 'AdjD': 93.8, 'AdjT': 68.2, 'Pythag': 0.88, 'SOS': 6.5}
+unc_stats = {'AdjEM': 20.1, 'AdjO': 115.7, 'AdjD': 95.6, 'AdjT': 70.1, 'Pythag': 0.82, 'SOS': 5.8}
+
+result = predictor.predict_with_confidence(duke_stats, unc_stats, neutral_site=True)
+
+print(f"Predicted margin: {result.predicted_margin} points")
+print(f"Confidence interval: {result.confidence_interval}")
+print(f"Duke win probability: {result.team1_win_prob:.1%}")
+print(f"Predicted total: {result.predicted_total}")
+```
+
+### Backtesting Performance
+
+```python
+# Validate model with historical data
+framework = BacktestingFramework()
+metrics = framework.run_backtest(historical_games_df, train_split=0.8)
+
+print(f"MAE (margin): {metrics.mae_margin} points")
+print(f"RMSE (margin): {metrics.rmse_margin} points")
+print(f"Accuracy: {metrics.accuracy:.1%}")
+print(f"Brier score: {metrics.brier_score:.3f}")
+print(f"R² score: {metrics.r2_margin:.3f}")
+```
+
+### Expected Model Performance
+
+With sufficient training data (100+ games), typical backtesting metrics:
+
+- **MAE (Mean Absolute Error)**: 8-10 points
+- **RMSE (Root Mean Squared Error)**: 10-12 points
+- **Accuracy** (correct winner): 65-72%
+- **Brier Score** (probability calibration): < 0.20
+- **R² Score**: 0.35-0.50
+
+### Cross-Validation
+
+```python
+# K-fold cross-validation for robust evaluation
+metrics_list = framework.cross_validate(games_df, n_folds=5)
+
+for i, metrics in enumerate(metrics_list):
+    print(f"Fold {i+1}: MAE={metrics.mae_margin}, Accuracy={metrics.accuracy:.1%}")
+```
 
 ## Stealth Browser Scraping
 

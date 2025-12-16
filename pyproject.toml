@@ -1,7 +1,7 @@
 [project]
 name = "kenp0m-sp0rts-analyzer"
 version = "0.1.0"
-description = "KenPom advanced analytics integration with Billy Walters betting methodology for NCAA Division I Men's Basketball research"
+description = "Advanced NCAA Division I Men's Basketball analytics using KenPom data for research and analysis"
 readme = "README.md"
 license = "MIT"
 authors = [
@@ -27,6 +27,7 @@ dependencies = [
     "numpy>=1.26",
     "pydantic>=2.0",
     "python-dotenv>=1.0",
+    "scikit-learn>=1.5",
 ]
 
 [project.optional-dependencies]

@@ -224,6 +224,31 @@ from kenp0m_sp0rts_analyzer.analysis import analyze_matchup
 result = analyze_matchup(team1="Duke", team2="North Carolina", season=2024)
 ```
 
+### Predictive Modeling with Machine Learning
+
+```python
+from kenp0m_sp0rts_analyzer.prediction import GamePredictor, BacktestingFramework
+
+# Train predictor on historical data
+predictor = GamePredictor()
+predictor.fit(historical_games_df, margins, totals)
+
+# Make predictions with confidence intervals
+duke_stats = {'AdjEM': 24.5, 'AdjO': 118.3, 'AdjD': 93.8, 'AdjT': 68.2, 'Pythag': 0.88, 'SOS': 6.5}
+unc_stats = {'AdjEM': 20.1, 'AdjO': 115.7, 'AdjD': 95.6, 'AdjT': 70.1, 'Pythag': 0.82, 'SOS': 5.8}
+
+result = predictor.predict_with_confidence(duke_stats, unc_stats, neutral_site=True)
+print(f"Margin: {result.predicted_margin} ({result.confidence_interval})")
+print(f"Win probability: {result.team1_win_prob:.1%}")
+
+# Backtest model performance
+framework = BacktestingFramework()
+metrics = framework.run_backtest(historical_games_df, train_split=0.8)
+print(f"MAE: {metrics.mae_margin} points")
+print(f"Accuracy: {metrics.accuracy:.1%}")
+print(f"ATS Record: {metrics.ats_record[0]}-{metrics.ats_record[1]}")
+```
+
 ### Stealth Browser Scraping (Advanced)
 ```python
 import asyncio
