@@ -349,6 +349,83 @@ class GamePredictor:
             confidence_level=0.5,
         )
 
+    def predict_with_injuries(
+        self,
+        team1_stats: dict[str, Any],
+        team2_stats: dict[str, Any],
+        team1_injuries: list[Any] | None = None,
+        team2_injuries: list[Any] | None = None,
+        neutral_site: bool = True,
+        home_team1: bool = False,
+    ) -> PredictionResult:
+        """Predict game outcome with injury adjustments.
+
+        This method adjusts team ratings for injured players before making
+        predictions. It uses the InjuryImpact objects to modify AdjEM, AdjOE,
+        and AdjDE values, then calls the standard prediction method.
+
+        Args:
+            team1_stats: Team 1 KenPom statistics
+            team2_stats: Team 2 KenPom statistics
+            team1_injuries: List of InjuryImpact objects for team 1
+            team2_injuries: List of InjuryImpact objects for team 2
+            neutral_site: Whether game is at neutral site
+            home_team1: If not neutral, whether team 1 is home team
+
+        Returns:
+            PredictionResult with margin, total, scores, and confidence interval
+            based on injury-adjusted team ratings
+
+        Example:
+            >>> from kenp0m_sp0rts_analyzer.player_impact import PlayerImpactModel
+            >>> from kenp0m_sp0rts_analyzer.client import KenPomClient
+            >>>
+            >>> # Get player and team data
+            >>> client = KenPomClient()
+            >>> player_stats = client.get_playerstats(season=2025)
+            >>> duke_players = player_stats[player_stats["Team"] == "Duke"]
+            >>>
+            >>> # Calculate injury impact
+            >>> impact_model = PlayerImpactModel()
+            >>> star_value = impact_model.calculate_player_value(
+            ...     duke_players.iloc[0].to_dict(), duke_stats
+            ... )
+            >>> injury = impact_model.estimate_injury_impact(
+            ...     star_value, duke_stats, "out"
+            ... )
+            >>>
+            >>> # Predict with injury
+            >>> predictor = GamePredictor()
+            >>> result = predictor.predict_with_injuries(
+            ...     duke_stats, unc_stats, team1_injuries=[injury]
+            ... )
+        """
+        # Copy stats to avoid modifying originals
+        team1_adjusted = team1_stats.copy()
+        team2_adjusted = team2_stats.copy()
+
+        # Apply injury adjustments to team 1
+        if team1_injuries:
+            for injury in team1_injuries:
+                # Use the most severe injury's adjustments
+                # (For multiple injuries, this is simplified - in reality,
+                # we'd want to aggregate impacts more carefully)
+                team1_adjusted["AdjEM"] = injury.adjusted_adj_em
+                team1_adjusted["AdjOE"] = injury.adjusted_adj_oe
+                team1_adjusted["AdjDE"] = injury.adjusted_adj_de
+
+        # Apply injury adjustments to team 2
+        if team2_injuries:
+            for injury in team2_injuries:
+                team2_adjusted["AdjEM"] = injury.adjusted_adj_em
+                team2_adjusted["AdjOE"] = injury.adjusted_adj_oe
+                team2_adjusted["AdjDE"] = injury.adjusted_adj_de
+
+        # Make prediction with adjusted stats
+        return self.predict_with_confidence(
+            team1_adjusted, team2_adjusted, neutral_site, home_team1
+        )
+
 
 class BacktestingFramework:
     """Validate predictions against historical outcomes.

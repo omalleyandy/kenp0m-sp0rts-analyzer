@@ -272,6 +272,73 @@ async def list_tools() -> list[Tool]:
                 "required": ["team1", "team2"],
             },
         ),
+        Tool(
+            name="get_player_depth_chart",
+            description="Get team depth chart with player valuations ranked by contribution. Shows each player's estimated value in AdjEM points and value over replacement (VOR).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "team": {
+                        "type": "string",
+                        "description": "Team name (e.g., 'Duke', 'North Carolina')",
+                    },
+                    "season": {
+                        "type": "integer",
+                        "description": "Season year (e.g., 2025 for 2024-25 season). Defaults to current season.",
+                    },
+                },
+                "required": ["team"],
+            },
+        ),
+        Tool(
+            name="calculate_player_value",
+            description="Calculate individual player's value and contribution to team performance. Returns estimated AdjEM points contributed, offensive/defensive contributions, and value over replacement.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "player": {
+                        "type": "string",
+                        "description": "Player name",
+                    },
+                    "team": {
+                        "type": "string",
+                        "description": "Team name",
+                    },
+                    "season": {
+                        "type": "integer",
+                        "description": "Season year (e.g., 2025). Defaults to current season.",
+                    },
+                },
+                "required": ["player", "team"],
+            },
+        ),
+        Tool(
+            name="estimate_injury_impact",
+            description="Estimate impact of player injury/absence on team performance. Returns adjusted team ratings (AdjEM, AdjOE, AdjDE), confidence intervals, and severity classification (Minor/Moderate/Major/Devastating).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "player": {
+                        "type": "string",
+                        "description": "Player name",
+                    },
+                    "team": {
+                        "type": "string",
+                        "description": "Team name",
+                    },
+                    "injury_severity": {
+                        "type": "string",
+                        "description": "Injury status: 'out' (100% impact), 'doubtful' (75%), or 'questionable' (50%). Defaults to 'out'.",
+                        "enum": ["out", "doubtful", "questionable"],
+                    },
+                    "season": {
+                        "type": "integer",
+                        "description": "Season year (e.g., 2025). Defaults to current season.",
+                    },
+                },
+                "required": ["player", "team"],
+            },
+        ),
     ]
 
 
@@ -301,6 +368,9 @@ async def _handle_tool(name: str, arguments: dict[str, Any]) -> str:
         "get_home_court_advantage": _handle_get_home_court_advantage,
         "get_game_predictions": _handle_get_game_predictions,
         "analyze_tempo_matchup": _handle_analyze_tempo_matchup,
+        "get_player_depth_chart": _handle_get_player_depth_chart,
+        "calculate_player_value": _handle_calculate_player_value,
+        "estimate_injury_impact": _handle_estimate_injury_impact,
     }
 
     handler = handlers.get(name)
@@ -761,6 +831,211 @@ async def _handle_analyze_tempo_matchup(arguments: dict[str, Any]) -> str:
             return f"Error analyzing tempo matchup: {e}"
 
     return "Error: Tempo analysis requires API authentication (KENPOM_API_KEY)."
+
+
+async def _handle_get_player_depth_chart(arguments: dict[str, Any]) -> str:
+    """Get team depth chart with player valuations."""
+    team = arguments.get("team")
+    if not team:
+        return "Error: 'team' parameter is required"
+
+    season = arguments.get("season", get_current_season())
+
+    # Need both API for team stats and scraper for player stats
+    api = _get_api_client()
+    client = _get_scraper_client()
+
+    if not api or not client:
+        return "Error: Player depth chart requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
+
+    try:
+        from .player_impact import PlayerImpactModel
+
+        # Get team stats from API
+        team_data = api.get_team_by_name(team, season)
+        if not team_data:
+            return f"Error: Team '{team}' not found"
+
+        # Get player stats from scraper
+        player_stats_df = client.get_playerstats(season=season)
+
+        # Create depth chart
+        model = PlayerImpactModel()
+        depth_chart = model.get_team_depth_chart(team, player_stats_df, team_data)
+
+        if depth_chart.empty:
+            return f"Error: No players found for {team}"
+
+        # Format as text
+        report = [
+            f"# {team} Depth Chart ({season} Season)",
+            "=" * 70,
+            "",
+            f"Players ranked by estimated value (AdjEM points contributed):",
+            "",
+        ]
+
+        for idx, row in depth_chart.iterrows():
+            report.append(
+                f"{idx + 1}. {row['Player']} ({row['yr']}, {row['ht']})"
+            )
+            report.append(f"   Poss%: {row['Poss%']:.1f}% | ORtg: {row['ORtg']:.1f}")
+            report.append(
+                f"   Value: {row['EstimatedValue']:+.2f} AdjEM pts | VOR: {row['VOR']:+.2f}"
+            )
+            report.append("")
+
+        return "\n".join(report)
+
+    except Exception as e:
+        logger.warning(f"Depth chart generation failed: {e}")
+        return f"Error generating depth chart: {e}"
+
+
+async def _handle_calculate_player_value(arguments: dict[str, Any]) -> str:
+    """Calculate individual player's value."""
+    player = arguments.get("player")
+    team = arguments.get("team")
+
+    if not player or not team:
+        return "Error: Both 'player' and 'team' parameters are required"
+
+    season = arguments.get("season", get_current_season())
+
+    # Need both API and scraper
+    api = _get_api_client()
+    client = _get_scraper_client()
+
+    if not api or not client:
+        return "Error: Player value calculation requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
+
+    try:
+        from .player_impact import PlayerImpactModel
+
+        # Get team stats
+        team_data = api.get_team_by_name(team, season)
+        if not team_data:
+            return f"Error: Team '{team}' not found"
+
+        # Get player stats
+        player_stats_df = client.get_playerstats(season=season)
+        player_row = player_stats_df[
+            (player_stats_df["Team"] == team) & (player_stats_df["Player"] == player)
+        ]
+
+        if player_row.empty:
+            return f"Error: Player '{player}' not found on {team}"
+
+        # Calculate value
+        model = PlayerImpactModel()
+        value = model.calculate_player_value(
+            player_row.iloc[0].to_dict(), team_data
+        )
+
+        # Format report
+        report = [
+            f"# Player Value: {value.player_name}",
+            f"**Team**: {value.team} ({season})",
+            "=" * 70,
+            "",
+            "## Usage Metrics",
+            f"- Possession %: {value.possession_pct:.1f}%",
+            f"- Estimated Minutes %: {value.minutes_pct:.1f}%",
+            "",
+            "## Efficiency Metrics",
+            f"- Offensive Rating: {value.offensive_rating:.1f}",
+            f"- Effective FG%: {value.effective_fg_pct:.1f}%",
+            f"- True Shooting%: {value.true_shooting_pct:.1f}%",
+            "",
+            "## Estimated Value",
+            f"- **Total Value**: {value.estimated_value:+.2f} AdjEM points",
+            f"- Offensive Contribution: {value.offensive_contribution:+.2f} points",
+            f"- Defensive Contribution: {value.defensive_contribution:+.2f} points",
+            f"- Replacement Level: {value.replacement_level:+.2f} points",
+            f"- **Value Over Replacement**: {value.value_over_replacement:+.2f} points",
+        ]
+
+        return "\n".join(report)
+
+    except Exception as e:
+        logger.warning(f"Player value calculation failed: {e}")
+        return f"Error calculating player value: {e}"
+
+
+async def _handle_estimate_injury_impact(arguments: dict[str, Any]) -> str:
+    """Estimate impact of player injury."""
+    player = arguments.get("player")
+    team = arguments.get("team")
+
+    if not player or not team:
+        return "Error: Both 'player' and 'team' parameters are required"
+
+    injury_severity = arguments.get("injury_severity", "out")
+    season = arguments.get("season", get_current_season())
+
+    # Need both API and scraper
+    api = _get_api_client()
+    client = _get_scraper_client()
+
+    if not api or not client:
+        return "Error: Injury impact estimation requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
+
+    try:
+        from .player_impact import PlayerImpactModel
+
+        # Get team stats
+        team_data = api.get_team_by_name(team, season)
+        if not team_data:
+            return f"Error: Team '{team}' not found"
+
+        # Get player stats
+        player_stats_df = client.get_playerstats(season=season)
+        player_row = player_stats_df[
+            (player_stats_df["Team"] == team) & (player_stats_df["Player"] == player)
+        ]
+
+        if player_row.empty:
+            return f"Error: Player '{player}' not found on {team}"
+
+        # Calculate value and injury impact
+        model = PlayerImpactModel()
+        value = model.calculate_player_value(
+            player_row.iloc[0].to_dict(), team_data
+        )
+        injury = model.estimate_injury_impact(value, team_data, injury_severity)
+
+        # Format report
+        severity_label = injury_severity.upper()
+        report = [
+            f"# Injury Impact: {value.player_name} ({severity_label})",
+            f"**Team**: {value.team} ({season})",
+            "=" * 70,
+            "",
+            "## Player Value",
+            f"- Estimated Value: {value.estimated_value:+.2f} AdjEM points",
+            f"- Value Over Replacement: {value.value_over_replacement:+.2f} points",
+            "",
+            "## Injury Impact",
+            f"- **Severity**: {injury.severity}",
+            f"- **Estimated Loss**: {injury.estimated_adj_em_loss:.2f} AdjEM points",
+            f"- **Confidence Interval**: [{injury.confidence_interval[0]:.1f}, {injury.confidence_interval[1]:.1f}]",
+            "",
+            "## Adjusted Team Ratings",
+            f"- Baseline AdjEM: {injury.team_adj_em_baseline:.2f}",
+            f"- **Adjusted AdjEM**: {injury.adjusted_adj_em:.2f} ({injury.adjusted_adj_em - injury.team_adj_em_baseline:+.2f})",
+            f"- Adjusted AdjOE: {injury.adjusted_adj_oe:.2f}",
+            f"- Adjusted AdjDE: {injury.adjusted_adj_de:.2f}",
+            "",
+            f"**Note**: '{injury_severity}' severity means {{'out': '100%', 'doubtful': '75%', 'questionable': '50%'}}[injury_severity] of value lost to replacement.",
+        ]
+
+        return "\n".join(report)
+
+    except ValueError as e:
+        return f"Error: {e}"
+    except Exception as e:
+        logger.warning(f"Injury impact estimation failed: {e}")
+        return f"Error estimating injury impact: {e}"
 
 
 # ==================== Server Entry Point ====================
