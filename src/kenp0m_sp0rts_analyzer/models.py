@@ -70,7 +70,7 @@ class FourFactors(BaseModel):
 class TeamScheduleGame(BaseModel):
     """Single game from a team's schedule."""
 
-    date: date = Field(..., description="Game date")
+    game_date: date = Field(..., description="Game date")
     opponent: str = Field(..., description="Opponent team name")
     result: str = Field(..., description="W or L")
     score: str = Field(..., description="Final score (e.g., '85-72')")
