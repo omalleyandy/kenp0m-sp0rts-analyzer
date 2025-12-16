@@ -43,12 +43,21 @@ from .point_distribution_analysis import (
     ScoringStyleMatchup,
     ScoringStyleProfile,
 )
+from .report_generator import MatchupReport, MatchupReportGenerator
 from .size_athleticism_analysis import (
     PositionMatchup,
     ReboundingCorrelation,
     SizeAthleticismAnalyzer,
     SizeMatchup,
     SizeProfile,
+)
+from .tournament_simulator import (
+    BracketRecommendation,
+    GameSimulation,
+    TournamentProbabilities,
+    TournamentSimulator,
+    TournamentTeam,
+    UpsetPick,
 )
 from .utils import get_credentials, normalize_team_name, setup_logging
 
@@ -82,6 +91,9 @@ __all__ = [
     "ComprehensiveMatchupReport",
     "DimensionScore",
     "MatchupWeights",
+    # Report Generation
+    "MatchupReport",
+    "MatchupReportGenerator",
     # Size & Athleticism Analysis (TIER 2)
     "SizeAthleticismAnalyzer",
     "SizeProfile",
@@ -93,6 +105,13 @@ __all__ = [
     "ExperienceProfile",
     "ExperienceMatchup",
     "TournamentReadiness",
+    # Tournament Simulation
+    "TournamentSimulator",
+    "TournamentTeam",
+    "TournamentProbabilities",
+    "GameSimulation",
+    "UpsetPick",
+    "BracketRecommendation",
     # Models
     "FourFactors",
     "HomeCourtAdvantage",
