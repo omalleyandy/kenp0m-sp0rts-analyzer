@@ -186,6 +186,29 @@ class KenPomAPI:
         """Close the HTTP client."""
         self._client.close()
 
+    def _convert_string_booleans(self, data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Convert string boolean values to Python booleans.
+
+        The KenPom API returns "true"/"false" strings for certain fields.
+        This converts them to Python True/False for easier handling.
+
+        Fields converted:
+        - Preseason (archive endpoint)
+        - ConfOnly (four-factors, pointdist, misc-stats endpoints)
+
+        Args:
+            data: List of API response dictionaries.
+
+        Returns:
+            Data with string booleans converted to Python booleans.
+        """
+        bool_fields = {"Preseason", "ConfOnly"}
+        for record in data:
+            for field in bool_fields:
+                if field in record and isinstance(record[field], str):
+                    record[field] = record[field].lower() == "true"
+        return data
+
     def _request(
         self,
         endpoint: str,
@@ -239,6 +262,9 @@ class KenPomAPI:
             else:
                 raise KenPomAPIError(error_msg)
 
+        # Convert string booleans to Python booleans
+        data = self._convert_string_booleans(data)
+
         return APIResponse(data=data, endpoint=endpoint, params=request_params)
 
     # ==================== Ratings Endpoints ====================
@@ -248,6 +274,8 @@ class KenPomAPI:
         year: int | None = None,
         team_id: int | None = None,
         conference: str | None = None,
+        y: int | None = None,
+        c: str | None = None,
     ) -> APIResponse:
         """Get team ratings, strength of schedule, tempo, and possession length data.
 
@@ -256,11 +284,13 @@ class KenPomAPI:
         returns historical ratings for that team across all seasons.
 
         Args:
-            year: Season year (e.g., 2025 for 2024-25 season).
+            year: Season year (e.g., 2025 for 2024-25 season). Alias: `y`.
             team_id: Team ID for historical data. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
                 'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
-                to find valid abbreviations.
+                to find valid abbreviations. Alias: `c`.
+            y: Alias for `year` (matches official API parameter name).
+            c: Alias for `conference` (matches official API parameter name).
 
         Returns:
             APIResponse with team ratings including:
@@ -319,8 +349,17 @@ class KenPomAPI:
 
             # Get SEC teams for 2025
             sec = api.get_ratings(year=2025, conference="SEC")
+
+            # Can also use official API parameter names
+            big12 = api.get_ratings(y=2025, c="B12")
             ```
         """
+        # Handle parameter aliases
+        if y is not None and year is None:
+            year = y
+        if c is not None and conference is None:
+            conference = c
+
         params: dict[str, Any] = {}
         if year is not None:
             params["y"] = year
@@ -347,6 +386,7 @@ class KenPomAPI:
         preseason: bool = False,
         team_id: int | None = None,
         conference: str | None = None,
+        d: str | date | None = None,
     ) -> APIResponse:
         """Get historical team ratings from a specific date or preseason.
 
@@ -355,7 +395,7 @@ class KenPomAPI:
 
         Args:
             archive_date: Date in YYYY-MM-DD format or date object to retrieve
-                archived ratings for. Required unless using preseason mode.
+                archived ratings for. Required unless using preseason mode. Alias: `d`.
             year: Season year (e.g., 2025 for 2024-25 season). Required when
                 using preseason=True.
             preseason: If True, retrieves preseason ratings for the specified year.
@@ -363,6 +403,7 @@ class KenPomAPI:
             team_id: Team ID to filter results. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC').
                 Use get_conferences() to find valid abbreviations.
+            d: Alias for `archive_date` (matches official API parameter name).
 
         Returns:
             APIResponse with archived ratings including:
@@ -412,8 +453,15 @@ class KenPomAPI:
             preseason = api.get_archive(preseason=True, year=2025)
             for team in preseason.data[:10]:
                 print(f"{team['TeamName']}: {team['RankAdjEM']} -> {team['RankAdjEMFinal']} ({team['RankChg']:+d})")
+
+            # Can also use official API parameter name
+            ratings = api.get_archive(d="2025-02-15")
             ```
         """
+        # Handle parameter alias
+        if d is not None and archive_date is None:
+            archive_date = d
+
         params: dict[str, Any] = {}
 
         # Handle date parameter
@@ -509,11 +557,16 @@ class KenPomAPI:
 
     # ==================== Game Predictions ====================
 
-    def get_fanmatch(self, game_date: str | date) -> APIResponse:
+    def get_fanmatch(
+        self,
+        game_date: str | date | None = None,
+        d: str | date | None = None,
+    ) -> APIResponse:
         """Get game predictions for a specific date.
 
         Args:
-            game_date: Date string in YYYY-MM-DD format or date object.
+            game_date: Date string in YYYY-MM-DD format or date object. Alias: `d`.
+            d: Alias for `game_date` (matches official API parameter name).
 
         Returns:
             APIResponse with game predictions including:
@@ -539,8 +592,18 @@ class KenPomAPI:
 
             # Find close games
             close_games = [g for g in games.data if 40 <= g['HomeWP'] <= 60]
+
+            # Can also use official API parameter name
+            games = api.get_fanmatch(d="2025-03-15")
             ```
         """
+        # Handle parameter alias
+        if d is not None and game_date is None:
+            game_date = d
+
+        if game_date is None:
+            raise ValidationError("The 'game_date' parameter is required for fanmatch endpoint")
+
         if isinstance(game_date, date):
             date_str = game_date.strftime("%Y-%m-%d")
         else:
@@ -556,6 +619,8 @@ class KenPomAPI:
         team_id: int | None = None,
         conference: str | None = None,
         conf_only: bool = False,
+        y: int | None = None,
+        c: str | None = None,
     ) -> APIResponse:
         """Get Four Factors analysis for teams.
 
@@ -567,13 +632,15 @@ class KenPomAPI:
         provided, returns historical Four Factors for that team across all seasons.
 
         Args:
-            year: Season year (e.g., 2025 for 2024-25 season).
+            year: Season year (e.g., 2025 for 2024-25 season). Alias: `y`.
             team_id: Team ID for historical data. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
                 'SEC', 'A10'). Requires `year` to be specified. Use get_conferences()
-                to find valid abbreviations.
+                to find valid abbreviations. Alias: `c`.
             conf_only: If True, returns conference-only statistics instead of all
                 games. Defaults to False.
+            y: Alias for `year` (matches official API parameter name).
+            c: Alias for `conference` (matches official API parameter name).
 
         Returns:
             APIResponse with Four Factors data including:
@@ -619,6 +686,12 @@ class KenPomAPI:
             conf_stats = api.get_four_factors(year=2025, conf_only=True)
             ```
         """
+        # Handle parameter aliases
+        if y is not None and year is None:
+            year = y
+        if c is not None and conference is None:
+            conference = c
+
         params: dict[str, Any] = {}
         if year is not None:
             params["y"] = year
@@ -647,6 +720,8 @@ class KenPomAPI:
         team_id: int | None = None,
         conference: str | None = None,
         conf_only: bool = False,
+        y: int | None = None,
+        c: str | None = None,
     ) -> APIResponse:
         """Get miscellaneous team statistics.
 
@@ -659,13 +734,15 @@ class KenPomAPI:
         provided, returns historical misc stats for that team across all seasons.
 
         Args:
-            year: Season year (e.g., 2025 for 2024-25 season).
+            year: Season year (e.g., 2025 for 2024-25 season). Alias: `y`.
             team_id: Team ID for historical data. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
                 'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
-                to find valid abbreviations.
+                to find valid abbreviations. Alias: `c`.
             conf_only: If True, returns conference-only statistics instead of all
                 games. Defaults to False.
+            y: Alias for `year` (matches official API parameter name).
+            c: Alias for `conference` (matches official API parameter name).
 
         Returns:
             APIResponse with misc stats including:
@@ -716,6 +793,12 @@ class KenPomAPI:
             conf_stats = api.get_misc_stats(year=2025, conf_only=True)
             ```
         """
+        # Handle parameter aliases
+        if y is not None and year is None:
+            year = y
+        if c is not None and conference is None:
+            conference = c
+
         params: dict[str, Any] = {}
         if year is not None:
             params["y"] = year
@@ -743,6 +826,8 @@ class KenPomAPI:
         year: int | None = None,
         team_id: int | None = None,
         conference: str | None = None,
+        y: int | None = None,
+        c: str | None = None,
     ) -> APIResponse:
         """Get team height and experience data.
 
@@ -754,11 +839,13 @@ class KenPomAPI:
         provided, returns historical height data for that team across all seasons.
 
         Args:
-            year: Season year (e.g., 2025 for 2024-25 season).
+            year: Season year (e.g., 2025 for 2024-25 season). Alias: `y`.
             team_id: Team ID for historical data. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'WCC', 'ACC',
                 'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
-                to find valid abbreviations.
+                to find valid abbreviations. Alias: `c`.
+            y: Alias for `year` (matches official API parameter name).
+            c: Alias for `conference` (matches official API parameter name).
 
         Returns:
             APIResponse with height/experience data including:
@@ -800,6 +887,12 @@ class KenPomAPI:
             wcc_height = api.get_height(year=2025, conference="WCC")
             ```
         """
+        # Handle parameter aliases
+        if y is not None and year is None:
+            year = y
+        if c is not None and conference is None:
+            conference = c
+
         params: dict[str, Any] = {}
         if year is not None:
             params["y"] = year
@@ -825,6 +918,8 @@ class KenPomAPI:
         team_id: int | None = None,
         conference: str | None = None,
         conf_only: bool = False,
+        y: int | None = None,
+        c: str | None = None,
     ) -> APIResponse:
         """Get point distribution data for teams.
 
@@ -836,13 +931,15 @@ class KenPomAPI:
         is provided, returns historical point distribution for that team.
 
         Args:
-            year: Season year (e.g., 2025 for 2024-25 season).
+            year: Season year (e.g., 2025 for 2024-25 season). Alias: `y`.
             team_id: Team ID for historical data. Use get_teams() to find IDs.
             conference: Conference abbreviation to filter results (e.g., 'B12', 'ACC',
                 'SEC', 'B10'). Requires `year` to be specified. Use get_conferences()
-                to find valid abbreviations.
+                to find valid abbreviations. Alias: `c`.
             conf_only: If True, returns conference-only statistics instead of all
                 games. Defaults to False.
+            y: Alias for `year` (matches official API parameter name).
+            c: Alias for `conference` (matches official API parameter name).
 
         Returns:
             APIResponse with point distribution data including:
@@ -881,6 +978,12 @@ class KenPomAPI:
             conf_stats = api.get_point_distribution(year=2025, conf_only=True)
             ```
         """
+        # Handle parameter aliases
+        if y is not None and year is None:
+            year = y
+        if c is not None and conference is None:
+            conference = c
+
         params: dict[str, Any] = {}
         if year is not None:
             params["y"] = year
