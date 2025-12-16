@@ -47,6 +47,10 @@ kenp0m-sp0rts-analyzer/
 └── CLAUDE.md               # This file
 ```
 
+### Execution Strategy
+- **Prefer parallel**: Run independent operations (file reads, searches, API calls) in parallel for speed
+- **Sequential when needed**: Use sequential execution only for stability-critical operations or when there are dependencies
+
 ## KenPom Data Source
 
 ### Authentication Requirements
@@ -103,6 +107,12 @@ browser = login(email, password)
 - Use numpy for numerical computations
 - Handle missing data gracefully with proper defaults
 
+### AI Development Approach
+- **Read before edit**: Always read and understand existing code before proposing changes
+- **No speculation**: Never speculate about code behavior without inspecting it first
+- **Simplicity first**: Avoid over-engineering; keep solutions minimal and focused
+- **Clean workspace**: Remove any temporary files created during development
+
 ## Key Metrics Reference
 
 ### KenPom Efficiency Metrics
@@ -123,12 +133,20 @@ browser = login(email, password)
 - Identify value opportunities via efficiency differentials
 - Consider home court advantage adjustments
 
+### Research Methodology
+When conducting complex analysis:
+- **Form hypotheses**: State initial hypotheses before gathering data
+- **Track confidence**: Maintain confidence levels and adjust based on evidence
+- **Reflect on results**: After each data retrieval, reflect on findings before proceeding
+- **Systematic approach**: Break complex questions into sub-hypotheses
+
 ## Testing Requirements
 
 - Write tests for all new functionality
 - Use pytest fixtures for common test data
 - Mock external API calls in unit tests
 - Maintain >80% code coverage
+- Write general solutions; avoid test-specific hacks or hardcoded workarounds
 
 ## Data Sources
 
