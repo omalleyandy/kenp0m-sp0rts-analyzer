@@ -13,6 +13,12 @@ from .defensive_analysis import (
     DefensiveMatchup,
     DefensiveProfile,
 )
+from .experience_chemistry_analysis import (
+    ExperienceChemistryAnalyzer,
+    ExperienceMatchup,
+    ExperienceProfile,
+    TournamentReadiness,
+)
 from .four_factors_matchup import (
     FactorMatchup,
     FourFactorsAnalysis,
@@ -31,6 +37,13 @@ from .point_distribution_analysis import (
     ScoringStyleMatchup,
     ScoringStyleProfile,
 )
+from .size_athleticism_analysis import (
+    PositionMatchup,
+    ReboundingCorrelation,
+    SizeAthleticismAnalyzer,
+    SizeMatchup,
+    SizeProfile,
+)
 from .utils import get_credentials, normalize_team_name, setup_logging
 
 __version__ = "0.1.0"
@@ -46,18 +59,29 @@ __all__ = [
     "calculate_tournament_seed_line",
     "find_value_games",
     "get_conference_standings",
-    # Four Factors Matchup
+    # Four Factors Matchup (TIER 1)
     "FactorMatchup",
     "FourFactorsAnalysis",
     "FourFactorsMatchup",
-    # Point Distribution Analysis
+    # Point Distribution Analysis (TIER 1)
     "PointDistributionAnalyzer",
     "ScoringStyleMatchup",
     "ScoringStyleProfile",
-    # Defensive Analysis
+    # Defensive Analysis (TIER 1)
     "DefensiveAnalyzer",
     "DefensiveMatchup",
     "DefensiveProfile",
+    # Size & Athleticism Analysis (TIER 2)
+    "SizeAthleticismAnalyzer",
+    "SizeProfile",
+    "SizeMatchup",
+    "PositionMatchup",
+    "ReboundingCorrelation",
+    # Experience & Chemistry Analysis (TIER 2)
+    "ExperienceChemistryAnalyzer",
+    "ExperienceProfile",
+    "ExperienceMatchup",
+    "TournamentReadiness",
     # Models
     "FourFactors",
     "HomeCourtAdvantage",

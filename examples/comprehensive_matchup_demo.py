@@ -1,11 +1,17 @@
-"""Comprehensive matchup analysis demo combining all TIER 1 analyzers.
+"""Comprehensive matchup analysis demo combining all TIER 1 + TIER 2 analyzers.
 
-This demo showcases the complete analytical suite:
-1. Four Factors Analysis - Fundamental basketball statistics
-2. Point Distribution Analysis - Scoring style and defensive vulnerabilities
-3. Defensive Analysis - Defensive scheme and strategic opportunities
+This demo showcases the complete 15-dimensional analytical framework:
 
-Together, these provide a complete picture of team matchups.
+TIER 1 (10 dimensions):
+1. Four Factors Analysis - Fundamental basketball statistics (4 dimensions)
+2. Point Distribution Analysis - Scoring style and defensive vulnerabilities (3 dimensions)
+3. Defensive Analysis - Defensive scheme and strategic opportunities (3 dimensions)
+
+TIER 2 (5 dimensions):
+4. Size & Athleticism Analysis - Physical matchups and height advantages (2 dimensions)
+5. Experience & Chemistry Analysis - Intangibles and tournament readiness (3 dimensions)
+
+Together, these provide a complete 15-dimensional picture of team matchups.
 """
 
 import os
@@ -15,10 +21,14 @@ from dotenv import load_dotenv
 
 from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
 from kenp0m_sp0rts_analyzer.defensive_analysis import DefensiveAnalyzer
+from kenp0m_sp0rts_analyzer.experience_chemistry_analysis import (
+    ExperienceChemistryAnalyzer,
+)
 from kenp0m_sp0rts_analyzer.four_factors_matchup import FourFactorsMatchup
 from kenp0m_sp0rts_analyzer.point_distribution_analysis import (
     PointDistributionAnalyzer,
 )
+from kenp0m_sp0rts_analyzer.size_athleticism_analysis import SizeAthleticismAnalyzer
 
 # Load environment variables
 env_path = Path(__file__).parent / ".env"
@@ -36,11 +46,13 @@ if not api_key:
 
 print("[OK] API key loaded\n")
 
-# Initialize analyzers
+# Initialize all analyzers (TIER 1 + TIER 2)
 api = KenPomAPI()
 four_factors = FourFactorsMatchup(api)
 point_dist = PointDistributionAnalyzer(api)
 defensive = DefensiveAnalyzer(api)
+size_athleticism = SizeAthleticismAnalyzer(api)
+experience = ExperienceChemistryAnalyzer(api)
 
 # Example matchups to analyze
 matchups = [
@@ -50,7 +62,7 @@ matchups = [
 
 print("=" * 80)
 print("COMPREHENSIVE MATCHUP ANALYSIS - 2025 Season")
-print("Complete Analysis: Four Factors + Scoring Styles + Defense")
+print("Complete 15-Dimensional Framework: TIER 1 + TIER 2")
 print("=" * 80)
 print()
 
@@ -60,10 +72,12 @@ for team1, team2 in matchups:
     print("=" * 100)
 
     try:
-        # Run all three analyses
+        # Run all analyses (TIER 1 + TIER 2)
         ff_analysis = four_factors.analyze_matchup(team1, team2, 2025)
         pd_analysis = point_dist.analyze_matchup(team1, team2, 2025)
         def_analysis = defensive.analyze_matchup(team1, team2, 2025)
+        size_analysis = size_athleticism.analyze_matchup(team1, team2, 2025)
+        exp_analysis = experience.analyze_matchup(team1, team2, 2025)
 
         # =====================================================================
         # SECTION 1: FOUR FACTORS ANALYSIS
@@ -231,9 +245,106 @@ for team1, team2 in matchups:
             print(f"  {i}. {key}")
 
         # =====================================================================
-        # SECTION 5: OVERALL ASSESSMENT
+        # SECTION 5: SIZE & ATHLETICISM ANALYSIS
         # =====================================================================
-        print("\n[5] OVERALL ASSESSMENT")
+        print("\n[5] SIZE & ATHLETICISM ANALYSIS")
+        print("-" * 100)
+        print(f"Better Size: {size_analysis.better_size_team.upper()}")
+        print(
+            f"Size Advantage Score: {size_analysis.size_advantage_score:.1f}/10 "
+            f"(5 = neutral)"
+        )
+        print(
+            f'Overall Height Advantage: {size_analysis.overall_height_advantage:+.2f}" '
+            f"(positive = {team1})"
+        )
+
+        print("\nTeam Size Profiles:")
+        print(
+            f"  {team1:20s}: {size_analysis.team1_profile.size_profile.upper().replace('_', ' ')} "
+            f'(Eff Hgt: {size_analysis.team1_profile.eff_height:.1f}")'
+        )
+        print(
+            f"  {team2:20s}: {size_analysis.team2_profile.size_profile.upper().replace('_', ' ')} "
+            f'(Eff Hgt: {size_analysis.team2_profile.eff_height:.1f}")'
+        )
+
+        print("\nCourt Advantages:")
+        print(f"  Frontcourt (SF/PF/C): {size_analysis.frontcourt_advantage}")
+        print(f"  Backcourt (PG/SG): {size_analysis.backcourt_advantage}")
+
+        print("\nPosition-by-Position Matchups:")
+        for pos_matchup in [
+            size_analysis.pg_matchup,
+            size_analysis.sg_matchup,
+            size_analysis.sf_matchup,
+            size_analysis.pf_matchup,
+            size_analysis.c_matchup,
+        ]:
+            winner = (
+                team1
+                if pos_matchup.height_advantage > 0.5
+                else (team2 if pos_matchup.height_advantage < -0.5 else "EVEN")
+            )
+            print(
+                f"  {pos_matchup.position}: {winner:20s} "
+                f"({pos_matchup.advantage_classification})"
+            )
+
+        print(f"\nRebounding Prediction: {size_analysis.rebounding_prediction}")
+        print(f"Paint Scoring: {size_analysis.paint_scoring_prediction}")
+        print(f"\nStrategy: {size_analysis.strategic_recommendation}")
+
+        # =====================================================================
+        # SECTION 6: EXPERIENCE & CHEMISTRY ANALYSIS
+        # =====================================================================
+        print("\n[6] EXPERIENCE & CHEMISTRY ANALYSIS")
+        print("-" * 100)
+        print(f"Better Intangibles: {exp_analysis.better_intangibles.upper()}")
+        print(
+            f"Intangibles Advantage Score: {exp_analysis.intangibles_advantage_score:.1f}/10 "
+            f"(5 = neutral)"
+        )
+
+        print("\nExperience Profiles:")
+        print(
+            f"  {team1:20s}: {exp_analysis.team1_profile.experience_level.upper().replace('_', ' ')} "
+            f"(Rating: {exp_analysis.team1_profile.experience_rating:.2f})"
+        )
+        print(
+            f"  {team2:20s}: {exp_analysis.team2_profile.experience_level.upper().replace('_', ' ')} "
+            f"(Rating: {exp_analysis.team2_profile.experience_rating:.2f})"
+        )
+
+        print("\nBench Depth:")
+        print(
+            f"  {team1:20s}: {exp_analysis.team1_profile.bench_classification.upper().replace('_', ' ')} "
+            f"({exp_analysis.team1_profile.bench_strength:+.2f})"
+        )
+        print(
+            f"  {team2:20s}: {exp_analysis.team2_profile.bench_classification.upper().replace('_', ' ')} "
+            f"({exp_analysis.team2_profile.bench_strength:+.2f})"
+        )
+
+        print("\nContinuity:")
+        print(
+            f"  {team1:20s}: {exp_analysis.team1_profile.continuity:.1f}% minutes returning "
+            f"({exp_analysis.team1_profile.continuity_level.upper().replace('_', ' ')})"
+        )
+        print(
+            f"  {team2:20s}: {exp_analysis.team2_profile.continuity:.1f}% minutes returning "
+            f"({exp_analysis.team2_profile.continuity_level.upper().replace('_', ' ')})"
+        )
+
+        print("\nSituational Predictions:")
+        print(f"  Late-Game Execution: {exp_analysis.late_game_execution}")
+        print(f"  Tournament Readiness: {exp_analysis.tournament_readiness}")
+        print(f"  Adversity Handling: {exp_analysis.adverse_conditions}")
+
+        # =====================================================================
+        # SECTION 7: OVERALL ASSESSMENT (15 DIMENSIONS)
+        # =====================================================================
+        print("\n[7] OVERALL ASSESSMENT (15-DIMENSIONAL FRAMEWORK)")
         print("-" * 100)
 
         # Count advantages across all dimensions
@@ -285,7 +396,46 @@ for team1, team2 in matchups:
         else:
             team2_advantages += 1
 
-        total_battles = 10
+        # TIER 2: Size battles (2 dimensions: overall size + frontcourt/backcourt composite)
+        if size_analysis.better_size_team == team1:
+            team1_advantages += 1
+        elif size_analysis.better_size_team == team2:
+            team2_advantages += 1
+
+        # Composite frontcourt + backcourt advantage (1 dimension)
+        fc_bc_advantages = 0
+        if size_analysis.frontcourt_advantage == team1:
+            fc_bc_advantages += 1
+        elif size_analysis.frontcourt_advantage == team2:
+            fc_bc_advantages -= 1
+
+        if size_analysis.backcourt_advantage == team1:
+            fc_bc_advantages += 1
+        elif size_analysis.backcourt_advantage == team2:
+            fc_bc_advantages -= 1
+
+        if fc_bc_advantages > 0:
+            team1_advantages += 1
+        elif fc_bc_advantages < 0:
+            team2_advantages += 1
+
+        # TIER 2: Experience battles (3 dimensions: experience, bench, continuity)
+        if exp_analysis.experience_advantage == team1:
+            team1_advantages += 1
+        elif exp_analysis.experience_advantage == team2:
+            team2_advantages += 1
+
+        if exp_analysis.bench_advantage == team1:
+            team1_advantages += 1
+        elif exp_analysis.bench_advantage == team2:
+            team2_advantages += 1
+
+        if exp_analysis.continuity_advantage == team1:
+            team1_advantages += 1
+        elif exp_analysis.continuity_advantage == team2:
+            team2_advantages += 1
+
+        total_battles = 15  # TIER 1 (10) + TIER 2 (5)
         print(f"\nBattles Won (out of {total_battles} key matchups):")
         print(f"  {team1}: {team1_advantages}/{total_battles}")
         print(f"  {team2}: {team2_advantages}/{total_battles}")
