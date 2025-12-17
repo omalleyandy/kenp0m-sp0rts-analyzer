@@ -19,7 +19,7 @@ def main():
     print()
 
     # Load beat reporters
-    reporters = load_beat_reporters()
+    reporters = twitter_monitor.load_beat_reporters()
 
     if not reporters:
         print("ERROR: No reporters loaded!")

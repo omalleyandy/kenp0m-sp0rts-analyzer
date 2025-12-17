@@ -1,0 +1,2707 @@
+{
+  "scraped_at": "2025-12-17T04:50:49.339545",
+  "source": "covers.com",
+  "count": 300,
+  "injuries": [
+    {
+      "team": "AWSALB\u00a0[x3]",
+      "player": "Covers",
+      "position": "Registers which server-cluster is serving the visitor. This is used in context with load balancing, in order to optimize user experience.",
+      "status": "7 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.364400"
+    },
+    {
+      "team": "AWSALBCORS\u00a0[x3]",
+      "player": "Covers",
+      "position": "Registers which server-cluster is serving the visitor. This is used in context with load balancing, in order to optimize user experience.",
+      "status": "7 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.383084"
+    },
+    {
+      "team": "user",
+      "player": "cdn.imagn.com",
+      "position": "Unique id that identifies the user's session.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.400220"
+    },
+    {
+      "team": "ASP.NET_SessionId",
+      "player": "Covers",
+      "position": "Preserves the visitor's session state across page requests.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.416420"
+    },
+    {
+      "team": "CookieConsent\u00a0[x2]",
+      "player": "Cookiebot",
+      "position": "Stores the user's cookie consent state for the current domain",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.431924"
+    },
+    {
+      "team": "loggedIn\u00a0[x2]",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.451485"
+    },
+    {
+      "team": ".AspNetCore.Antiforgery.#\u00a0[x2]",
+      "player": "Covers",
+      "position": "Helps prevent Cross-Site Request Forgery (CSRF) attacks.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.470628"
+    },
+    {
+      "team": "__ssp__history__session_",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.489102"
+    },
+    {
+      "team": "SSOD_#",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.505252"
+    },
+    {
+      "team": "SSPV_S",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.521394"
+    },
+    {
+      "team": "UserCountryCode",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.538231"
+    },
+    {
+      "team": "__cf_bm\u00a0[x4]",
+      "player": "ZendeskHubSpotCovers",
+      "position": "This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.555026"
+    },
+    {
+      "team": "_cfuvid\u00a0[x3]",
+      "player": "ZendeskHubSpot",
+      "position": "This cookie is a part of the services provided by Cloudflare - Including load-balancing, deliverance of website content and serving DNS connection for website operators.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.571192"
+    },
+    {
+      "team": "test_cookie",
+      "player": "Google",
+      "position": "Pending",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.588222"
+    },
+    {
+      "team": "GCLB\u00a0[x2]",
+      "player": "kalshi.com",
+      "position": "This cookie is used in context with load balancing - This optimizes the response rate between the visitor and the site, by distributing the traffic load on multiple network links or servers.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.604902"
+    },
+    {
+      "team": "_GRECAPTCHA",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.622146"
+    },
+    {
+      "team": "_grecaptcha",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.638867"
+    },
+    {
+      "team": "rc::a",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots. This is beneficial for the website, in order to make valid reports on the use of their website.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.655700"
+    },
+    {
+      "team": "rc::b",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.673774"
+    },
+    {
+      "team": "rc::c",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.689657"
+    },
+    {
+      "team": "rc::f",
+      "player": "Google",
+      "position": "This cookie is used to distinguish between humans and bots.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.706709"
+    },
+    {
+      "team": "__stripe_mid",
+      "player": "Stripe",
+      "position": "This cookie is necessary for making credit card transactions on the website. The service is provided by Stripe.com which allows online transactions without storing any credit card information.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.723571"
+    },
+    {
+      "team": "__stripe_sid",
+      "player": "Stripe",
+      "position": "This cookie is necessary for making credit card transactions on the website. The service is provided by Stripe.com which allows online transactions without storing any credit card information.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.739737"
+    },
+    {
+      "team": "m",
+      "player": "Stripe",
+      "position": "Determines the device used to access the website. This allows the website to be formatted accordingly.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.754462"
+    },
+    {
+      "team": "_ab",
+      "player": "kalshi.com",
+      "position": "This cookie is necessary for making credit card transactions on the website. The service is provided by Stripe.com which allows online transactions without storing any credit card information.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.771039"
+    },
+    {
+      "team": "_mf",
+      "player": "kalshi.com",
+      "position": "This cookie is necessary for making credit card transactions on the website. The service is provided by Stripe.com which allows online transactions without storing any credit card information.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.787235"
+    },
+    {
+      "team": "id",
+      "player": "kalshi.com",
+      "position": "Pending",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.802688"
+    },
+    {
+      "team": "kndctr_#_AdobeOrg_cluster",
+      "player": "Covers",
+      "position": "Assigns a specific ID to the visitor. This allows the website to determine the number of specific user-visits for analysis and statistics.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.817921"
+    },
+    {
+      "team": "loglevel\u00a0[x3]",
+      "player": "kalshi.comSpotifywidgets.kalshi.com",
+      "position": "Maintains settings and outputs when using the Developer Tools Console on current session.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.832966"
+    },
+    {
+      "team": "1",
+      "player": "kalshi.com",
+      "position": "This cookie is used in conjunction with the payment window - The cookie is necessary for making secure transactions on the website.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.847712"
+    },
+    {
+      "team": "#.#.clientId",
+      "player": "Zendesk",
+      "position": "Identifies the visitor across devices and visits, in order to optimize the chat-box function on the website.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.862816"
+    },
+    {
+      "team": "__hssc",
+      "player": "HubSpot",
+      "position": "Identifies if the cookie data needs to be updated in the visitor's browser.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.878622"
+    },
+    {
+      "team": "__hssrc",
+      "player": "HubSpot",
+      "position": "Used to recognise the visitor's browser upon reentry on the website.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.895036"
+    },
+    {
+      "team": "__hstc",
+      "player": "HubSpot",
+      "position": "Sets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.909951"
+    },
+    {
+      "team": "__qca",
+      "player": "Quantcast",
+      "position": "Collects data on the user's visits to the website, such as the number of visits, average time spent on the website and what pages have been loaded with the purpose of generating reports for optimising the website content.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.924433"
+    },
+    {
+      "team": "_dlt",
+      "player": "Quantcast",
+      "position": "Sets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.939120"
+    },
+    {
+      "team": "_ga\u00a0[x2]",
+      "player": "Google",
+      "position": "Registers a unique ID that is used to generate statistical data on how the visitor uses the website.",
+      "status": "2 years",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.954855"
+    },
+    {
+      "team": "_ga_#\u00a0[x2]",
+      "player": "Google",
+      "position": "Used by Google Analytics to collect data on the number of times a user has visited the website as well as dates for the first and most recent visit.",
+      "status": "2 years",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.970056"
+    },
+    {
+      "team": "_gali",
+      "player": "Google",
+      "position": "Registers a unique ID that is used to generate statistical data on how the visitor uses the website.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:43.985546"
+    },
+    {
+      "team": "_gat",
+      "player": "Google",
+      "position": "Used by Google Analytics to throttle request rate",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.001325"
+    },
+    {
+      "team": "_gid",
+      "player": "Google",
+      "position": "Registers a unique ID that is used to generate statistical data on how the visitor uses the website.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.016161"
+    },
+    {
+      "team": "AMCV_#",
+      "player": "Covers",
+      "position": "Unique user ID that recognizes the user on returning visits",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.033035"
+    },
+    {
+      "team": "com.adobe.alloy.getTld",
+      "player": "Covers",
+      "position": "Registers data on visitors' website-behaviour. This is used for internal analysis and website optimization.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.050360"
+    },
+    {
+      "team": "hubspotutk",
+      "player": "HubSpot",
+      "position": "Sets a unique ID for the session. This allows the website to obtain data on visitor behaviour for statistical purposes.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.070408"
+    },
+    {
+      "team": "kndctr_#_AdobeOrg_identity",
+      "player": "Covers",
+      "position": "Registers statistical data on users' behaviour on the website. Used for internal analytics by the website operator.",
+      "status": "13 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.084941"
+    },
+    {
+      "team": "sentryReplaySession",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Registers data on visitors' website-behaviour. This is used for internal analysis and website optimization.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.100461"
+    },
+    {
+      "team": "_tt_enable_cookie",
+      "player": "TikTok",
+      "position": "Used by the social networking service, TikTok, for tracking the use of embedded services.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.115801"
+    },
+    {
+      "team": "dd_cookie_test_#",
+      "player": "kalshi.com",
+      "position": "Registers data on visitors' website-behaviour. This is used for internal analysis and website optimization.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.129072"
+    },
+    {
+      "team": "FPC",
+      "player": "kalshi.com",
+      "position": "Registers a unique ID that is used to generate statistical data on how the visitor uses the website.",
+      "status": "7 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.145855"
+    },
+    {
+      "team": "__qca",
+      "player": "Covers",
+      "position": "Collects data on the user's visits to the website, such as the number of visits, average time spent on the website and what pages have been loaded with the purpose of generating reports for optimising the website content.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.162887"
+    },
+    {
+      "team": "ZD-buid",
+      "player": "Zendesk",
+      "position": "Unique id that identifies the user on recurring visits.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.178880"
+    },
+    {
+      "team": "personalization_id",
+      "player": "Twitter Inc.",
+      "position": "This cookie is set by Twitter - The cookie allows the visitor to share content from the website onto their Twitter profile.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.194600"
+    },
+    {
+      "team": "rp.gif",
+      "player": "Covers",
+      "position": "Necessary for the implementation of the Reddit.com's share-button function.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.209554"
+    },
+    {
+      "team": "tt_appInfo",
+      "player": "kalshi.com",
+      "position": "Used by the social networking service, TikTok, for tracking the use of embedded services.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.225210"
+    },
+    {
+      "team": "tt_pixel_session_index",
+      "player": "kalshi.com",
+      "position": "Used by the social networking service, TikTok, for tracking the use of embedded services.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.240909"
+    },
+    {
+      "team": "tt_sessionId",
+      "player": "kalshi.com",
+      "position": "Used by the social networking service, TikTok, for tracking the use of embedded services.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.256503"
+    },
+    {
+      "team": "lastExternalReferrer\u00a0[x2]",
+      "player": "Coverskalshi.com",
+      "position": "Detects how the user reached the website by registering their last URL-address.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.271347"
+    },
+    {
+      "team": "lastExternalReferrerTime\u00a0[x2]",
+      "player": "Coverskalshi.com",
+      "position": "Detects how the user reached the website by registering their last URL-address.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.285617"
+    },
+    {
+      "team": "topicsLastReferenceTime",
+      "player": "Covers",
+      "position": "Collects data on the user across websites - This data is used to make advertisement more relevant.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.300257"
+    },
+    {
+      "team": "_rdt_uuid\u00a0[x4]",
+      "player": "Reddit",
+      "position": "Used to track visitors on multiple websites, in order to present relevant advertisement based on the visitor's preferences.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.314244"
+    },
+    {
+      "team": "_fbp\u00a0[x3]",
+      "player": "Meta Platforms, Inc.Amazon",
+      "position": "Used by Facebook to deliver a series of advertisement products such as real time bidding from third party advertisers.",
+      "status": "3 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.328618"
+    },
+    {
+      "team": "_gcl_au\u00a0[x2]",
+      "player": "Google",
+      "position": "Used by Google AdSense for experimenting with advertisement efficiency across websites using their services.",
+      "status": "3 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.343065"
+    },
+    {
+      "team": "SSID_#",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.357750"
+    },
+    {
+      "team": "demdex",
+      "player": "Adobe Inc.",
+      "position": "Via a unique ID that is used for semantic content analysis, the user's navigation on the website is registered and linked to offline data from surveys and similar registrations to display targeted ads.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.371870"
+    },
+    {
+      "team": "ES|#|EVENT|#",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.387188"
+    },
+    {
+      "team": "ES|#|GLOBAL_SEQ_NUM",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.402382"
+    },
+    {
+      "team": "ES|#|INSTALLATION_ID",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.417524"
+    },
+    {
+      "team": "ES|#|SEQ_NUM|#",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.431901"
+    },
+    {
+      "team": "ES|#|STORAGE_ID",
+      "player": "embed-cdn.spotifycdn.com",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.446313"
+    },
+    {
+      "team": "pixel",
+      "player": "eu.mgln.ai",
+      "position": "Collects information on user behaviour on multiple websites. This information is used in order to optimize the relevance of advertisement on the website.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.465848"
+    },
+    {
+      "team": "pagead/1p-user-list/#",
+      "player": "kalshi.com",
+      "position": "Tracks if the user has shown interest in specific products or events across multiple websites and detects how the user navigates between sites. This is used for measurement of advertisement efforts and facilitates payment of referral-fees between websites.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.482677"
+    },
+    {
+      "team": "uuid",
+      "player": "Covers",
+      "position": "Used to track visitors on multiple websites, in order to present relevant advertisement based on the visitor's preferences.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.498969"
+    },
+    {
+      "team": "__ptq.gif",
+      "player": "HubSpot",
+      "position": "Sends data to the marketing platform Hubspot about the visitor's device and behaviour. Tracks the visitor across devices and marketing channels.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.515280"
+    },
+    {
+      "team": "_gcl_ls\u00a0[x2]",
+      "player": "kalshi.comCovers",
+      "position": "Tracks the conversion rate between the user and the advertisement banners on the website - This serves to optimise the relevance of the advertisements on the website.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.531781"
+    },
+    {
+      "team": "_ttp\u00a0[x2]",
+      "player": "TikTok",
+      "position": "Used by the social networking service, TikTok, for tracking the use of embedded services.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.547657"
+    },
+    {
+      "team": "ttcsid",
+      "player": "TikTok",
+      "position": "Used to track visitors on multiple websites, in order to present relevant advertisement based on the visitor's preferences.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.562481"
+    },
+    {
+      "team": "_qcses_p-bkney-4rUgmDm",
+      "player": "Covers",
+      "position": "Pending",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.576586"
+    },
+    {
+      "team": "mc",
+      "player": "Quantcast",
+      "position": "Collects data on the user's visits to the website, such as what pages have been loaded. The registered data is used for targeted ads.",
+      "status": "13 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.595271"
+    },
+    {
+      "team": "sp_landing",
+      "player": "Spotify",
+      "position": "Used to implement audio-content from Spotify on the website. Can also be used to register user interaction and preferences in context with audio-content - This can serve statistics and marketing purposes.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.611922"
+    },
+    {
+      "team": "sp_t",
+      "player": "Spotify",
+      "position": "Used to implement audio-content from Spotify on the website. Can also be used to register user interaction and preferences in context with audio-content - This can serve statistics and marketing purposes.",
+      "status": "1 year",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.627805"
+    },
+    {
+      "team": "ZD-suid",
+      "player": "Zendesk",
+      "position": "Unique id that identifies the user's session.",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.644949"
+    },
+    {
+      "team": "1/i/adsct\u00a0[x2]",
+      "player": "Covers",
+      "position": "Collects data on user behaviour and interaction in order to optimize the website and make advertisement on the website more relevant.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.661911"
+    },
+    {
+      "team": "muc_ads",
+      "player": "Twitter Inc.",
+      "position": "Collects data on user behaviour and interaction in order to optimize the website and make advertisement on the website more relevant.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.679236"
+    },
+    {
+      "team": "TapAd_3WAY_SYNCS",
+      "player": "Tapad",
+      "position": "Used for data-synchronization with advertisement networks.",
+      "status": "2 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.694897"
+    },
+    {
+      "team": "TapAd_DID",
+      "player": "Tapad",
+      "position": "Used to determine what type of devices (smartphones, tablets, computers, TVs etc.) is used by a user.",
+      "status": "2 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.711123"
+    },
+    {
+      "team": "TapAd_TS",
+      "player": "Tapad",
+      "position": "Used to determine what type of devices (smartphones, tablets, computers, TVs etc.) is used by a user.",
+      "status": "2 months",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.726773"
+    },
+    {
+      "team": "guest_id",
+      "player": "Twitter Inc.",
+      "position": "Collects data related to the user's visits to the website, such as the number of visits, average time spent on the website and which pages have been loaded, with the purpose of personalising and improving the Twitter service.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.744366"
+    },
+    {
+      "team": "guest_id_ads",
+      "player": "Twitter Inc.",
+      "position": "Collects information on user behaviour on multiple websites. This information is used in order to optimize the relevance of advertisement on the website.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.761881"
+    },
+    {
+      "team": "guest_id_marketing",
+      "player": "Twitter Inc.",
+      "position": "Collects information on user behaviour on multiple websites. This information is used in order to optimize the relevance of advertisement on the website.",
+      "status": "400 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.777230"
+    },
+    {
+      "team": "i/jot/embeds",
+      "player": "Twitter Inc.",
+      "position": "Sets a unique ID for the visitor, that allows third party advertisers to target the visitor with relevant advertisement. This pairing service is provided by third party advertisement hubs, which facilitates real-time bidding for advertisers.",
+      "status": "Session",
+      "injury_type": "Pixel Tracker",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.793385"
+    },
+    {
+      "team": "RichHistory",
+      "player": "Twitter Inc.",
+      "position": "Collects data on visitors' preferences and behaviour on the website - This information is used make content and advertisement more relevant to the specific visitor.",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.811896"
+    },
+    {
+      "team": "adcloud\u00a0[x3]",
+      "player": "www.everestjs.net",
+      "position": "Pending",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.828902"
+    },
+    {
+      "team": "lux_uid",
+      "player": "cdn.speedcurve.com",
+      "position": "Implements and collects data on the user\u2019s interaction with the EventBrite-integration. This service is used to promote and sell tickets to events across multiple websites.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.845715"
+    },
+    {
+      "team": "__Secure-ROLLOUT_TOKEN",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.861137"
+    },
+    {
+      "team": "__Secure-YEC",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.878100"
+    },
+    {
+      "team": "__Secure-YNID",
+      "player": "YouTube",
+      "position": "Pending",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.894590"
+    },
+    {
+      "team": "LAST_RESULT_ENTRY_KEY",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.910335"
+    },
+    {
+      "team": "LogsDatabaseV2:V#||LogsRequestsStore",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "Persistent",
+      "injury_type": "IndexedDB",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.927321"
+    },
+    {
+      "team": "nextId",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.943282"
+    },
+    {
+      "team": "remote_sid",
+      "player": "YouTube",
+      "position": "Necessary for the implementation and functionality of YouTube video-content on the website.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.959543"
+    },
+    {
+      "team": "requests",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.975186"
+    },
+    {
+      "team": "ServiceWorkerLogsDatabase#SWHealthLog",
+      "player": "YouTube",
+      "position": "Necessary for the implementation and functionality of YouTube video-content on the website.",
+      "status": "Persistent",
+      "injury_type": "IndexedDB",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:44.990788"
+    },
+    {
+      "team": "TESTCOOKIESENABLED",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "1 day",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.006838"
+    },
+    {
+      "team": "VISITOR_INFO1_LIVE",
+      "player": "YouTube",
+      "position": "Tries to estimate the users' bandwidth on pages with integrated YouTube videos.",
+      "status": "180 days",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.021972"
+    },
+    {
+      "team": "YSC",
+      "player": "YouTube",
+      "position": "Registers a unique ID to keep statistics of what videos from YouTube the user has seen.",
+      "status": "Session",
+      "injury_type": "HTTP Cookie",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.038269"
+    },
+    {
+      "team": "ytidb::LAST_RESULT_ENTRY_KEY",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.055003"
+    },
+    {
+      "team": "YtIdbMeta#databases",
+      "player": "YouTube",
+      "position": "Used to track user\u2019s interaction with embedded content.",
+      "status": "Persistent",
+      "injury_type": "IndexedDB",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.069882"
+    },
+    {
+      "team": "yt-remote-cast-available",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.087075"
+    },
+    {
+      "team": "yt-remote-cast-installed",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.102832"
+    },
+    {
+      "team": "yt-remote-connected-devices",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.118528"
+    },
+    {
+      "team": "yt-remote-device-id",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Persistent",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.133576"
+    },
+    {
+      "team": "yt-remote-fast-check-period",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.148784"
+    },
+    {
+      "team": "yt-remote-session-app",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.163050"
+    },
+    {
+      "team": "yt-remote-session-name",
+      "player": "YouTube",
+      "position": "Stores the user's video player preferences using embedded YouTube video",
+      "status": "Session",
+      "injury_type": "HTML Local Storage",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.177570"
+    },
+    {
+      "team": "A.                                        Allen",
+      "player": "F",
+      "position": "Questionable - Hip(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.198806"
+    },
+    {
+      "team": "K.                                        Vasser",
+      "player": "G",
+      "position": "Out - Foot(\n\nThu, Nov 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.229172"
+    },
+    {
+      "team": "B.                                        Ford",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.252541"
+    },
+    {
+      "team": "A.                                        Holiman",
+      "player": "G",
+      "position": "Out - Elbow(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.267475"
+    },
+    {
+      "team": "V.                                        Wallace",
+      "player": "G-F",
+      "position": "Out - Ankle(\n\nSat, Oct 25)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.281889"
+    },
+    {
+      "team": "K.                                        Overton",
+      "player": "G-F",
+      "position": "Questionable - Ankle(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.305329"
+    },
+    {
+      "team": "E.                                        Opurum",
+      "player": "C",
+      "position": "Out - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.322347"
+    },
+    {
+      "team": "A.                                        Bashir",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nTue, Dec 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.338551"
+    },
+    {
+      "team": "M.                                        Soyoye",
+      "player": "C",
+      "position": "Out - Redshirt(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.359648"
+    },
+    {
+      "team": "J.                                        White",
+      "player": "G",
+      "position": "Questionable - Foot(\n\nSun, Nov 23)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.374046"
+    },
+    {
+      "team": "J.                                        Bodo Bodo",
+      "player": "C",
+      "position": "Questionable - Arm(\n\nSun, Oct 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.389227"
+    },
+    {
+      "team": "A.                                        Iguodala",
+      "player": "G-F",
+      "position": "Out - Redshirt(\n\nWed, Sep 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.404410"
+    },
+    {
+      "team": "R.                                        Ward",
+      "player": "F",
+      "position": "Out - Undisclosed(\n\nWed, Dec 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.425777"
+    },
+    {
+      "team": "K.                                        Alexander",
+      "player": "G",
+      "position": "Out - Leg(\n\nThu, Nov 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.452276"
+    },
+    {
+      "team": "D.                                        Baker",
+      "player": "G",
+      "position": "Out - Knee(\n\nSun, Nov 30)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.476442"
+    },
+    {
+      "team": "N.                                        Pickens",
+      "player": "G",
+      "position": "Out - Undisclosed(\n\nFri, Nov 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.491904"
+    },
+    {
+      "team": "B.                                        Kozlowski",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.507785"
+    },
+    {
+      "team": "J.                                        McCaffery",
+      "player": "F",
+      "position": "Questionable - Illness(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.539424"
+    },
+    {
+      "team": "J.                                        Jackson",
+      "player": "G",
+      "position": "Out - Ankle(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.557750"
+    },
+    {
+      "team": "J.                                        Pippen",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.582903"
+    },
+    {
+      "team": "R.                                        Petraitis",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nMon, Dec 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.601267"
+    },
+    {
+      "team": "W.                                        Mortimore",
+      "player": "F",
+      "position": "Questionable - Concussion(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.639369"
+    },
+    {
+      "team": "M.                                        Dean",
+      "player": "G",
+      "position": "Out - Knee(\n\nSun, Nov 23)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.656793"
+    },
+    {
+      "team": "C.                                        Duggan",
+      "player": "F",
+      "position": "Out - Foot(\n\nThu, Nov 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.674345"
+    },
+    {
+      "team": "S.                                        Cusano",
+      "player": "G-F",
+      "position": "Out - Knee(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.699969"
+    },
+    {
+      "team": "J.                                        Haynes",
+      "player": "F",
+      "position": "Out - Lower Body(\n\nMon, Oct 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.720015"
+    },
+    {
+      "team": "Z.                                        Foster",
+      "player": "G",
+      "position": "Questionable - Knee(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.736856"
+    },
+    {
+      "team": "J.                                        Mani",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.762926"
+    },
+    {
+      "team": "L.                                        Van Elswyk",
+      "player": "C",
+      "position": "Out - Redshirt(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.779831"
+    },
+    {
+      "team": "K.                                        Jorgensen",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.796882"
+    },
+    {
+      "team": "R.                                        Mbemba",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.813188"
+    },
+    {
+      "team": "H.                                        Greer",
+      "player": "G",
+      "position": "Out - Foot(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.845890"
+    },
+    {
+      "team": "J.                                        McAndrew",
+      "player": "F",
+      "position": "Out - Foot(\n\nThu, Nov 20)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.862475"
+    },
+    {
+      "team": "S.                                        Logan",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.893391"
+    },
+    {
+      "team": "J.                                        McKie",
+      "player": "G",
+      "position": "Out - Shoulder(\n\nSat, Oct 18)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.910881"
+    },
+    {
+      "team": "N.                                        Njoku",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nTue, Dec 9)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.927587"
+    },
+    {
+      "team": "M.                                        Ellison",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.944349"
+    },
+    {
+      "team": "J.                                        Brown",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nSat, Nov 22)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.960577"
+    },
+    {
+      "team": "C.                                        Reilly",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nThu, Nov 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.977143"
+    },
+    {
+      "team": "L.                                        Piper",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:45.992931"
+    },
+    {
+      "team": "T.                                        Pierre-Justin",
+      "player": "F",
+      "position": "Questionable - Shoulder(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.017547"
+    },
+    {
+      "team": "A.                                        Delalic",
+      "player": "G",
+      "position": "Out - Knee(\n\nSun, Jun 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.033195"
+    },
+    {
+      "team": "S.                                        Wilkins",
+      "player": "G-F",
+      "position": "Out - Redshirt(\n\nSun, Nov 9)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.056605"
+    },
+    {
+      "team": "E.                                        DeLaurier",
+      "player": "F",
+      "position": "Out - Foot(\n\nSat, Dec 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.074845"
+    },
+    {
+      "team": "T.                                        LaBeaux",
+      "player": "G-F",
+      "position": "Out - Lower Body(\n\nWed, Nov 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.090313"
+    },
+    {
+      "team": "A.                                        Cook",
+      "player": "G",
+      "position": "Out - Ankle(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.118673"
+    },
+    {
+      "team": "V.                                        Neugebauer",
+      "player": "C",
+      "position": "Questionable - Foot(\n\nSat, Nov 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.163226"
+    },
+    {
+      "team": "L.                                        Lesmond",
+      "player": "G",
+      "position": "Questionable - Back(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.182635"
+    },
+    {
+      "team": "M.                                        Greene",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.198805"
+    },
+    {
+      "team": "R.                                        Pettis",
+      "player": "G",
+      "position": "Questionable - Concussion(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.215089"
+    },
+    {
+      "team": "B.                                        O'Connor",
+      "player": "G",
+      "position": "Out - Foot(\n\nSat, Nov 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.243280"
+    },
+    {
+      "team": "D.                                        Harris-Smith",
+      "player": "G",
+      "position": "Out - Personal(\n\nWed, Dec 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.259239"
+    },
+    {
+      "team": "V.                                        Iwuchukwu",
+      "player": "C",
+      "position": "Out - Undisclosed(\n\nMon, Nov 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.273457"
+    },
+    {
+      "team": "C.                                        Peters",
+      "player": "F",
+      "position": "Questionable - Personal(\n\nThu, Nov 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.295877"
+    },
+    {
+      "team": "T.                                        Cuff",
+      "player": "G",
+      "position": "Out - Knee(\n\nMon, Nov 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.335884"
+    },
+    {
+      "team": "K.                                        Sakho",
+      "player": "F",
+      "position": "Questionable - Knee(\n\nTue, Dec 9)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.363979"
+    },
+    {
+      "team": "B.                                        Jackson",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nMon, Dec 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.380859"
+    },
+    {
+      "team": "T.                                        Rodgers",
+      "player": "G-F",
+      "position": "Questionable - Knee(\n\nSun, Oct 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.405391"
+    },
+    {
+      "team": "D.                                        Snively",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.430637"
+    },
+    {
+      "team": "J.                                        Drake",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.446119"
+    },
+    {
+      "team": "J.                                        Rayford",
+      "player": "G",
+      "position": "Out - Undisclosed(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.461637"
+    },
+    {
+      "team": "J.                                        Harris",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.476700"
+    },
+    {
+      "team": "T.                                        Thompson",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.504130"
+    },
+    {
+      "team": "D.                                        Pleta",
+      "player": "F",
+      "position": "Questionable - Ankle(\n\nWed, Dec 10)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.521429"
+    },
+    {
+      "team": "M.                                        Williams",
+      "player": "G",
+      "position": "Out - Hip(\n\nThu, Jun 19)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.537771"
+    },
+    {
+      "team": "D.                                        Peterson",
+      "player": "G",
+      "position": "Questionable - Quadricep(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.572150"
+    },
+    {
+      "team": "C.                                        Allen",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nMon, Oct 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.590052"
+    },
+    {
+      "team": "J.                                        Smith",
+      "player": "C",
+      "position": "Questionable - Personal(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.615175"
+    },
+    {
+      "team": "D.                                        Cosby",
+      "player": "G",
+      "position": "Out - Undisclosed(\n\nSat, Jul 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.631834"
+    },
+    {
+      "team": "J.                                        Quaintance",
+      "player": "F",
+      "position": "Questionable - Knee(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.651930"
+    },
+    {
+      "team": "J.                                        Brewer",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSat, Nov 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.668617"
+    },
+    {
+      "team": "Z.                                        Cleveland",
+      "player": "F",
+      "position": "Questionable - Illness(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.702085"
+    },
+    {
+      "team": "I.                                        Ihnen",
+      "player": "F",
+      "position": "Out - Knee(\n\nSun, Oct 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.722464"
+    },
+    {
+      "team": "J.                                        Reed",
+      "player": "F",
+      "position": "Out - Achilles(\n\nSat, Nov 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.763853"
+    },
+    {
+      "team": "M.                                        Brown",
+      "player": "G",
+      "position": "Questionable - Back(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.786760"
+    },
+    {
+      "team": "I.                                        Miletic",
+      "player": "F",
+      "position": "Out - Redshirt(\n\nWed, Oct 22)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.823487"
+    },
+    {
+      "team": "S.                                        Pearson",
+      "player": "F",
+      "position": "Out - Redshirt(\n\nSun, Jul 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.841171"
+    },
+    {
+      "team": "P.                                        Payne",
+      "player": "F-C",
+      "position": "Questionable - Leg(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.862577"
+    },
+    {
+      "team": "R.                                        Passmore",
+      "player": "G",
+      "position": "Out - Achilles(\n\nMon, Sep 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.880048"
+    },
+    {
+      "team": "J.                                        Thedford",
+      "player": "G",
+      "position": "Questionable - Knee(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.907479"
+    },
+    {
+      "team": "C.                                        Givens",
+      "player": "G",
+      "position": "Questionable - Thigh(\n\nWed, Nov 26)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.924544"
+    },
+    {
+      "team": "M.                                        Allen",
+      "player": "G-F",
+      "position": "Questionable - Groin(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.955057"
+    },
+    {
+      "team": "D.                                        Allen",
+      "player": "G",
+      "position": "Questionable - Hand(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.970412"
+    },
+    {
+      "team": "C.                                        May",
+      "player": "G",
+      "position": "Out - Thumb(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:46.985096"
+    },
+    {
+      "team": "R.                                        Liburd",
+      "player": "G-F",
+      "position": "Out - Redshirt(\n\nTue, Jul 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.001218"
+    },
+    {
+      "team": "K.                                        Glenn",
+      "player": "F",
+      "position": "Out - Knee(\n\nTue, Jun 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.016129"
+    },
+    {
+      "team": "M.                                        Lorenson",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nTue, Dec 9)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.038286"
+    },
+    {
+      "team": "C.                                        Willis",
+      "player": "G",
+      "position": "Out - Foot(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.053513"
+    },
+    {
+      "team": "R.                                        Vaihola",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nFri, Nov 21)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.068613"
+    },
+    {
+      "team": "B.                                        Omot",
+      "player": "F",
+      "position": "Questionable - Leg(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.084115"
+    },
+    {
+      "team": "C.                                        Stephens",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nTue, Oct 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.099511"
+    },
+    {
+      "team": "J.                                        Stone",
+      "player": "G",
+      "position": "Out - Hand(\n\nMon, Nov 24)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.120287"
+    },
+    {
+      "team": "T.                                        Pierce",
+      "player": "G-F",
+      "position": "Questionable - Lower Body(\n\nSat, Nov 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.135891"
+    },
+    {
+      "team": "M.                                        Osei-Bonsu",
+      "player": "F",
+      "position": "Questionable - Knee(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.152606"
+    },
+    {
+      "team": "A.                                        Khadre Kebe",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.182973"
+    },
+    {
+      "team": "J.                                        Hartman",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Nov 28)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.197006"
+    },
+    {
+      "team": "J.                                        May",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Nov 28)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.212726"
+    },
+    {
+      "team": "C.                                        Essegian",
+      "player": "G",
+      "position": "Out - Ankle(\n\nFri, Nov 28)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.262580"
+    },
+    {
+      "team": "H.                                        Burt",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.277873"
+    },
+    {
+      "team": "U.                                        Jarusevicius",
+      "player": "F",
+      "position": "Questionable - Back(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.294678"
+    },
+    {
+      "team": "C.                                        Camper",
+      "player": "G",
+      "position": "Questionable - Back(\n\nSat, Dec 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.314645"
+    },
+    {
+      "team": "E.                                        Croley",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSat, Dec 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.329409"
+    },
+    {
+      "team": "J.                                        Armotrading",
+      "player": "C",
+      "position": "Questionable - Shoulder(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.345789"
+    },
+    {
+      "team": "C.                                        Howell",
+      "player": "G",
+      "position": "Questionable - Wrist(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.366162"
+    },
+    {
+      "team": "T.                                        Buljan",
+      "player": "F",
+      "position": "Questionable - Hamstring(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.386432"
+    },
+    {
+      "team": "S.                                        Trimble",
+      "player": "G",
+      "position": "Questionable - Forearm(\n\nSat, Nov 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.430600"
+    },
+    {
+      "team": "M.                                        Weisbrod",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.467439"
+    },
+    {
+      "team": "C.                                        Bennerman",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.488357"
+    },
+    {
+      "team": "B.                                        Smith",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.510944"
+    },
+    {
+      "team": "M.                                        Burton",
+      "player": "G",
+      "position": "Out - Ankle(\n\nThu, Dec 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.534773"
+    },
+    {
+      "team": "T.                                        Ahneman",
+      "player": "C",
+      "position": "Out - Knee(\n\nWed, Oct 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.554888"
+    },
+    {
+      "team": "M.                                        Herro",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nThu, Nov 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.582334"
+    },
+    {
+      "team": "J.                                        Ojianwuna",
+      "player": "F",
+      "position": "Questionable - Knee(\n\nMon, Oct 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.600771"
+    },
+    {
+      "team": "D.                                        Forsythe",
+      "player": "G",
+      "position": "Questionable - Ankle(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.621818"
+    },
+    {
+      "team": "P.                                        Fallah",
+      "player": "F",
+      "position": "Questionable - Back(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.639978"
+    },
+    {
+      "team": "B.                                        Ahmed",
+      "player": "C",
+      "position": "Questionable - Undisclosed(\n\nFri, Nov 21)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.658380"
+    },
+    {
+      "team": "R.                                        Jennings",
+      "player": "F",
+      "position": "Out - Hip(\n\nTue, Nov 18)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.675788"
+    },
+    {
+      "team": "D.                                        Pryor",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.702472"
+    },
+    {
+      "team": "E.                                        Vatan",
+      "player": "F",
+      "position": "Questionable - Foot(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.718165"
+    },
+    {
+      "team": "K.                                        Ekissi",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Nov 28)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.733471"
+    },
+    {
+      "team": "R.                                        Grodin",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nFri, Nov 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.752527"
+    },
+    {
+      "team": "P.                                        Amadou Kante",
+      "player": "F",
+      "position": "Out - Knee(\n\nMon, Dec 1)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.774503"
+    },
+    {
+      "team": "D.                                        Jackson",
+      "player": "C",
+      "position": "Out - Undisclosed(\n\nWed, Nov 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.792138"
+    },
+    {
+      "team": "R.                                        Barron",
+      "player": "F-G",
+      "position": "Out - Concussion(\n\nMon, Nov 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.823068"
+    },
+    {
+      "team": "D.                                        Davis",
+      "player": "G",
+      "position": "Questionable - Knee(\n\nMon, Nov 17)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.837605"
+    },
+    {
+      "team": "J.                                        Zimmerman",
+      "player": "G",
+      "position": "Questionable - Foot(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.858456"
+    },
+    {
+      "team": "R.                                        Johnson",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.879010"
+    },
+    {
+      "team": "M.                                        Sow",
+      "player": "F",
+      "position": "Out - Leg(\n\nSun, Nov 23)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.894904"
+    },
+    {
+      "team": "D.                                        Jones",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nTue, Nov 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.922823"
+    },
+    {
+      "team": "J.                                        Cherry",
+      "player": "F",
+      "position": "Questionable - Leg(\n\nThu, Nov 20)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.937882"
+    },
+    {
+      "team": "O.                                        Verna",
+      "player": "G",
+      "position": "Questionable - Hip(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.955545"
+    },
+    {
+      "team": "K.                                        Anya",
+      "player": "F",
+      "position": "Out - Redshirt(\n\nWed, Oct 22)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.969980"
+    },
+    {
+      "team": "K.                                        Gad",
+      "player": "F",
+      "position": "Questionable - Shoulder(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:47.984806"
+    },
+    {
+      "team": "D.                                        Fuchs",
+      "player": "F",
+      "position": "Questionable - Upper Body(\n\nTue, Dec 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.016157"
+    },
+    {
+      "team": "N.                                        Newbury",
+      "player": "F",
+      "position": "Questionable - Leg(\n\nFri, Oct 31)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.030326"
+    },
+    {
+      "team": "B.                                        Roseborough",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.045987"
+    },
+    {
+      "team": "J.                                        Hannah",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nSat, Nov 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.061122"
+    },
+    {
+      "team": "J.                                        Felton",
+      "player": "G",
+      "position": "Out - Knee(\n\nSun, Nov 9)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.095027"
+    },
+    {
+      "team": "P.                                        Suemnick",
+      "player": "F",
+      "position": "Questionable - Shoulder(\n\nWed, Oct 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.109720"
+    },
+    {
+      "team": "G.                                        Erheriene",
+      "player": "C",
+      "position": "Questionable - Foot(\n\nWed, Oct 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.125244"
+    },
+    {
+      "team": "O.                                        Schlager",
+      "player": "G",
+      "position": "Out - Rib(\n\nThu, Dec 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.145864"
+    },
+    {
+      "team": "R.                                        Mulvey",
+      "player": "C",
+      "position": "Questionable - Concussion(\n\nSun, Nov 16)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.161603"
+    },
+    {
+      "team": "R.                                        Ducharme",
+      "player": "G",
+      "position": "Out - Shoulder(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.179280"
+    },
+    {
+      "team": "S.                                        Walters",
+      "player": "F",
+      "position": "Questionable - Ankle(\n\nThu, Nov 20)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.198716"
+    },
+    {
+      "team": "P.                                        Law",
+      "player": "F",
+      "position": "Out - Knee(\n\nMon, Dec 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.215093"
+    },
+    {
+      "team": "E.                                        Ellis",
+      "player": "G",
+      "position": "Questionable - Ankle(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.232183"
+    },
+    {
+      "team": "C.                                        Pohto",
+      "player": "G",
+      "position": "Out - Hip(\n\nMon, Dec 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.277617"
+    },
+    {
+      "team": "I.                                        Suljanovic",
+      "player": "F",
+      "position": "Out - Knee(\n\nThu, Oct 16)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.293153"
+    },
+    {
+      "team": "E.                                        Okorie",
+      "player": "G",
+      "position": "Questionable - Lower Body(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.311905"
+    },
+    {
+      "team": "D.                                        Young",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.326485"
+    },
+    {
+      "team": "A.                                        Womack",
+      "player": "G",
+      "position": "Out - Redshirt(\n\nThu, Dec 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.353500"
+    },
+    {
+      "team": "D.                                        Freeman",
+      "player": "F",
+      "position": "Questionable - Foot(\n\nSun, Nov 23)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.369224"
+    },
+    {
+      "team": "A.                                        Smith",
+      "player": "G",
+      "position": "Questionable - Shoulder(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.388354"
+    },
+    {
+      "team": "C.                                        Phillips",
+      "player": "F",
+      "position": "Out - Shoulder(\n\nSun, Dec 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.406821"
+    },
+    {
+      "team": "M.                                        Diallo",
+      "player": "C",
+      "position": "Out - Knee(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.449633"
+    },
+    {
+      "team": "L.                                        Bamgboye",
+      "player": "F",
+      "position": "Questionable - Leg(\n\nFri, Dec 12)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.472911"
+    },
+    {
+      "team": "M.                                        Akuentok",
+      "player": "F",
+      "position": "Questionable - Lower Body(\n\nSat, Nov 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.493801"
+    },
+    {
+      "team": "J.                                        Moseley",
+      "player": "F",
+      "position": "Out - Lower Body(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.519789"
+    },
+    {
+      "team": "J.                                        Das Chagas",
+      "player": "C",
+      "position": "Out - Wrist(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.560599"
+    },
+    {
+      "team": "J.                                        Fontenet",
+      "player": "G",
+      "position": "Questionable - Knee(\n\nMon, Dec 15)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.595307"
+    },
+    {
+      "team": "M.                                        Little",
+      "player": "G",
+      "position": "Questionable - Leg(\n\nSat, Dec 6)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.616094"
+    },
+    {
+      "team": "E.                                        Manjikian",
+      "player": "F",
+      "position": "Questionable - Undisclosed(\n\nSun, Nov 2)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.634740"
+    },
+    {
+      "team": "J.                                        Keller",
+      "player": "G",
+      "position": "Out - Foot(\n\nSun, Dec 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.651765"
+    },
+    {
+      "team": "K.                                        Bilal",
+      "player": "G",
+      "position": "Questionable - Foot(\n\nSun, Dec 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.668935"
+    },
+    {
+      "team": "S.                                        Elkinton",
+      "player": "F",
+      "position": "Out - Foot(\n\nSun, Dec 7)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.685513"
+    },
+    {
+      "team": "L.                                        Dembele",
+      "player": "F",
+      "position": "Questionable - Foot(\n\nWed, Nov 26)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.723997"
+    },
+    {
+      "team": "M.                                        Abittan",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nMon, Nov 3)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.742832"
+    },
+    {
+      "team": "M.                                        Che",
+      "player": "G",
+      "position": "Out - Foot(\n\nWed, Oct 22)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.758846"
+    },
+    {
+      "team": "E.                                        Stephen",
+      "player": "C",
+      "position": "Out - Hip(\n\nThu, Oct 16)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.774742"
+    },
+    {
+      "team": "A.                                        Dickerson",
+      "player": "G-F",
+      "position": "Out - Hip(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.789961"
+    },
+    {
+      "team": "R.                                        Rice",
+      "player": "G",
+      "position": "Out - Shoulder(\n\nMon, Nov 24)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.805256"
+    },
+    {
+      "team": "A.                                        Arenas",
+      "player": "G",
+      "position": "Out - Knee(\n\nTue, Jul 22)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.820275"
+    },
+    {
+      "team": "B.                                        Faye",
+      "player": "F",
+      "position": "Out - Leg(\n\nSun, Sep 21)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.839200"
+    },
+    {
+      "team": "G.                                        Kimble",
+      "player": "G",
+      "position": "Out - Knee(\n\nWed, Jun 4)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.871570"
+    },
+    {
+      "team": "C.                                        Fermin",
+      "player": "F",
+      "position": "Out - Personal(\n\nFri, Nov 21)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.887860"
+    },
+    {
+      "team": "W.                                        Chiddick",
+      "player": "G",
+      "position": "Questionable - Knee(\n\nMon, Nov 24)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.908193"
+    },
+    {
+      "team": "A.                                        Dorn",
+      "player": "C",
+      "position": "Questionable - Back(\n\nSun, Dec 14)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.927229"
+    },
+    {
+      "team": "J.                                        Bedford",
+      "player": "G",
+      "position": "Questionable - Illness(\n\nSat, Dec 13)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.945212"
+    },
+    {
+      "team": "T.                                        Lawal",
+      "player": "F",
+      "position": "Questionable - Ankle(\n\nThu, Nov 27)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.959611"
+    },
+    {
+      "team": "R.                                        Bradley",
+      "player": "G",
+      "position": "Questionable - Undisclosed(\n\nTue, Nov 11)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.974387"
+    },
+    {
+      "team": "J.                                        Ognacevic",
+      "player": "F",
+      "position": "Out - Foot(\n\nWed, Oct 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:48.995823"
+    },
+    {
+      "team": "M.                                        Traore",
+      "player": "F",
+      "position": "Out - Foot(\n\nWed, Oct 8)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:49.011332"
+    },
+    {
+      "team": "T.                                        Murdix",
+      "player": "G",
+      "position": "Out - Knee(\n\nFri, Dec 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:49.047067"
+    },
+    {
+      "team": "J.                                        Ighovodja",
+      "player": "G",
+      "position": "Questionable - Foot(\n\nFri, Nov 21)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:49.064682"
+    },
+    {
+      "team": "K.                                        Westphal",
+      "player": "C",
+      "position": "Out - Redshirt(\n\nWed, Nov 5)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:49.101499"
+    },
+    {
+      "team": "G.                                        Pozzato",
+      "player": "F",
+      "position": "Out - Knee(\n\nWed, Oct 29)",
+      "status": "",
+      "injury_type": "",
+      "date_updated": "",
+      "scraped_at": "2025-12-17T04:50:49.117344"
+    }
+  ]
+}
