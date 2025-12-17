@@ -28,24 +28,63 @@ ruff format src/ tests/
 ### Project Structure
 ```
 kenp0m-sp0rts-analyzer/
-├── src/kenp0m_sp0rts_analyzer/
-│   ├── __init__.py          # Package init with version
-│   ├── api_client.py        # Official KenPom API client (recommended)
-│   ├── mcp_server.py        # MCP server for Claude integration
-│   ├── client.py            # KenPom client wrapper (kenpompy)
-│   ├── browser.py           # Stealth browser automation (Playwright)
-│   ├── scraper.py           # KenPom web scraper
-│   ├── models.py            # Pydantic data models
-│   ├── analysis.py          # Analytics functions
-│   └── utils.py             # Utility functions
-├── tests/                   # Test suite
-│   ├── test_api_client.py   # API client tests
-│   └── test_mcp_server.py   # MCP server tests
-├── examples/                # Usage examples
-├── .claude/                 # Claude Code settings
-├── pyproject.toml          # Project configuration
-└── CLAUDE.md               # This file
+├── src/kenp0m_sp0rts_analyzer/     # 22 modules
+│   ├── Core API & Data Access:
+│   │   ├── api_client.py           # Official KenPom API (recommended)
+│   │   ├── browser.py / scraper.py # Web scraping (fallback)
+│   │   └── client.py               # kenpompy wrapper
+│   ├── Analytics Modules:
+│   │   ├── TIER 1: four_factors_matchup.py, point_distribution_analysis.py,
+│   │   │          defensive_analysis.py, tempo_analysis.py
+│   │   ├── TIER 2: size_athleticism_analysis.py, experience_chemistry_analysis.py
+│   │   └── conference_analytics.py, player_impact.py
+│   ├── Prediction & Simulation:
+│   │   ├── prediction.py           # ML prediction + backtesting
+│   │   └── tournament_simulator.py # Bracket simulation
+│   ├── Integration:
+│   │   ├── comprehensive_matchup_analysis.py  # Combines all TIER modules
+│   │   └── report_generator.py     # Generates matchup reports
+│   └── Core Infrastructure:
+│       ├── models.py, utils.py, mcp_server.py
+│       └── api_docs_reverse_engineer.py
+├── scripts/                         # 7 operational scripts
+│   ├── collect_daily_data.py, predict_game.py, validate_edge.py
+│   └── reverse_engineer_api_docs.py, validate_tempo_features.py
+├── examples/                        # 14 demo scripts
+│   ├── comprehensive_integration_demo.py, tournament_simulator_demo.py
+│   ├── TIER demos: four_factors_matchup_demo.py, defensive_matchup_demo.py
+│   └── stealth_scraper.py, basic_usage.py
+├── docs/                            # 17 documentation files
+│   ├── API: KENPOM_API.md, API_QUICK_REFERENCE.md
+│   ├── Analytics: KENPOM_ANALYTICS_GUIDE.md, MATCHUP_ANALYSIS_FRAMEWORK.md
+│   ├── Implementation: TIER1_IMPLEMENTATION_PLAN.md, TIER2_IMPLEMENTATION_PLAN.md
+│   └── Validation: EDGE_VALIDATION_GUARDRAILS.md, PREVENTING_FALSE_EDGES.md
+├── tests/                           # 11 test files (matching all major modules)
+├── data/                            # Cached KenPom data (parquet files)
+├── reports/                         # Generated analysis reports
+├── analyze_todays_games.py         # Standalone game analyzer script
+└── pyproject.toml, CLAUDE.md       # Project configuration
 ```
+
+### Key Modules Reference
+
+#### Analytics Pipeline
+| Module | Purpose | TIER |
+|--------|---------|------|
+| `comprehensive_matchup_analysis.py` | All-in-one matchup analyzer | Integration |
+| `four_factors_matchup.py` | Four Factors analysis | 1 |
+| `point_distribution_analysis.py` | Scoring breakdown | 1 |
+| `defensive_analysis.py` | Defensive matchups | 1 |
+| `tempo_analysis.py` | Pace/tempo analysis | 1 |
+| `size_athleticism_analysis.py` | Height/athleticism | 2 |
+| `experience_chemistry_analysis.py` | Experience analysis | 2 |
+| `prediction.py` | ML predictions + backtesting | Advanced |
+| `tournament_simulator.py` | Bracket simulation | Advanced |
+
+#### Data Access (Choose One)
+1. **api_client.py** - Official API (recommended, requires separate key)
+2. **scraper.py + browser.py** - Web scraping (subscription login required)
+3. **client.py** - kenpompy wrapper (subscription login required)
 
 ### Execution Strategy
 - **Prefer parallel**: Run independent operations (file reads, searches, API calls) in parallel for speed
@@ -186,6 +225,28 @@ When conducting complex analysis:
 - **Library Docs**: https://kenpompy.readthedocs.io/
 - **Historical data**: Available from 1999 season onwards
 
+## Documentation Index
+
+Core guides in `docs/` directory:
+
+| Document | Purpose |
+|----------|---------|
+| `KENPOM_API.md` | Official API reference (9 endpoints) |
+| `KENPOM_ANALYTICS_GUIDE.md` | Analytics methodology and KenPom metrics |
+| `MATCHUP_ANALYSIS_FRAMEWORK.md` | Matchup analysis framework |
+| `TIER1_IMPLEMENTATION_PLAN.md` | TIER 1 features (Four Factors, Point Distribution, Defense, Tempo) |
+| `TIER2_IMPLEMENTATION_PLAN.md` | TIER 2 features (Size/Athleticism, Experience/Chemistry) |
+| `EDGE_VALIDATION_GUARDRAILS.md` | Edge validation framework |
+| `PREVENTING_FALSE_EDGES.md` | False edges prevention guide |
+| `QUICK_START_PREDICTIONS.md` | Quick start for predictions |
+| `SETUP_GUIDE.md` | Setup and installation guide |
+| `API_QUICK_REFERENCE.md` | API quick reference |
+| `API_REVERSE_ENGINEERING_FINDINGS.md` | API reverse engineering findings |
+| `TEMPO_PACE_DEEP_DIVE.md` | Tempo and pace deep dive |
+| `KENPOM_DATA_COVERAGE.md` | Data coverage documentation |
+
+Full documentation index: See `docs/README.md`
+
 ## Environment Variables
 
 | Variable | Description | Required |
@@ -197,6 +258,51 @@ When conducting complex analysis:
 | `LOG_LEVEL` | Logging level (DEBUG, INFO, etc.) | No |
 
 ## Common Tasks
+
+### Comprehensive Matchup Analysis (All TIERs)
+```python
+from kenp0m_sp0rts_analyzer.comprehensive_matchup_analysis import ComprehensiveMatchupAnalyzer
+
+# Initialize analyzer with API key
+analyzer = ComprehensiveMatchupAnalyzer(api_key="your-api-key")
+
+# Analyze matchup with all TIER 1 + TIER 2 features
+report = analyzer.analyze_matchup("Duke", "North Carolina", neutral_site=True)
+
+# Generate detailed markdown report
+print(report.generate_markdown())
+# Includes: Four Factors, Point Distribution, Defensive Matchups, Tempo,
+#           Size/Athleticism, Experience/Chemistry, Predictions
+
+# Access specific analysis components
+print(f"Predicted margin: {report.prediction.predicted_margin}")
+print(f"Tempo edge: {report.tempo_analysis.pace_advantage}")
+print(f"Size advantage: {report.size_analysis.height_advantage}")
+```
+
+### Tournament Bracket Simulation
+```python
+from kenp0m_sp0rts_analyzer.tournament_simulator import TournamentSimulator
+
+# Initialize simulator
+sim = TournamentSimulator(api_key="your-api-key")
+
+# Run Monte Carlo simulation
+results = sim.simulate_tournament(num_simulations=10000)
+
+# Champion probabilities
+print("Championship Odds:")
+for team, prob in results.champion_probabilities.items():
+    print(f"{team}: {prob:.1%}")
+
+# Upset picks (lower seed with >50% win probability)
+print("\nUpset Alerts:")
+for upset in results.upset_picks:
+    print(f"{upset.lower_seed} over {upset.higher_seed} ({upset.probability:.1%})")
+
+# Expected value for brackets
+print(f"\nExpected bracket score: {results.expected_value}")
+```
 
 ### Fetching Team Efficiency Data
 ```python
@@ -211,7 +317,7 @@ efficiency = client.get_efficiency(season=2024)
 report = client.get_scouting_report(team="Duke", season=2024)
 ```
 
-### Analyzing Matchups
+### Analyzing Matchups (Basic)
 ```python
 from kenp0m_sp0rts_analyzer.analysis import analyze_matchup
 
@@ -219,7 +325,6 @@ result = analyze_matchup(team1="Duke", team2="North Carolina", season=2024)
 ```
 
 ### Predictive Modeling with Machine Learning
-
 ```python
 from kenp0m_sp0rts_analyzer.prediction import GamePredictor, BacktestingFramework
 

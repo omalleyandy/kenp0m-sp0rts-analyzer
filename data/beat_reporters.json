@@ -1,0 +1,313 @@
+{
+  "metadata": {
+    "last_updated": "2025-12-17",
+    "total_teams": 68,
+    "total_reporters": 180,
+    "coverage": "Major conferences + Top 100 programs",
+    "tier_definitions": {
+      "1": "Most reliable - Official team accounts, lead beat writers",
+      "2": "Reliable - Regular beat reporters, credible insiders",
+      "3": "Sometimes useful - Fan sites, secondary sources"
+    }
+  },
+  "conferences": {
+    "ACC": {
+      "Duke": [
+        {"handle": "@DukeReport", "name": "Duke Report", "tier": 1, "outlet": "247Sports"},
+        {"handle": "@dukereport", "name": "Duke Report Rivals", "tier": 1, "outlet": "Rivals"},
+        {"handle": "@DukeMBB", "name": "Duke Basketball Official", "tier": 1, "outlet": "Duke Athletics"},
+        {"handle": "@DWil24", "name": "David Shumate", "tier": 2, "outlet": "Inside Carolina"}
+      ],
+      "North Carolina": [
+        {"handle": "@HeelIllustrated", "name": "Heel Illustrated", "tier": 1, "outlet": "247Sports"},
+        {"handle": "@Inside_Carolina", "name": "Inside Carolina", "tier": 1, "outlet": "Independent"},
+        {"handle": "@TarHeelBlog", "name": "Tar Heel Blog", "tier": 2, "outlet": "SB Nation"},
+        {"handle": "@UNC_Basketball", "name": "UNC Basketball Official", "tier": 1, "outlet": "UNC Athletics"}
+      ],
+      "Virginia": [
+        {"handle": "@CavsCorner", "name": "Cavalier Insider", "tier": 1, "outlet": "Rivals"},
+        {"handle": "@StreakingTheLawn", "name": "Streaking The Lawn", "tier": 2, "outlet": "SB Nation"},
+        {"handle": "@UVAMensHoops", "name": "Virginia Basketball Official", "tier": 1, "outlet": "UVA Athletics"}
+      ],
+      "Miami": [
+        {"handle": "@CanesHoops", "name": "Miami Basketball Official", "tier": 1, "outlet": "Miami Athletics"},
+        {"handle": "@CanesWarning", "name": "Canes Warning", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Pittsburgh": [
+        {"handle": "@PittHoops", "name": "Pitt Basketball Official", "tier": 1, "outlet": "Pitt Athletics"},
+        {"handle": "@Pittsburgh_PN", "name": "Pittsburgh Post-Gazette", "tier": 2, "outlet": "Pittsburgh Post-Gazette"}
+      ],
+      "Louisville": [
+        {"handle": "@CardChronicle", "name": "Card Chronicle", "tier": 1, "outlet": "SB Nation"},
+        {"handle": "@jeffgreer_cj", "name": "Jeff Greer", "tier": 1, "outlet": "Courier-Journal"},
+        {"handle": "@UofLMBB", "name": "Louisville Basketball Official", "tier": 1, "outlet": "Louisville Athletics"}
+      ],
+      "Clemson": [
+        {"handle": "@ClemsonMBB", "name": "Clemson Basketball Official", "tier": 1, "outlet": "Clemson Athletics"},
+        {"handle": "@ClemsonReport", "name": "Clemson Report", "tier": 2, "outlet": "247Sports"}
+      ],
+      "NC State": [
+        {"handle": "@PackMensBball", "name": "NC State Basketball Official", "tier": 1, "outlet": "NC State Athletics"},
+        {"handle": "@PackInsider", "name": "Pack Insider", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Wake Forest": [
+        {"handle": "@WakeMBB", "name": "Wake Forest Basketball Official", "tier": 1, "outlet": "Wake Forest Athletics"},
+        {"handle": "@Deacs_Digest", "name": "Deacs Digest", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Syracuse": [
+        {"handle": "@Cuse_MBB", "name": "Syracuse Basketball Official", "tier": 1, "outlet": "Syracuse Athletics"},
+        {"handle": "@Troy_Nunes_ANC", "name": "Troy Nunes Is An Absolute Magician", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "SEC": {
+      "Kentucky": [
+        {"handle": "@KySportsRadio", "name": "Kentucky Sports Radio", "tier": 1, "outlet": "KSR"},
+        {"handle": "@vaughtsviews", "name": "Vaught's Views", "tier": 1, "outlet": "Lexington Herald-Leader"},
+        {"handle": "@KentuckyMBB", "name": "Kentucky Basketball Official", "tier": 1, "outlet": "Kentucky Athletics"},
+        {"handle": "@jackpilgrim", "name": "Jack Pilgrim", "tier": 2, "outlet": "KSR"}
+      ],
+      "Tennessee": [
+        {"handle": "@VolQuest", "name": "VolQuest", "tier": 1, "outlet": "247Sports"},
+        {"handle": "@wvltpaul", "name": "Paul Kuharsky", "tier": 1, "outlet": "WVLT"},
+        {"handle": "@Vol_Hoops", "name": "Tennessee Basketball Official", "tier": 1, "outlet": "Tennessee Athletics"}
+      ],
+      "Auburn": [
+        {"handle": "@AuburnMBB", "name": "Auburn Basketball Official", "tier": 1, "outlet": "Auburn Athletics"},
+        {"handle": "@AuburnSI", "name": "Auburn Sports Illustrated", "tier": 2, "outlet": "Sports Illustrated"}
+      ],
+      "Alabama": [
+        {"handle": "@AlabamaMBB", "name": "Alabama Basketball Official", "tier": 1, "outlet": "Alabama Athletics"},
+        {"handle": "@TideIllustrated", "name": "Tide Illustrated", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Arkansas": [
+        {"handle": "@RazorbackMBB", "name": "Arkansas Basketball Official", "tier": 1, "outlet": "Arkansas Athletics"},
+        {"handle": "@PigTrailNation", "name": "Pig Trail Nation", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Florida": [
+        {"handle": "@GatorsMBK", "name": "Florida Basketball Official", "tier": 1, "outlet": "Florida Athletics"},
+        {"handle": "@GatorsTerritory", "name": "Gators Territory", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Texas A&M": [
+        {"handle": "@aggiembk", "name": "Texas A&M Basketball Official", "tier": 1, "outlet": "Texas A&M Athletics"},
+        {"handle": "@TexAgs", "name": "TexAgs", "tier": 2, "outlet": "TexAgs"}
+      ],
+      "Missouri": [
+        {"handle": "@MizzouHoops", "name": "Missouri Basketball Official", "tier": 1, "outlet": "Missouri Athletics"},
+        {"handle": "@PowerMizzou", "name": "PowerMizzou", "tier": 2, "outlet": "Rivals"}
+      ],
+      "Ole Miss": [
+        {"handle": "@OleMissMBB", "name": "Ole Miss Basketball Official", "tier": 1, "outlet": "Ole Miss Athletics"},
+        {"handle": "@TheRebelWalk", "name": "The Rebel Walk", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Mississippi State": [
+        {"handle": "@HailStateMBK", "name": "Mississippi State Basketball Official", "tier": 1, "outlet": "Mississippi State Athletics"},
+        {"handle": "@SpiritBulldogs", "name": "Bulldog Blitz", "tier": 2, "outlet": "247Sports"}
+      ]
+    },
+    "Big Ten": {
+      "Purdue": [
+        {"handle": "@BoilerBall", "name": "Purdue Basketball Official", "tier": 1, "outlet": "Purdue Athletics"},
+        {"handle": "@BoilerUpload", "name": "Boiler Upload", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Indiana": [
+        {"handle": "@IndianaMBB", "name": "Indiana Basketball Official", "tier": 1, "outlet": "Indiana Athletics"},
+        {"handle": "@TheHoosier", "name": "The Hoosier", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Illinois": [
+        {"handle": "@IlliniMBB", "name": "Illinois Basketball Official", "tier": 1, "outlet": "Illinois Athletics"},
+        {"handle": "@IlliniInquirer", "name": "Illini Inquirer", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Michigan State": [
+        {"handle": "@MSU_Basketball", "name": "Michigan State Basketball Official", "tier": 1, "outlet": "Michigan State Athletics"},
+        {"handle": "@Spartan_Mag", "name": "Spartan Magazine", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Michigan": [
+        {"handle": "@umichbball", "name": "Michigan Basketball Official", "tier": 1, "outlet": "Michigan Athletics"},
+        {"handle": "@UMHoops", "name": "UM Hoops", "tier": 2, "outlet": "Independent"}
+      ],
+      "Wisconsin": [
+        {"handle": "@BadgerMBB", "name": "Wisconsin Basketball Official", "tier": 1, "outlet": "Wisconsin Athletics"},
+        {"handle": "@BadgerNationWI", "name": "Badger Nation", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Ohio State": [
+        {"handle": "@OhioStateHoops", "name": "Ohio State Basketball Official", "tier": 1, "outlet": "Ohio State Athletics"},
+        {"handle": "@Buckeye_Sports", "name": "Buckeye Sports Bulletin", "tier": 2, "outlet": "BSB"}
+      ],
+      "Iowa": [
+        {"handle": "@IowaHoops", "name": "Iowa Basketball Official", "tier": 1, "outlet": "Iowa Athletics"},
+        {"handle": "@HawkeyeReport", "name": "Hawkeye Report", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Maryland": [
+        {"handle": "@TerrapinHoops", "name": "Maryland Basketball Official", "tier": 1, "outlet": "Maryland Athletics"},
+        {"handle": "@TerrapinTimes", "name": "Terrapin Times", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Northwestern": [
+        {"handle": "@NUMensBball", "name": "Northwestern Basketball Official", "tier": 1, "outlet": "Northwestern Athletics"},
+        {"handle": "@insidenu", "name": "Inside NU", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "Big 12": {
+      "Kansas": [
+        {"handle": "@KUHoops", "name": "Kansas Basketball Official", "tier": 1, "outlet": "Kansas Athletics"},
+        {"handle": "@JphogAN_Catcher", "name": "Jesse Newell", "tier": 1, "outlet": "Kansas City Star"},
+        {"handle": "@GaryBedore", "name": "Gary Bedore", "tier": 1, "outlet": "Kansas City Star"}
+      ],
+      "Baylor": [
+        {"handle": "@BaylorMBB", "name": "Baylor Basketball Official", "tier": 1, "outlet": "Baylor Athletics"},
+        {"handle": "@SicEmSports", "name": "Sic 'Em Sports", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Texas": [
+        {"handle": "@TexasMBB", "name": "Texas Basketball Official", "tier": 1, "outlet": "Texas Athletics"},
+        {"handle": "@On3sports", "name": "On3 Sports", "tier": 2, "outlet": "On3"}
+      ],
+      "Texas Tech": [
+        {"handle": "@TexasTechMBB", "name": "Texas Tech Basketball Official", "tier": 1, "outlet": "Texas Tech Athletics"},
+        {"handle": "@RedRaiderSports", "name": "Red Raider Sports", "tier": 2, "outlet": "Rivals"}
+      ],
+      "Iowa State": [
+        {"handle": "@CycloneMBB", "name": "Iowa State Basketball Official", "tier": 1, "outlet": "Iowa State Athletics"},
+        {"handle": "@Cyclone_Fanatic", "name": "Cyclone Fanatic", "tier": 2, "outlet": "Independent"}
+      ],
+      "Kansas State": [
+        {"handle": "@KStateMBB", "name": "Kansas State Basketball Official", "tier": 1, "outlet": "Kansas State Athletics"},
+        {"handle": "@KStateOnline", "name": "K-State Online", "tier": 2, "outlet": "247Sports"}
+      ],
+      "TCU": [
+        {"handle": "@TCUBasketball", "name": "TCU Basketball Official", "tier": 1, "outlet": "TCU Athletics"},
+        {"handle": "@Frogs247", "name": "Frogs247", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Oklahoma State": [
+        {"handle": "@OSUMBB", "name": "Oklahoma State Basketball Official", "tier": 1, "outlet": "Oklahoma State Athletics"},
+        {"handle": "@PokesReport", "name": "Pokes Report", "tier": 2, "outlet": "247Sports"}
+      ],
+      "West Virginia": [
+        {"handle": "@WVUhoops", "name": "West Virginia Basketball Official", "tier": 1, "outlet": "West Virginia Athletics"},
+        {"handle": "@WVSportsNow", "name": "WV Sports Now", "tier": 2, "outlet": "247Sports"}
+      ],
+      "BYU": [
+        {"handle": "@BYUMBB", "name": "BYU Basketball Official", "tier": 1, "outlet": "BYU Athletics"},
+        {"handle": "@VanquishTheFoe", "name": "Vanquish The Foe", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "Big East": {
+      "UConn": [
+        {"handle": "@UConnMBB", "name": "UConn Basketball Official", "tier": 1, "outlet": "UConn Athletics"},
+        {"handle": "@TheUConnBlog", "name": "The UConn Blog", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Villanova": [
+        {"handle": "@NovaMBB", "name": "Villanova Basketball Official", "tier": 1, "outlet": "Villanova Athletics"},
+        {"handle": "@VUHoops", "name": "VU Hoops", "tier": 2, "outlet": "Independent"}
+      ],
+      "Creighton": [
+        {"handle": "@BluejayMBB", "name": "Creighton Basketball Official", "tier": 1, "outlet": "Creighton Athletics"},
+        {"handle": "@BluejayUnderground", "name": "Bluejay Underground", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Marquette": [
+        {"handle": "@MarquetteMBB", "name": "Marquette Basketball Official", "tier": 1, "outlet": "Marquette Athletics"},
+        {"handle": "@AnonymousEagle", "name": "Anonymous Eagle", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Xavier": [
+        {"handle": "@XavierMBB", "name": "Xavier Basketball Official", "tier": 1, "outlet": "Xavier Athletics"},
+        {"handle": "@Streaming_Musky", "name": "Streaming The Screaming", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Providence": [
+        {"handle": "@PCFriarMBB", "name": "Providence Basketball Official", "tier": 1, "outlet": "Providence Athletics"},
+        {"handle": "@FriarBasketball", "name": "Friar Basketball", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "St. John's": [
+        {"handle": "@StJohnsBBall", "name": "St. John's Basketball Official", "tier": 1, "outlet": "St. John's Athletics"},
+        {"handle": "@RumbleInTheGarden", "name": "Rumble In The Garden", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Georgetown": [
+        {"handle": "@GeorgetownHoops", "name": "Georgetown Basketball Official", "tier": 1, "outlet": "Georgetown Athletics"},
+        {"handle": "@CasualHoya", "name": "Casual Hoya", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Butler": [
+        {"handle": "@ButlerMBB", "name": "Butler Basketball Official", "tier": 1, "outlet": "Butler Athletics"},
+        {"handle": "@MidMajorMadness", "name": "Mid-Major Madness", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Seton Hall": [
+        {"handle": "@SetonHallMBB", "name": "Seton Hall Basketball Official", "tier": 1, "outlet": "Seton Hall Athletics"},
+        {"handle": "@SHUHoops", "name": "SHU Hoops", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "Pac-12": {
+      "Arizona": [
+        {"handle": "@ArizonaMBB", "name": "Arizona Basketball Official", "tier": 1, "outlet": "Arizona Athletics"},
+        {"handle": "@ArizonaDesertSwarm", "name": "Arizona Desert Swarm", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "UCLA": [
+        {"handle": "@UCLAMBB", "name": "UCLA Basketball Official", "tier": 1, "outlet": "UCLA Athletics"},
+        {"handle": "@BruinsNation", "name": "Bruins Nation", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "USC": [
+        {"handle": "@USC_Hoops", "name": "USC Basketball Official", "tier": 1, "outlet": "USC Athletics"},
+        {"handle": "@ConquestChronicles", "name": "Conquest Chronicles", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Oregon": [
+        {"handle": "@OregonMBB", "name": "Oregon Basketball Official", "tier": 1, "outlet": "Oregon Athletics"},
+        {"handle": "@ATQBasketball", "name": "Addicted To Quack", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Colorado": [
+        {"handle": "@CUBuffsMBB", "name": "Colorado Basketball Official", "tier": 1, "outlet": "Colorado Athletics"},
+        {"handle": "@CUSportsReport", "name": "CU Sports Report", "tier": 2, "outlet": "247Sports"}
+      ],
+      "Washington": [
+        {"handle": "@UW_MBB", "name": "Washington Basketball Official", "tier": 1, "outlet": "Washington Athletics"},
+        {"handle": "@UWDawgPound", "name": "UW Dawg Pound", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "American": {
+      "Houston": [
+        {"handle": "@UHCougarMBK", "name": "Houston Basketball Official", "tier": 1, "outlet": "Houston Athletics"},
+        {"handle": "@CougarDigest", "name": "Cougar Digest", "tier": 2, "outlet": "Sports Illustrated"}
+      ],
+      "Memphis": [
+        {"handle": "@MemphisMBB", "name": "Memphis Basketball Official", "tier": 1, "outlet": "Memphis Athletics"},
+        {"handle": "@MemphisRivals", "name": "Memphis Rivals", "tier": 2, "outlet": "Rivals"}
+      ],
+      "SMU": [
+        {"handle": "@SMUBasketball", "name": "SMU Basketball Official", "tier": 1, "outlet": "SMU Athletics"},
+        {"handle": "@PonyStampede", "name": "Pony Stampede", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "Mountain West": {
+      "San Diego State": [
+        {"handle": "@Aztec_MBB", "name": "San Diego State Basketball Official", "tier": 1, "outlet": "SDSU Athletics"},
+        {"handle": "@TheAztecMesa", "name": "The Aztec Mesa", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Nevada": [
+        {"handle": "@NevadaHoops", "name": "Nevada Basketball Official", "tier": 1, "outlet": "Nevada Athletics"},
+        {"handle": "@NevadaSportsNet", "name": "Nevada Sports Net", "tier": 2, "outlet": "NSN"}
+      ],
+      "Boise State": [
+        {"handle": "@BroncoSportsFB", "name": "Boise State Basketball Official", "tier": 1, "outlet": "Boise State Athletics"},
+        {"handle": "@OBTCBroncos", "name": "OBNUG", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "WCC": {
+      "Gonzaga": [
+        {"handle": "@ZagMBB", "name": "Gonzaga Basketball Official", "tier": 1, "outlet": "Gonzaga Athletics"},
+        {"handle": "@ZagsHQ", "name": "Zags HQ", "tier": 2, "outlet": "Independent"}
+      ],
+      "Saint Mary's": [
+        {"handle": "@SMCGaelsMBB", "name": "Saint Mary's Basketball Official", "tier": 1, "outlet": "Saint Mary's Athletics"},
+        {"handle": "@GaelsGoingNorth", "name": "Gaels Going North", "tier": 2, "outlet": "SB Nation"}
+      ]
+    },
+    "A-10": {
+      "Dayton": [
+        {"handle": "@DaytonMBB", "name": "Dayton Basketball Official", "tier": 1, "outlet": "Dayton Athletics"},
+        {"handle": "@FlyersHoops", "name": "Flyers Hoops", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "VCU": [
+        {"handle": "@VCU_Hoops", "name": "VCU Basketball Official", "tier": 1, "outlet": "VCU Athletics"},
+        {"handle": "@RamNation", "name": "Ram Nation", "tier": 2, "outlet": "SB Nation"}
+      ],
+      "Saint Louis": [
+        {"handle": "@SLU_Billikens", "name": "Saint Louis Basketball Official", "tier": 1, "outlet": "SLU Athletics"},
+        {"handle": "@BillsBasketball", "name": "Bills Basketball", "tier": 2, "outlet": "SB Nation"}
+      ]
+    }
+  }
+}
