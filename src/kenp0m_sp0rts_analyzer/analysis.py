@@ -38,8 +38,8 @@ def analyze_matchup(
     team1 = normalize_team_name(team1)
     team2 = normalize_team_name(team2)
 
-    # Get efficiency data
-    efficiency = client.get_efficiency(season=season)
+    # Get ratings data (includes rank, AdjEM, AdjT, etc.)
+    efficiency = client.get_pomeroy_ratings(season=season)
 
     team1_data = efficiency[efficiency["Team"] == team1]
     team2_data = efficiency[efficiency["Team"] == team2]

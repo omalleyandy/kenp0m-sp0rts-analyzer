@@ -387,7 +387,9 @@ class ComprehensiveMatchupAnalyzer:
             weights = MatchupWeights()
 
         # Run all analyzers
-        basic_analysis = analyze_matchup(team1, team2, season, self.api)
+        basic_analysis = analyze_matchup(
+            team1, team2, season, neutral_site=neutral_site
+        )
         ff_analysis = self.four_factors.analyze_matchup(team1, team2, season)
         tempo_analysis = self.tempo.analyze_matchup(team1, team2, season)
         pd_analysis = self.point_dist.analyze_matchup(team1, team2, season)
