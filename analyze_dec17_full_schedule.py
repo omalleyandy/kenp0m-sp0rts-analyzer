@@ -191,26 +191,34 @@ def analyze_game(team1, team2, spread, network):
         }
 
         if spread != 0.0:
-            # When team2 (home) wins, spread is negative (e.g., Wake Forest -12.7)
-            # When team1 (away) wins, spread is positive (e.g., +12.7 for away team)
+            # Spread calculation logic:
+            # - Vegas spread is from HOME team perspective (negative = home favored)
+            # - System spread: negative if home wins, positive if away wins
+            # - spread_diff = system_spread - vegas_spread (KEEP THE SIGN!)
+            #   - Positive diff: System sees home team WEAKER → Value on underdog
+            #   - Negative diff: System sees home team STRONGER → Value on favorite
             system_spread = -basic.predicted_margin if basic.predicted_winner == team2 else basic.predicted_margin
-            spread_diff = abs(system_spread - spread)
-            result['spread_diff'] = spread_diff
+            spread_diff = system_spread - spread  # Don't use abs() - direction matters!
+            result['spread_diff'] = abs(spread_diff)  # Store magnitude for filtering
 
             print(f"\n  BETTING:")
-            if spread_diff < 2.0:
-                print(f"    -> System agrees with Vegas (diff: {spread_diff:.1f})")
+            print(f"    System: {system_spread:+.1f} | Vegas: {spread:+.1f} | Diff: {spread_diff:+.1f}")
+
+            if abs(spread_diff) < 2.0:
+                print(f"    -> System agrees with Vegas")
                 print(f"    -> PASS - no edge")
-            elif spread_diff >= 5.0:
+            elif abs(spread_diff) >= 5.0:
                 result['value'] = True
-                if system_spread > spread:
-                    print(f"    -> System sees {team2} stronger (diff: {spread_diff:.1f})")
-                    print(f"    -> VALUE: {team2} {spread:+.1f}")
+                if spread_diff > 0:
+                    # System sees home team weaker than Vegas → Take underdog
+                    print(f"    -> System sees {team2} WEAKER than Vegas (won't cover)")
+                    print(f"    -> VALUE: {team1} {abs(spread):+.1f} (underdog)")
                 else:
-                    print(f"    -> System sees {team1} stronger (diff: {spread_diff:.1f})")
-                    print(f"    -> VALUE: {team1} +{abs(spread):.1f}")
+                    # System sees home team stronger than Vegas → Take favorite
+                    print(f"    -> System sees {team2} STRONGER than Vegas (will cover)")
+                    print(f"    -> VALUE: {team2} {spread:+.1f} (favorite)")
             else:
-                print(f"    -> Slight disagreement (diff: {spread_diff:.1f})")
+                print(f"    -> Slight disagreement ({abs(spread_diff):.1f} pts)")
                 print(f"    -> Proceed with caution")
 
         return result
