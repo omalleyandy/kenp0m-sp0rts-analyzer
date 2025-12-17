@@ -36,6 +36,7 @@ from typing import Any
 import pandas as pd
 
 from .api_client import KenPomAPI
+from .utils import normalize_team_name
 
 
 @dataclass
@@ -173,6 +174,10 @@ class FourFactorsMatchup:
         Raises:
             ValueError: If team not found
         """
+        # Normalize team names for consistent lookups
+        team1 = normalize_team_name(team1)
+        team2 = normalize_team_name(team2)
+
         # Get Four Factors data
         four_factors = self.api.get_four_factors(year=season, conf_only=conf_only)
         df = four_factors.to_dataframe()

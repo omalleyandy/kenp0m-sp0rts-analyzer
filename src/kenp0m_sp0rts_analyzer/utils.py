@@ -85,18 +85,21 @@ def get_cache_dir() -> Path:
 def normalize_team_name(team: str) -> str:
     """Normalize team name for consistent lookups.
 
+    Maps common abbreviations and name variations to official KenPom team names.
+
     Args:
         team: Raw team name input.
 
     Returns:
-        Normalized team name.
+        Normalized team name matching KenPom API format.
     """
-    # Common name mappings
+    # Common abbreviation and name variation mappings
+    # Format: input_variation -> official_kenpom_name
     name_map = {
+        # Common abbreviations
         "unc": "North Carolina",
         "nc": "North Carolina",
         "uconn": "Connecticut",
-        "usc": "Southern California",
         "ucla": "UCLA",
         "lsu": "LSU",
         "uk": "Kentucky",
@@ -111,11 +114,49 @@ def normalize_team_name(team: str) -> str:
         "utep": "UTEP",
         "iupui": "IUPUI",
         "umbc": "UMBC",
+        # USC variations (KenPom uses "USC" not "Southern California")
+        "usc": "USC",
+        "southern california": "USC",
+        "so california": "USC",
+        "southern cal": "USC",
+        # NC State variations (KenPom uses "N.C. State")
+        "north carolina state": "N.C. State",
+        "north carolina st": "N.C. State",
+        "north carolina st.": "N.C. State",
+        "nc state": "N.C. State",
+        "ncstate": "N.C. State",
+        # USC Upstate variations (KenPom uses "USC Upstate")
+        "south carolina upstate": "USC Upstate",
+        "sc upstate": "USC Upstate",
+        # Miami variations (disambiguate FL vs OH)
+        "miami florida": "Miami FL",
+        "miami (fl)": "Miami FL",
+        "miami fl": "Miami FL",
+        "miami ohio": "Miami OH",
+        "miami (oh)": "Miami OH",
+        "miami oh": "Miami OH",
+        # St. John's variations
+        "st. john's": "St. John's",
+        "saint john's": "St. John's",
+        "st johns": "St. John's",
+        # St. Mary's variations
+        "st. mary's": "St. Mary's",
+        "saint mary's": "St. Mary's",
+        "st marys": "St. Mary's",
+        # Dakota State variations (need to disambiguate)
+        "north dakota state": "North Dakota St.",
+        "north dakota st": "North Dakota St.",
+        "north dakota st.": "North Dakota St.",
+        "ndsu": "North Dakota St.",
+        "south dakota state": "South Dakota St.",
+        "south dakota st": "South Dakota St.",
+        "south dakota st.": "South Dakota St.",
+        "sdsu": "San Diego St.",  # More commonly SDSU = San Diego State
     }
 
     normalized = team.strip()
 
-    # Check if it's a known abbreviation
+    # Check if it's a known abbreviation/variation (case-insensitive)
     lower_name = normalized.lower()
     if lower_name in name_map:
         return name_map[lower_name]

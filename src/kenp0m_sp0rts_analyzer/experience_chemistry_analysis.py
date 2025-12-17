@@ -37,6 +37,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from .api_client import KenPomAPI
+from .utils import normalize_team_name
 
 
 @dataclass
@@ -242,6 +243,9 @@ class ExperienceChemistryAnalyzer:
         Raises:
             ValueError: If team not found
         """
+        # Normalize team name for consistent lookup
+        team = normalize_team_name(team)
+
         data = self.api.get_height(year=season)
         team_data = next((t for t in data.data if t["TeamName"] == team), None)
 

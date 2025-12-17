@@ -1,6 +1,6 @@
-"""Batch analysis of all NCAA Basketball games from December 16, 2025.
+"""Batch analysis of key NCAA Basketball games from December 17, 2025.
 
-This script analyzes all major matchups from today's schedule.
+Focus on ranked teams, major conference matchups, and competitive games.
 """
 
 import os
@@ -16,22 +16,30 @@ from kenp0m_sp0rts_analyzer.experience_chemistry_analysis import ExperienceChemi
 # Load environment variables
 load_dotenv()
 
-# Today's games (December 16, 2025)
+# December 17, 2025 - Key Games
+# Format: (away_team, home_team, spread (home team), network)
 GAMES = [
-    # Already analyzed:
-    # ("Louisville", "Tennessee", -2.5, "ESPN"),
-    # ("Lipscomb", "Duke", -33.5, "ACC Network"),
-    # ("Toledo", "Michigan St.", -23.5, "Peacock"),
+    # RANKED TEAMS
+    ("Vanderbilt", "Memphis", -2.5, "ESPN2"),  # #13 Vanderbilt @ Memphis
+    ("Saint Francis", "Florida", -28.5, "SEC Network"),  # @ #23 Florida
+    ("South Florida", "Alabama", -19.5, "SECN+"),  # @ #16 Alabama
+    ("Campbell", "Gonzaga", -32.5, "ESPN+"),  # @ #7 Gonzaga
 
-    # Remaining games:
-    ("East Tennessee St.", "North Carolina", -15.5, "ACC Network"),
-    ("Butler", "Connecticut", -15.5, "Peacock"),
-    ("Pacific", "BYU", -23.5, "Peacock"),
-    ("DePaul", "St. John's", -19.5, "ESPN"),
-    ("Northern Colorado", "Texas Tech", -24.5, "ESPN+"),
-    ("Abilene Christian", "Arizona", -33.5, "ESPN+"),
-    ("Queens", "Arkansas", -25.5, "SEC Network"),
-    ("Towson", "Kansas", -18.5, "ESPN2"),
+    # BIG EAST MATCHUPS
+    ("Creighton", "Xavier", -3.5, "FS1"),  # Big East battle
+    ("Georgetown", "Marquette", -8.5, "FS1"),  # Big East rivalry
+
+    # ACC MATCHUPS
+    ("Longwood", "Wake Forest", -18.5, "ACC Extra"),
+    ("Mercyhurst", "Syracuse", -26.5, "ACC Extra"),
+    ("Binghamton", "Pittsburgh", -21.5, "ACC Extra"),
+    ("Texas Southern", "NC State", -24.5, "ACC Extra"),
+
+    # OTHER COMPETITIVE GAMES
+    ("Northern Iowa", "UIC", -4.5, "ESPN+"),  # MVC vs Horizon
+    ("Mercer", "UCF", -12.5, "ESPN+"),  # SoCon vs Big 12
+    ("UTSA", "USC", -8.5, "BTN"),  # Conference USA vs Big Ten
+    ("Air Force", "San Diego State", -12.5, "CBSSN"),  # Mountain West
 ]
 
 SEASON = 2025
@@ -42,7 +50,7 @@ def print_separator():
 
 def analyze_game(team1, team2, spread, network):
     """Analyze a single game and return key insights."""
-    print(f"\nAnalyzing: {team1} @ {team2} (Spread: {team2} {spread}) [{network}]")
+    print(f"\nAnalyzing: {team1} @ {team2} (Spread: {team2} {spread:+.1f}) [{network}]")
     print("-" * 80)
 
     try:
@@ -109,7 +117,7 @@ def analyze_game(team1, team2, spread, network):
         # Print results
         print(f"\nRESULTS:")
         print(f"  System Prediction: {basic.predicted_winner} by {basic.predicted_margin:.1f}")
-        print(f"  Vegas Line: {team2} {spread}")
+        print(f"  Vegas Line: {team2} {spread:+.1f}")
         print(f"  Dimensional Battles: {team2} {team2_wins}-{team1_wins} {team1}")
 
         # Four Factors highlights
@@ -140,10 +148,10 @@ def analyze_game(team1, team2, spread, network):
         elif spread_diff >= 5.0:
             if system_spread > spread:
                 print(f"    -> System sees {team2} stronger (diff: {spread_diff:.1f})")
-                print(f"    -> VALUE: {team2} {spread}")
+                print(f"    -> VALUE: {team2} {spread:+.1f}")
             else:
                 print(f"    -> System sees {team1} stronger (diff: {spread_diff:.1f})")
-                print(f"    -> VALUE: {team1} +{abs(spread)}")
+                print(f"    -> VALUE: {team1} +{abs(spread):.1f}")
         else:
             print(f"    -> Slight disagreement (diff: {spread_diff:.1f})")
             print(f"    -> Proceed with caution")
@@ -157,7 +165,8 @@ def analyze_game(team1, team2, spread, network):
             'team1_wins': team1_wins,
             'team2_wins': team2_wins,
             'ff_advantage': ff_analysis.overall_advantage,
-            'value': spread_diff >= 5.0
+            'value': spread_diff >= 5.0,
+            'spread_diff': spread_diff
         }
 
     except Exception as e:
@@ -166,7 +175,7 @@ def analyze_game(team1, team2, spread, network):
 
 def main():
     print("=" * 80)
-    print("NCAA BASKETBALL - DECEMBER 16, 2025 MATCHUP ANALYSIS")
+    print("NCAA BASKETBALL - DECEMBER 17, 2025 MATCHUP ANALYSIS")
     print("=" * 80)
 
     api_key = os.getenv("KENPOM_API_KEY")
@@ -175,7 +184,7 @@ def main():
         return
 
     print(f"\n[OK] API key loaded")
-    print(f"[OK] Analyzing {len(GAMES)} remaining games...\n")
+    print(f"[OK] Analyzing {len(GAMES)} key games from tomorrow's schedule...\n")
 
     results = []
 
@@ -194,14 +203,26 @@ def main():
     value_games = [r for r in results if r and r.get('value')]
 
     if value_games:
-        print(f"\nFound {len(value_games)} games with betting value:\n")
+        print(f"\nFound {len(value_games)} games with significant betting value (5+ point edge):\n")
         for r in value_games:
-            print(f"  {r['team1']} @ {r['team2']} ({r['team2']} {r['spread']})")
+            print(f"  {r['team1']} @ {r['team2']} ({r['team2']} {r['spread']:+.1f})")
             print(f"    -> System: {r['system_winner']} by {r['system_margin']:.1f}")
+            print(f"    -> Edge: {r['spread_diff']:.1f} points")
             print(f"    -> Value opportunity detected\n")
     else:
-        print("\nNo significant value opportunities detected.")
-        print("All lines are efficient relative to system predictions.\n")
+        print("\nNo significant value opportunities detected (5+ point edge).")
+        print("All lines appear efficient relative to system predictions.\n")
+
+    # Interesting games (2-5 point edge)
+    moderate_games = [r for r in results if r and 2.0 <= r.get('spread_diff', 0) < 5.0]
+    if moderate_games:
+        print("\n" + "-" * 80)
+        print("MODERATE DISAGREEMENTS (2-5 point edge - proceed with caution):")
+        print("-" * 80 + "\n")
+        for r in moderate_games:
+            print(f"  {r['team1']} @ {r['team2']} ({r['team2']} {r['spread']:+.1f})")
+            print(f"    -> System: {r['system_winner']} by {r['system_margin']:.1f}")
+            print(f"    -> Edge: {r['spread_diff']:.1f} points\n")
 
     print("=" * 80)
     print(f"[OK] Analysis complete! Analyzed {len(results)} games.")
