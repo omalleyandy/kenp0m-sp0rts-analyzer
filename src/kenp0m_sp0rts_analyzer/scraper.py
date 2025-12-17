@@ -132,16 +132,30 @@ class KenPomScraper:
         email, password = self._get_credentials()
 
         logger.info("Navigating to KenPom login page...")
-        await self._page.goto(KENPOM_LOGIN_URL)
+        await self._page.goto(KENPOM_LOGIN_URL, wait_until="domcontentloaded")
 
-        # Wait for page to load
-        await self._page.wait_for_load_state("networkidle")
+        # Wait for page to load and check for Cloudflare
+        try:
+            # Wait for either the login form or Cloudflare challenge
+            await self._page.wait_for_load_state("networkidle", timeout=60000)
+        except Exception:
+            logger.warning("Page load timeout, continuing anyway...")
 
         # Check if already logged in (redirect to main page)
         if "login" not in self._page.url.lower():
             logger.info("Already logged in from previous session")
             self._logged_in = True
             return True
+
+        # Wait for login form to be visible (with longer timeout for Cloudflare)
+        logger.info("Waiting for login form...")
+        try:
+            await self._page.wait_for_selector('input[name="email"]', timeout=60000, state="visible")
+        except Exception as e:
+            logger.error(f"Login form not found: {e}")
+            logger.info("Page URL: " + self._page.url)
+            logger.info("Page title: " + await self._page.title())
+            raise
 
         # Fill login form
         logger.info("Filling login form...")
@@ -154,8 +168,13 @@ class KenPomScraper:
         # Click login button
         await self._page.click('input[type="submit"]')
 
-        # Wait for navigation
-        await self._page.wait_for_load_state("networkidle")
+        # Wait for navigation (with longer timeout for Cloudflare/redirects)
+        try:
+            await self._page.wait_for_load_state("networkidle", timeout=60000)
+        except Exception:
+            # If networkidle times out, try domcontentloaded as fallback
+            logger.warning("networkidle timeout, waiting for domcontentloaded...")
+            await self._page.wait_for_load_state("domcontentloaded", timeout=30000)
 
         # Check for successful login
         if "login" in self._page.url.lower():

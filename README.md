@@ -502,6 +502,28 @@ ruff format src/ tests/
 mypy src/
 ```
 
+### API Reverse Engineering Tools
+
+The project includes development tools for reverse engineering and validating the KenPom API documentation:
+
+```bash
+# Reverse engineer API documentation
+uv run python scripts/reverse_engineer_api_docs.py --email your-email@example.com --password your-password
+
+# Compare discovered endpoints with implementation
+uv run python scripts/compare_api_docs.py
+```
+
+**Tools:**
+- `scripts/reverse_engineer_api_docs.py` - Extracts endpoint information from API documentation page
+- `scripts/compare_api_docs.py` - Compares discovered endpoints with `api_client.py` implementation
+
+**Output:**
+- `reports/api_reverse_engineering/` - Generated reports (gitignored)
+- `docs/API_REVERSE_ENGINEERING_FINDINGS.md` - Findings documentation
+
+See **[scripts/README.md](scripts/README.md)** for detailed usage instructions.
+
 ## Project Structure
 
 ```

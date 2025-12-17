@@ -117,15 +117,39 @@ class StealthBrowser:
         """Start the browser with stealth configuration."""
         try:
             from playwright.async_api import async_playwright
-            from playwright_stealth import stealth_async
         except ImportError as e:
             raise ImportError(
                 "Browser automation requires extra dependencies. "
                 "Install with: pip install kenp0m-sp0rts-analyzer[browser] && playwright install chromium"
             ) from e
 
+        # Try to import playwright_stealth, but make it optional
+        # Our CDP-based stealth techniques are comprehensive enough
+        self._stealth_available = False
+        self._stealth_func = None
+        
+        # Note: playwright_stealth package API varies by version
+        # We'll rely on our built-in CDP stealth which is more reliable
+        try:
+            import playwright_stealth
+            # Try to find a usable stealth function
+            if hasattr(playwright_stealth, 'stealth_async'):
+                self._stealth_func = playwright_stealth.stealth_async
+                self._stealth_available = True
+            elif hasattr(playwright_stealth, 'stealth'):
+                stealth_module = getattr(playwright_stealth, 'stealth')
+                # Check if it's a module with async_apply
+                if hasattr(stealth_module, 'async_apply'):
+                    self._stealth_func = stealth_module.async_apply
+                    self._stealth_available = True
+        except (ImportError, AttributeError):
+            # Not a problem - we have comprehensive CDP stealth
+            logger.debug(
+                "playwright_stealth not available or incompatible. "
+                "Using built-in CDP stealth techniques."
+            )
+
         self._playwright = await async_playwright().start()
-        self._stealth_async = stealth_async
 
         # Browser launch arguments for stealth
         launch_args = [
@@ -221,8 +245,15 @@ class StealthBrowser:
 
         page = await self._context.new_page()
 
-        # Apply stealth techniques
-        await self._stealth_async(page)
+        # Apply playwright_stealth if available (optional - we have CDP stealth)
+        if self._stealth_available and self._stealth_func:
+            try:
+                if asyncio.iscoroutinefunction(self._stealth_func):
+                    await self._stealth_func(page)
+                else:
+                    self._stealth_func(page)
+            except Exception as e:
+                logger.debug(f"playwright_stealth failed: {e}. Using CDP stealth only.")
 
         # Additional stealth via CDP
         if self.config.enable_cdp:
