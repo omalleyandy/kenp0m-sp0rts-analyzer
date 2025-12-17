@@ -4,6 +4,15 @@ This directory contains comprehensive documentation for the KenPom Sports Analyz
 
 ---
 
+## 🎯 Project Scope
+
+**IMPORTANT**: Before diving into documentation, read **[../PROJECT_SCOPE.md](../PROJECT_SCOPE.md)** to understand:
+- What this project IS (NCAA Basketball analytics with KenPom)
+- What this project IS NOT (No NFL, no Billy Walters, no weather factors)
+- Official boundaries and data philosophy
+
+---
+
 ## 📚 Table of Contents
 
 ### Getting Started

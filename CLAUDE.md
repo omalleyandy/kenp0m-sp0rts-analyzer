@@ -2,7 +2,21 @@
 
 ## Project Overview
 
-This is a Python project for NCAA Division I Men's Basketball analytics using KenPom data. It provides comprehensive tools for analyzing college basketball through KenPom's advanced efficiency metrics, machine learning predictions, and statistical modeling.
+This is a Python project for **NCAA Division I Men's Basketball analytics** using KenPom data. It provides comprehensive tools for analyzing college basketball through KenPom's advanced efficiency metrics, machine learning predictions, and statistical modeling.
+
+**IMPORTANT**: See [PROJECT_SCOPE.md](PROJECT_SCOPE.md) for official project boundaries.
+
+### What This Project IS
+- ✅ NCAA Division I Men's Basketball analytics ONLY
+- ✅ KenPom efficiency-based methodology
+- ✅ Indoor arena games (weather NOT applicable)
+- ✅ Academic/research approach
+
+### What This Project IS NOT
+- ❌ NOT an NFL/football analytics system
+- ❌ NOT using Billy Walters methodology (wrong sport)
+- ❌ NOT incorporating weather factors (basketball is indoors)
+- ❌ NOT a multi-sport betting platform
 
 ## Quick Reference
 

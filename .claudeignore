@@ -1,0 +1,31 @@
+# Files to ignore for Claude AI context
+
+# HTML data files (too large, not relevant for code understanding)
+data/covers_full_page.html
+
+# Temporary analysis files
+FANMATCH_ANALYSIS_*.md
+
+# Large data files
+*.parquet
+*.csv
+data/*.json
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Cache
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Env
+.env
+.env.local
