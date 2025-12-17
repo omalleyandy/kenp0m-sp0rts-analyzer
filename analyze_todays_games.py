@@ -134,7 +134,13 @@ def analyze_game(team1, team2, spread, network):
         # - spread_diff = system_spread - vegas_spread (KEEP THE SIGN!)
         #   - Positive diff: System sees home team WEAKER → Value on underdog
         #   - Negative diff: System sees home team STRONGER → Value on favorite
-        system_spread = -basic.predicted_margin if basic.predicted_winner == team2 else basic.predicted_margin
+
+        # Normalize team names for comparison (predicted_winner is normalized)
+        from kenp0m_sp0rts_analyzer.utils import normalize_team_name
+        normalized_team1 = normalize_team_name(team1)
+        normalized_team2 = normalize_team_name(team2)
+
+        system_spread = -basic.predicted_margin if basic.predicted_winner == normalized_team2 else basic.predicted_margin
         spread_diff = system_spread - spread  # Don't use abs() - direction matters!
 
         print(f"\n  BETTING:")
