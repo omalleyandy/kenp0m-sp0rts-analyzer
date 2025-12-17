@@ -360,14 +360,73 @@ if 'AdjEM_Momentum' in data.columns:
 
 ---
 
+## Step 6: Validate Betting Edges
+
+**IMPORTANT**: Always validate predictions against market lines before betting!
+
+### Why Validation Matters
+
+KenPom models can be wrong when they disagree with actual game results. Always check:
+- Model prediction vs historical averages
+- Both should agree on direction (OVER/UNDER)
+- Edge should be significant (>5 points for totals)
+
+### Validation Workflow
+
+```bash
+# 1. Make prediction
+uv run python scripts/predict_game.py "Montana St." "Cal Poly" --home team2
+
+# 2. Validate against market lines
+uv run python scripts/validate_edge.py "Montana St." "Cal Poly" \
+  --market-spread -3 \
+  --market-total 160 \
+  --home team2
+```
+
+### Example Output
+
+```
+================================RECOMMENDATIONS=================================
+
+Spread: PASS (edge too small)
+Total: CONFLICT - Model and historical disagree (>10 points)
+
+====================================WARNINGS====================================
+
+WARNING: Manual validation required - check actual game results
+```
+
+### When to Bet
+
+| Scenario | Action |
+|----------|--------|
+| Model + Historical agree, edge >5 pts | ✅ BET |
+| Model + Historical agree, edge <5 pts | ⚠️ PASS (edge too small) |
+| Model disagrees with historical >10 pts | ❌ CONFLICT - PASS |
+| Direction mismatch (OVER vs UNDER) | ❌ PASS |
+
+**Golden Rule**: When in doubt, pass. No bet is better than a bad bet.
+
+### Detailed Guardrails
+
+See `docs/EDGE_VALIDATION_GUARDRAILS.md` for:
+- Complete validation workflow
+- Data source rules (KenPom only!)
+- Edge thresholds and decision trees
+- Common pitfalls to avoid
+
+---
+
 ## Next Steps
 
 1. ✅ **Data Collection**: Run `collect_daily_data.py` to get fresh data
 2. ✅ **Make Predictions**: Use `predict_game.py` for any matchup
-3. 📊 **Build Features**: Extend with Four Factors analysis (see `docs/KENPOM_ANALYTICS_GUIDE.md`)
-4. 🤖 **Train ML Model**: Use `prediction.py` to train on historical games
-5. 📈 **Backtest**: Validate accuracy using archive endpoint
-6. 🎯 **Optimize**: Find betting edges and tournament picks
+3. ✅ **Validate Edges**: Use `validate_edge.py` before betting
+4. 📊 **Build Features**: Extend with Four Factors analysis (see `docs/KENPOM_ANALYTICS_GUIDE.md`)
+5. 🤖 **Train ML Model**: Use `prediction.py` to train on historical games
+6. 📈 **Backtest**: Validate accuracy using archive endpoint
+7. 🎯 **Optimize**: Find betting edges and tournament picks
 
 ---
 
