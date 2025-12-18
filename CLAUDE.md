@@ -7,12 +7,14 @@ This is a Python project for **NCAA Division I Men's Basketball analytics** usin
 **IMPORTANT**: See [docs/PROJECT_SCOPE.md](docs/PROJECT_SCOPE.md) for official project boundaries.
 
 ### What This Project IS
+
 - ✅ NCAA Division I Men's Basketball analytics ONLY
 - ✅ KenPom efficiency-based methodology
 - ✅ Indoor arena games (weather NOT applicable)
 - ✅ Academic/research approach
 
 ### What This Project IS NOT
+
 - ❌ NOT an NFL/football analytics system
 - ❌ NOT using Billy Walters methodology (wrong sport)
 - ❌ NOT incorporating weather factors (basketball is indoors)
@@ -21,6 +23,7 @@ This is a Python project for **NCAA Division I Men's Basketball analytics** usin
 ## Quick Reference
 
 ### Build & Test Commands
+
 ```bash
 # Install dependencies (using uv - preferred)
 uv pip install -e ".[dev]"
@@ -43,6 +46,7 @@ ruff format src/ tests/
 ```
 
 ### Project Structure
+
 ```
 kenp0m-sp0rts-analyzer/
 ├── src/kenp0m_sp0rts_analyzer/     # Core package (26 modules)
@@ -103,38 +107,43 @@ kenp0m-sp0rts-analyzer/
 ### Key Modules Reference
 
 #### Analytics Pipeline
-| Module | Purpose | TIER |
-|--------|---------|------|
-| `comprehensive_matchup_analysis.py` | All-in-one matchup analyzer | Integration |
-| `four_factors_matchup.py` | Four Factors analysis | 1 |
-| `point_distribution_analysis.py` | Scoring breakdown | 1 |
-| `defensive_analysis.py` | Defensive matchups | 1 |
-| `tempo_analysis.py` | Pace/tempo analysis | 1 |
-| `size_athleticism_analysis.py` | Height/athleticism | 2 |
-| `experience_chemistry_analysis.py` | Experience analysis | 2 |
-| `prediction.py` | ML predictions + backtesting | Advanced |
-| `tournament_simulator.py` | Bracket simulation | Advanced |
+
+| Module                              | Purpose                      | TIER        |
+| ----------------------------------- | ---------------------------- | ----------- |
+| `comprehensive_matchup_analysis.py` | All-in-one matchup analyzer  | Integration |
+| `four_factors_matchup.py`           | Four Factors analysis        | 1           |
+| `point_distribution_analysis.py`    | Scoring breakdown            | 1           |
+| `defensive_analysis.py`             | Defensive matchups           | 1           |
+| `tempo_analysis.py`                 | Pace/tempo analysis          | 1           |
+| `size_athleticism_analysis.py`      | Height/athleticism           | 2           |
+| `experience_chemistry_analysis.py`  | Experience analysis          | 2           |
+| `prediction.py`                     | ML predictions + backtesting | Advanced    |
+| `tournament_simulator.py`           | Bracket simulation           | Advanced    |
 
 #### Vegas/Overtime Integration
-| Module | Purpose |
-|--------|---------|
-| `overtime_api.py` | Direct REST API access to overtime.ag |
-| `overtime_scraper.py` | Browser-based scraping with stealth |
-| `overtime_timing.py` | Analyze when odds are released |
+
+| Module                  | Purpose                                     |
+| ----------------------- | ------------------------------------------- |
+| `overtime_api.py`       | Direct REST API access to overtime.ag       |
+| `overtime_scraper.py`   | Browser-based scraping with stealth         |
+| `overtime_timing.py`    | Analyze when odds are released              |
 | `historical_odds_db.py` | Track predictions vs results (CLV analysis) |
 
 #### Data Access (Choose One)
+
 1. **api_client.py** - Official API (recommended, requires separate key)
 2. **scraper.py + browser.py** - Web scraping (subscription login required)
 3. **client.py** - kenpompy wrapper (subscription login required)
 
 ### Execution Strategy
+
 - **Prefer parallel**: Run independent operations (file reads, searches, API calls) in parallel for speed
 - **Sequential when needed**: Use sequential execution only for stability-critical operations or when there are dependencies
 
 ## KenPom Data Source
 
 ### Authentication Requirements
+
 - **KenPom subscription required** for full data access
 - Store credentials in environment variables:
   - `KENPOM_EMAIL` - Your kenpom.com email
@@ -142,6 +151,7 @@ kenp0m-sp0rts-analyzer/
 - Never commit credentials to version control
 
 ### kenpompy Library Usage
+
 ```python
 from kenpompy.utils import login
 
@@ -156,20 +166,22 @@ browser = login(email, password)
 ```
 
 ### Key Data Functions
-| Module | Function | Description |
-|--------|----------|-------------|
-| summary | `get_efficiency()` | Adjusted offensive/defensive efficiency |
-| summary | `get_fourfactors()` | Four Factors analysis |
-| summary | `get_teamstats()` | Miscellaneous team statistics |
-| misc | `get_pomeroy_ratings()` | Full Pomeroy ratings table |
-| misc | `get_hca()` | Home court advantage data |
-| misc | `get_trends()` | Statistical trends |
-| team | `get_schedule()` | Team schedules |
-| team | `get_scouting_report()` | Team statistics dictionary |
+
+| Module  | Function                | Description                             |
+| ------- | ----------------------- | --------------------------------------- |
+| summary | `get_efficiency()`      | Adjusted offensive/defensive efficiency |
+| summary | `get_fourfactors()`     | Four Factors analysis                   |
+| summary | `get_teamstats()`       | Miscellaneous team statistics           |
+| misc    | `get_pomeroy_ratings()` | Full Pomeroy ratings table              |
+| misc    | `get_hca()`             | Home court advantage data               |
+| misc    | `get_trends()`          | Statistical trends                      |
+| team    | `get_schedule()`        | Team schedules                          |
+| team    | `get_scouting_report()` | Team statistics dictionary              |
 
 ## Official KenPom API Reference
 
 See `docs/KENPOM_API.md` for complete API documentation including:
+
 - All 9 endpoint specifications (ratings, archive, four-factors, pointdist, height, misc-stats, fanmatch, teams, conferences)
 - Parameter requirements and aliases
 - Response field definitions
@@ -181,14 +193,15 @@ The API client in `src/kenp0m_sp0rts_analyzer/api_client.py` implements all docu
 
 The Python API client supports both Python-style and official API parameter names:
 
-| Python Style | Official API | Endpoints |
-|--------------|--------------|-----------|
-| `year` | `y` | ratings, four-factors, misc-stats, height, pointdist, archive, teams, conferences |
-| `conference` | `c` | ratings, four-factors, misc-stats, height, pointdist |
-| `archive_date` | `d` | archive |
-| `game_date` | `d` | fanmatch |
+| Python Style   | Official API | Endpoints                                                                         |
+| -------------- | ------------ | --------------------------------------------------------------------------------- |
+| `year`         | `y`          | ratings, four-factors, misc-stats, height, pointdist, archive, teams, conferences |
+| `conference`   | `c`          | ratings, four-factors, misc-stats, height, pointdist                              |
+| `archive_date` | `d`          | archive                                                                           |
+| `game_date`    | `d`          | fanmatch                                                                          |
 
 **Example**:
+
 ```python
 from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
 
@@ -202,23 +215,27 @@ ratings2 = api.get_ratings(y=2025, c="ACC")
 ### String-Boolean Conversion
 
 The API automatically converts string boolean fields to Python booleans:
+
 - `Preseason` (archive endpoint): "true"/"false" → True/False
 - `ConfOnly` (four-factors, pointdist, misc-stats): "true"/"false" → True/False
 
 ## Vegas Lines Integration (Overtime.ag)
 
 ### Overview
+
 The project integrates with overtime.ag to fetch Vegas betting lines for comparison with KenPom predictions. This enables Closing Line Value (CLV) analysis and prediction tracking.
 
 ### Environment Variables
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `OVERTIME_USER` | Overtime.ag username | For browser scraper |
+
+| Variable            | Description          | Required            |
+| ------------------- | -------------------- | ------------------- |
+| `OVERTIME_USER`     | Overtime.ag username | For browser scraper |
 | `OVERTIME_PASSWORD` | Overtime.ag password | For browser scraper |
 
 ### Usage Examples
 
 #### Scrape Today's Lines
+
 ```bash
 # Using CLI script
 uv run python scripts/scrapers/scrape_overtime_lines.py
@@ -229,6 +246,7 @@ uv run python scripts/scrapers/scrape_overtime_lines.py --close
 ```
 
 #### Monitor Odds Release Timing
+
 ```bash
 # Run continuous monitoring (24h, 30min intervals)
 uv run python scripts/scrapers/monitor_overtime_timing.py
@@ -238,6 +256,7 @@ uv run python scripts/scrapers/monitor_overtime_timing.py --analyze
 ```
 
 #### Programmatic Access
+
 ```python
 from kenp0m_sp0rts_analyzer.overtime_api import OvertimeAPIClient
 
@@ -252,6 +271,7 @@ for game in games:
 ## Code Style Guidelines
 
 ### Python Standards
+
 - Python 3.11+ required
 - Use type hints on all functions
 - Follow PEP 8 style (enforced by ruff)
@@ -259,18 +279,21 @@ for game in games:
 - Use pathlib for file paths
 
 ### Naming Conventions
+
 - Classes: `PascalCase`
 - Functions/variables: `snake_case`
 - Constants: `UPPER_SNAKE_CASE`
 - Private methods: `_leading_underscore`
 
 ### Data Handling
+
 - Use Pydantic models for data validation
 - Return pandas DataFrames for tabular data
 - Use numpy for numerical computations
 - Handle missing data gracefully with proper defaults
 
 ### AI Development Approach
+
 - **Read before edit**: Always read and understand existing code before proposing changes
 - **No speculation**: Never speculate about code behavior without inspecting it first
 - **Simplicity first**: Avoid over-engineering; keep solutions minimal and focused
@@ -279,24 +302,29 @@ for game in games:
 ## Key Metrics Reference
 
 ### KenPom Efficiency Metrics
+
 - **AdjO** (Adjusted Offensive Efficiency): Points scored per 100 possessions, adjusted for opponent
 - **AdjD** (Adjusted Defensive Efficiency): Points allowed per 100 possessions, adjusted for opponent
 - **AdjEM** (Adjusted Efficiency Margin): AdjO - AdjD
 - **AdjT** (Adjusted Tempo): Possessions per 40 minutes, adjusted for opponent
 
 ### Four Factors (Dean Oliver)
+
 1. **eFG%** - Effective Field Goal Percentage
 2. **TO%** - Turnover Percentage
 3. **OR%** - Offensive Rebound Percentage
 4. **FTRate** - Free Throw Rate
 
 ### Betting Performance Metrics
+
 - **CLV** (Closing Line Value): Difference between bet price and closing line
 - **ATS** (Against The Spread): Win/loss record vs point spread
 - **ROI** (Return on Investment): Net profit as percentage of total wagered
 
 ### Research Methodology
+
 When conducting complex analysis:
+
 - **Form hypotheses**: State initial hypotheses before gathering data
 - **Track confidence**: Maintain confidence levels and adjust based on evidence
 - **Reflect on results**: After each data retrieval, reflect on findings before proceeding
@@ -321,42 +349,44 @@ When conducting complex analysis:
 
 Core guides in `docs/` directory:
 
-| Document | Purpose |
-|----------|---------|
-| `PROJECT_SCOPE.md` | Official project boundaries and scope |
-| `KENPOM_API.md` | Official API reference (9 endpoints) |
-| `KENPOM_ANALYTICS_GUIDE.md` | Analytics methodology and KenPom metrics |
-| `MATCHUP_ANALYSIS_FRAMEWORK.md` | Matchup analysis framework |
-| `EDGE_VALIDATION_GUARDRAILS.md` | Edge validation framework |
-| `QUICK_START_PREDICTIONS.md` | Quick start for predictions |
-| `SETUP_GUIDE.md` | Setup and installation guide |
-| `API_QUICK_REFERENCE.md` | API quick reference |
-| `API_REVERSE_ENGINEERING_FINDINGS.md` | API reverse engineering findings |
-| `TEMPO_PACE_DEEP_DIVE.md` | Tempo and pace deep dive |
-| `KENPOM_DATA_COVERAGE.md` | Data coverage documentation |
-| `HIGH_VALUE_FEATURES_PLAN.md` | High-value features roadmap |
-| `ANALYTICS_ROADMAP.md` | Overall analytics roadmap |
+| Document                              | Purpose                                  |
+| ------------------------------------- | ---------------------------------------- |
+| `PROJECT_SCOPE.md`                    | Official project boundaries and scope    |
+| `KENPOM_API.md`                       | Official API reference (9 endpoints)     |
+| `KENPOM_ANALYTICS_GUIDE.md`           | Analytics methodology and KenPom metrics |
+| `MATCHUP_ANALYSIS_FRAMEWORK.md`       | Matchup analysis framework               |
+| `EDGE_VALIDATION_GUARDRAILS.md`       | Edge validation framework                |
+| `QUICK_START_PREDICTIONS.md`          | Quick start for predictions              |
+| `SETUP_GUIDE.md`                      | Setup and installation guide             |
+| `API_QUICK_REFERENCE.md`              | API quick reference                      |
+| `API_REVERSE_ENGINEERING_FINDINGS.md` | API reverse engineering findings         |
+| `TEMPO_PACE_DEEP_DIVE.md`             | Tempo and pace deep dive                 |
+| `KENPOM_DATA_COVERAGE.md`             | Data coverage documentation              |
+| `HIGH_VALUE_FEATURES_PLAN.md`         | High-value features roadmap              |
+| `ANALYTICS_ROADMAP.md`                | Overall analytics roadmap                |
 
 **Archived Documentation** (`docs/archive/`):
+
 - `TIER1_IMPLEMENTATION_PLAN.md` - Historical TIER 1 implementation
 - `TIER2_IMPLEMENTATION_PLAN.md` - Historical TIER 2 implementation
 - `README.md` - Legacy documentation index
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `KENPOM_API_KEY` | Official KenPom API key (for api_client.py) | For API |
-| `KENPOM_EMAIL` | KenPom subscription email (for scraper) | For scraper |
-| `KENPOM_PASSWORD` | KenPom subscription password (for scraper) | For scraper |
-| `OVERTIME_USER` | Overtime.ag username | For Vegas lines |
-| `OVERTIME_PASSWORD` | Overtime.ag password | For Vegas lines |
-| `KENPOM_CACHE_DIR` | Directory for cached data | No |
-| `LOG_LEVEL` | Logging level (DEBUG, INFO, etc.) | No |
+| Variable            | Description                                 | Required        |
+| ------------------- | ------------------------------------------- | --------------- |
+| `KENPOM_API_KEY`    | Official KenPom API key (for api_client.py) | For API         |
+| `KENPOM_EMAIL`      | KenPom subscription email (for scraper)     | For scraper     |
+| `KENPOM_PASSWORD`   | KenPom subscription password (for scraper)  | For scraper     |
+| `OVERTIME_USER`     | Overtime.ag username                        | For Vegas lines |
+| `OVERTIME_PASSWORD` | Overtime.ag password                        | For Vegas lines |
+| `KENPOM_CACHE_DIR`  | Directory for cached data                   | No              |
+| `LOG_LEVEL`         | Logging level (DEBUG, INFO, etc.)           | No              |
 
 ## Common Tasks
 
 ### Comprehensive Matchup Analysis (All TIERs)
+
 ```python
 from kenp0m_sp0rts_analyzer.comprehensive_matchup_analysis import ComprehensiveMatchupAnalyzer
 
@@ -378,6 +408,7 @@ print(f"Size advantage: {report.size_analysis.height_advantage}")
 ```
 
 ### Tournament Bracket Simulation
+
 ```python
 from kenp0m_sp0rts_analyzer.tournament_simulator import TournamentSimulator
 
@@ -402,6 +433,7 @@ print(f"\nExpected bracket score: {results.expected_value}")
 ```
 
 ### Fetching Team Efficiency Data
+
 ```python
 from kenp0m_sp0rts_analyzer.client import KenPomClient
 
@@ -410,11 +442,13 @@ efficiency = client.get_efficiency(season=2024)
 ```
 
 ### Generating Scouting Reports
+
 ```python
 report = client.get_scouting_report(team="Duke", season=2024)
 ```
 
 ### Analyzing Matchups (Basic)
+
 ```python
 from kenp0m_sp0rts_analyzer.analysis import analyze_matchup
 
@@ -422,6 +456,7 @@ result = analyze_matchup(team1="Duke", team2="North Carolina", season=2024)
 ```
 
 ### Predictive Modeling with Machine Learning
+
 ```python
 from kenp0m_sp0rts_analyzer.prediction import GamePredictor, BacktestingFramework
 
@@ -446,6 +481,7 @@ print(f"ATS Record: {metrics.ats_record[0]}-{metrics.ats_record[1]}")
 ```
 
 ### Scraping Vegas Lines and Tracking Performance
+
 ```python
 from kenp0m_sp0rts_analyzer.historical_odds_db import HistoricalOddsDB
 from kenp0m_sp0rts_analyzer.overtime_scraper import OvertimeScraper
@@ -477,6 +513,7 @@ print(f"ATS: {performance.ats_wins}-{performance.ats_losses}")
 ```
 
 ### Stealth Browser Scraping (Advanced)
+
 ```python
 import asyncio
 from kenp0m_sp0rts_analyzer import KenPomScraper
@@ -499,25 +536,27 @@ asyncio.run(scrape_data())
 The official KenPom API provides direct JSON access to KenPom data. It requires a separate API key purchase from https://kenpom.com/register-api.php.
 
 ### API Authentication
+
 - **Base URL**: `https://kenpom.com/api.php`
 - **Auth Method**: `Authorization: Bearer <API_KEY>` header
 - Store your API key in `KENPOM_API_KEY` environment variable
 
 ### Available Endpoints
 
-| Endpoint | Parameters | Description |
-|----------|------------|-------------|
-| `ratings` | `y` (year), `team_id`, `c` (conference) | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS, etc.) |
-| `archive` | `d` (date), `preseason`, `y` (year), `team_id`, `c` | Historical ratings from specific dates or preseason |
-| `teams` | `y` (year), `c` (conference) | Team list with TeamID, coach, arena info |
-| `conferences` | `y` (year) | Conference list with IDs |
-| `fanmatch` | `d` (date: YYYY-MM-DD) | Game predictions with win probability |
-| `four-factors` | `y` (year), `team_id`, `c`, `conf_only` | Four Factors (eFG%, TO%, OR%, FT Rate) |
-| `misc-stats` | `y` (year), `team_id`, `c`, `conf_only` | Shooting %, blocks, steals, assists |
-| `height` | `y` (year), `team_id`, `c` | Team height and experience data |
-| `pointdist` | `y` (year), `team_id`, `c`, `conf_only` | Point distribution breakdown |
+| Endpoint       | Parameters                                          | Description                                         |
+| -------------- | --------------------------------------------------- | --------------------------------------------------- |
+| `ratings`      | `y` (year), `team_id`, `c` (conference)             | Team ratings (AdjEM, AdjO, AdjD, AdjT, SOS, etc.)   |
+| `archive`      | `d` (date), `preseason`, `y` (year), `team_id`, `c` | Historical ratings from specific dates or preseason |
+| `teams`        | `y` (year), `c` (conference)                        | Team list with TeamID, coach, arena info            |
+| `conferences`  | `y` (year)                                          | Conference list with IDs                            |
+| `fanmatch`     | `d` (date: YYYY-MM-DD)                              | Game predictions with win probability               |
+| `four-factors` | `y` (year), `team_id`, `c`, `conf_only`             | Four Factors (eFG%, TO%, OR%, FT Rate)              |
+| `misc-stats`   | `y` (year), `team_id`, `c`, `conf_only`             | Shooting %, blocks, steals, assists                 |
+| `height`       | `y` (year), `team_id`, `c`                          | Team height and experience data                     |
+| `pointdist`    | `y` (year), `team_id`, `c`, `conf_only`             | Point distribution breakdown                        |
 
 ### API Client Usage
+
 ```python
 from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
 
@@ -555,20 +594,21 @@ print(f"Duke TeamID: {duke['TeamID']}")  # 73
 
 ### API Response Fields (Ratings)
 
-| Field | Description |
-|-------|-------------|
-| `AdjEM` | Adjusted Efficiency Margin |
-| `AdjOE` | Adjusted Offensive Efficiency |
-| `AdjDE` | Adjusted Defensive Efficiency |
-| `AdjTempo` | Adjusted Tempo |
-| `Pythag` | Pythagorean win expectation |
-| `Luck` | Luck factor |
-| `SOS` / `SOSO` / `SOSD` | Strength of schedule metrics |
-| `NCSOS` | Non-conference SOS |
-| `APL_Off` / `APL_Def` | Average Possession Length |
-| `Seed` | NCAA Tournament seed |
+| Field                   | Description                   |
+| ----------------------- | ----------------------------- |
+| `AdjEM`                 | Adjusted Efficiency Margin    |
+| `AdjOE`                 | Adjusted Offensive Efficiency |
+| `AdjDE`                 | Adjusted Defensive Efficiency |
+| `AdjTempo`              | Adjusted Tempo                |
+| `Pythag`                | Pythagorean win expectation   |
+| `Luck`                  | Luck factor                   |
+| `SOS` / `SOSO` / `SOSD` | Strength of schedule metrics  |
+| `NCSOS`                 | Non-conference SOS            |
+| `APL_Off` / `APL_Def`   | Average Possession Length     |
+| `Seed`                  | NCAA Tournament seed          |
 
 ### Raw API Examples (curl)
+
 ```bash
 # Get 2025 ratings
 curl "https://kenpom.com/api.php?endpoint=ratings&y=2025" \
@@ -602,19 +642,22 @@ curl "https://kenpom.com/api.php?endpoint=four-factors&y=2025&conf_only=true" \
 ## Stealth Browser Module
 
 ### Installation
+
 ```bash
 pip install -e ".[browser]"
 playwright install chromium
 ```
 
 ### Key Components
-| Component | Description |
-|-----------|-------------|
-| `StealthBrowser` | Playwright browser with stealth configuration |
-| `BrowserConfig` | Configuration for viewport, user agent, CDP |
-| `KenPomScraper` | High-level scraper with login and data extraction |
+
+| Component        | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| `StealthBrowser` | Playwright browser with stealth configuration     |
+| `BrowserConfig`  | Configuration for viewport, user agent, CDP       |
+| `KenPomScraper`  | High-level scraper with login and data extraction |
 
 ### Stealth Features
+
 - Removes `navigator.webdriver` detection flag
 - Randomizes viewport sizes and user agents
 - Provides Chrome DevTools Protocol (CDP) access
@@ -626,17 +669,21 @@ playwright install chromium
 The MCP (Model Context Protocol) server exposes KenPom analytics tools for use with Claude and other MCP clients.
 
 ### Installation
+
 ```bash
 pip install -e ".[mcp]"
 ```
 
 ### Running the Server
+
 ```bash
 python -m kenp0m_sp0rts_analyzer.mcp_server
 ```
 
 ### Configuration with Claude Code
+
 Add to `.claude/mcp.json`:
+
 ```json
 {
   "mcpServers": {
@@ -653,17 +700,18 @@ Add to `.claude/mcp.json`:
 
 ### Available Tools
 
-| Tool | Description |
-|------|-------------|
-| `get_team_efficiency` | Adjusted offensive/defensive efficiency ratings |
-| `get_four_factors` | Four Factors analysis (eFG%, TO%, OR%, FTRate) |
-| `get_team_schedule` | Team schedule with results and opponent metrics |
-| `get_scouting_report` | Comprehensive team scouting report |
-| `get_pomeroy_ratings` | Full KenPom ratings table |
-| `analyze_matchup` | Head-to-head matchup analysis with predictions |
-| `get_home_court_advantage` | Home court advantage data |
-| `get_game_predictions` | Game predictions for a specific date |
+| Tool                       | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| `get_team_efficiency`      | Adjusted offensive/defensive efficiency ratings |
+| `get_four_factors`         | Four Factors analysis (eFG%, TO%, OR%, FTRate)  |
+| `get_team_schedule`        | Team schedule with results and opponent metrics |
+| `get_scouting_report`      | Comprehensive team scouting report              |
+| `get_pomeroy_ratings`      | Full KenPom ratings table                       |
+| `analyze_matchup`          | Head-to-head matchup analysis with predictions  |
+| `get_home_court_advantage` | Home court advantage data                       |
+| `get_game_predictions`     | Game predictions for a specific date            |
 
 ### Authentication Priority
+
 1. **Official API** (`KENPOM_API_KEY`) - Recommended, faster, more reliable
 2. **Scraper** (`KENPOM_EMAIL`/`KENPOM_PASSWORD`) - Fallback if no API key
