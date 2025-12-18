@@ -385,13 +385,22 @@ class OvertimeScraper:
         # Step 2: Click "College Basketball" in submenu
         logger.info("Clicking College Basketball...")
         cbb_clicked = False
-        
+
         cbb_selectors = [
+            # Try exact matches first
+            ('get_by_text', "COLLEGE BASKET"),
+            ('get_by_text', "College Basket"),
+            ('get_by_text', "COLLEGE BASKETBALL"),
             ('get_by_text', "College Basketball"),
-            ('query_selector', 'text=College Basketball'),
+            # Try contains/partial matches
+            ('query_selector', 'text=/COLLEGE BASKET/i'),
+            ('query_selector', 'text=/College Basketball/i'),
+            ('query_selector', 'a:has-text("COLLEGE BASKET")'),
             ('query_selector', 'a:has-text("College Basketball")'),
+            ('query_selector', 'span:has-text("COLLEGE BASKET")'),
             ('query_selector', 'span:has-text("College Basketball")'),
-            ('query_selector', '[aria-label="College Basketball"]'),
+            ('query_selector', '[aria-label*="College Basketball"]'),
+            ('query_selector', '[aria-label*="COLLEGE BASKET"]'),
         ]
         
         for method, selector in cbb_selectors:
@@ -467,13 +476,20 @@ class OvertimeScraper:
             True if navigation succeeded.
         """
         logger.info("Navigating to College Extra...")
-        
+
         extra_selectors = [
+            # Try exact matches first
+            ('get_by_text', "COLLEGE EXTRA"),
             ('get_by_text', "College Extra"),
-            ('query_selector', 'text=College Extra'),
+            # Try contains/partial matches
+            ('query_selector', 'text=/COLLEGE EXTRA/i'),
+            ('query_selector', 'text=/College Extra/i'),
+            ('query_selector', 'a:has-text("COLLEGE EXTRA")'),
             ('query_selector', 'a:has-text("College Extra")'),
+            ('query_selector', 'span:has-text("COLLEGE EXTRA")'),
             ('query_selector', 'span:has-text("College Extra")'),
-            ('query_selector', '[aria-label="College Extra"]'),
+            ('query_selector', '[aria-label*="College Extra"]'),
+            ('query_selector', '[aria-label*="COLLEGE EXTRA"]'),
         ]
         
         for method, selector in extra_selectors:
