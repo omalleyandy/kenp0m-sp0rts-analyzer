@@ -4,7 +4,7 @@
 
 This is a Python project for **NCAA Division I Men's Basketball analytics** using KenPom data. It provides comprehensive tools for analyzing college basketball through KenPom's advanced efficiency metrics, machine learning predictions, and statistical modeling.
 
-**IMPORTANT**: See [PROJECT_SCOPE.md](PROJECT_SCOPE.md) for official project boundaries.
+**IMPORTANT**: See [docs/PROJECT_SCOPE.md](docs/PROJECT_SCOPE.md) for official project boundaries.
 
 ### What This Project IS
 - ✅ NCAA Division I Men's Basketball analytics ONLY
@@ -22,7 +22,10 @@ This is a Python project for **NCAA Division I Men's Basketball analytics** usin
 
 ### Build & Test Commands
 ```bash
-# Install dependencies
+# Install dependencies (using uv - preferred)
+uv pip install -e ".[dev]"
+
+# Or with pip
 pip install -e ".[dev]"
 
 # Run tests
@@ -42,11 +45,16 @@ ruff format src/ tests/
 ### Project Structure
 ```
 kenp0m-sp0rts-analyzer/
-├── src/kenp0m_sp0rts_analyzer/     # 22 modules
+├── src/kenp0m_sp0rts_analyzer/     # Core package (26 modules)
 │   ├── Core API & Data Access:
 │   │   ├── api_client.py           # Official KenPom API (recommended)
 │   │   ├── browser.py / scraper.py # Web scraping (fallback)
 │   │   └── client.py               # kenpompy wrapper
+│   ├── Vegas/Overtime Integration:
+│   │   ├── overtime_api.py         # Overtime.ag direct API client
+│   │   ├── overtime_scraper.py     # Overtime.ag browser scraper
+│   │   ├── overtime_timing.py      # Odds release timing analysis
+│   │   └── historical_odds_db.py   # Prediction tracking database
 │   ├── Analytics Modules:
 │   │   ├── TIER 1: four_factors_matchup.py, point_distribution_analysis.py,
 │   │   │          defensive_analysis.py, tempo_analysis.py
@@ -61,20 +69,32 @@ kenp0m-sp0rts-analyzer/
 │   └── Core Infrastructure:
 │       ├── models.py, utils.py, mcp_server.py
 │       └── api_docs_reverse_engineer.py
-├── scripts/                         # 7 operational scripts
+├── scripts/                         # Operational scripts
+│   ├── analysis/                    # Analysis & comparison scripts
+│   │   ├── analyze_fanmatch.py
+│   │   ├── analyze_performance.py
+│   │   ├── compare_predictions.py
+│   │   └── kenpom_vs_vegas_analysis.py
+│   ├── scrapers/                    # Data collection scripts
+│   │   ├── monitor_overtime_timing.py
+│   │   ├── scrape_covers_injuries.py
+│   │   ├── scrape_overtime_lines.py
+│   │   └── scrape_results.py
 │   ├── collect_daily_data.py, predict_game.py, validate_edge.py
 │   └── reverse_engineer_api_docs.py, validate_tempo_features.py
-├── examples/                        # 14 demo scripts
+├── examples/                        # Demo scripts
 │   ├── comprehensive_integration_demo.py, tournament_simulator_demo.py
 │   ├── TIER demos: four_factors_matchup_demo.py, defensive_matchup_demo.py
 │   └── stealth_scraper.py, basic_usage.py
-├── docs/                            # 17 documentation files
+├── docs/                            # Documentation (15 files)
+│   ├── PROJECT_SCOPE.md            # Official project boundaries
 │   ├── API: KENPOM_API.md, API_QUICK_REFERENCE.md
 │   ├── Analytics: KENPOM_ANALYTICS_GUIDE.md, MATCHUP_ANALYSIS_FRAMEWORK.md
-│   ├── Implementation: TIER1_IMPLEMENTATION_PLAN.md, TIER2_IMPLEMENTATION_PLAN.md
-│   └── Validation: EDGE_VALIDATION_GUARDRAILS.md, PREVENTING_FALSE_EDGES.md
-├── tests/                           # 11 test files (matching all major modules)
-├── data/                            # Cached KenPom data (parquet files)
+│   ├── Validation: EDGE_VALIDATION_GUARDRAILS.md
+│   └── archive/                     # Historical implementation plans
+├── tests/                           # Test files (matching all major modules)
+├── data/                            # Cached data (parquet, json, db)
+│   └── overtime_monitoring/         # Odds timing analysis data
 ├── reports/                         # Generated analysis reports
 ├── analyze_todays_games.py         # Standalone game analyzer script
 └── pyproject.toml, CLAUDE.md       # Project configuration
@@ -94,6 +114,14 @@ kenp0m-sp0rts-analyzer/
 | `experience_chemistry_analysis.py` | Experience analysis | 2 |
 | `prediction.py` | ML predictions + backtesting | Advanced |
 | `tournament_simulator.py` | Bracket simulation | Advanced |
+
+#### Vegas/Overtime Integration
+| Module | Purpose |
+|--------|---------|
+| `overtime_api.py` | Direct REST API access to overtime.ag |
+| `overtime_scraper.py` | Browser-based scraping with stealth |
+| `overtime_timing.py` | Analyze when odds are released |
+| `historical_odds_db.py` | Track predictions vs results (CLV analysis) |
 
 #### Data Access (Choose One)
 1. **api_client.py** - Official API (recommended, requires separate key)
@@ -177,13 +205,57 @@ The API automatically converts string boolean fields to Python booleans:
 - `Preseason` (archive endpoint): "true"/"false" → True/False
 - `ConfOnly` (four-factors, pointdist, misc-stats): "true"/"false" → True/False
 
+## Vegas Lines Integration (Overtime.ag)
+
+### Overview
+The project integrates with overtime.ag to fetch Vegas betting lines for comparison with KenPom predictions. This enables Closing Line Value (CLV) analysis and prediction tracking.
+
+### Environment Variables
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `OVERTIME_USER` | Overtime.ag username | For browser scraper |
+| `OVERTIME_PASSWORD` | Overtime.ag password | For browser scraper |
+
+### Usage Examples
+
+#### Scrape Today's Lines
+```bash
+# Using CLI script
+uv run python scripts/scrapers/scrape_overtime_lines.py
+
+# Mark as opening or closing lines
+uv run python scripts/scrapers/scrape_overtime_lines.py --open
+uv run python scripts/scrapers/scrape_overtime_lines.py --close
+```
+
+#### Monitor Odds Release Timing
+```bash
+# Run continuous monitoring (24h, 30min intervals)
+uv run python scripts/scrapers/monitor_overtime_timing.py
+
+# Analyze collected timing data
+uv run python scripts/scrapers/monitor_overtime_timing.py --analyze
+```
+
+#### Programmatic Access
+```python
+from kenp0m_sp0rts_analyzer.overtime_api import OvertimeAPIClient
+
+# Direct API access (faster, no browser)
+client = OvertimeAPIClient()
+games = client.get_college_basketball_lines()
+
+for game in games:
+    print(f"{game.away_team} @ {game.home_team}: {game.spread}")
+```
+
 ## Code Style Guidelines
 
 ### Python Standards
 - Python 3.11+ required
 - Use type hints on all functions
 - Follow PEP 8 style (enforced by ruff)
-- Max line length: 88 characters
+- Max line length: 79 characters (per pyproject.toml)
 - Use pathlib for file paths
 
 ### Naming Conventions
@@ -218,6 +290,11 @@ The API automatically converts string boolean fields to Python booleans:
 3. **OR%** - Offensive Rebound Percentage
 4. **FTRate** - Free Throw Rate
 
+### Betting Performance Metrics
+- **CLV** (Closing Line Value): Difference between bet price and closing line
+- **ATS** (Against The Spread): Win/loss record vs point spread
+- **ROI** (Return on Investment): Net profit as percentage of total wagered
+
 ### Research Methodology
 When conducting complex analysis:
 - **Form hypotheses**: State initial hypotheses before gathering data
@@ -236,6 +313,7 @@ When conducting complex analysis:
 ## Data Sources
 
 - **Primary**: https://kenpom.com/ (requires subscription)
+- **Vegas Lines**: https://overtime.ag/ (for betting line comparison)
 - **Library Docs**: https://kenpompy.readthedocs.io/
 - **Historical data**: Available from 1999 season onwards
 
@@ -245,21 +323,24 @@ Core guides in `docs/` directory:
 
 | Document | Purpose |
 |----------|---------|
+| `PROJECT_SCOPE.md` | Official project boundaries and scope |
 | `KENPOM_API.md` | Official API reference (9 endpoints) |
 | `KENPOM_ANALYTICS_GUIDE.md` | Analytics methodology and KenPom metrics |
 | `MATCHUP_ANALYSIS_FRAMEWORK.md` | Matchup analysis framework |
-| `TIER1_IMPLEMENTATION_PLAN.md` | TIER 1 features (Four Factors, Point Distribution, Defense, Tempo) |
-| `TIER2_IMPLEMENTATION_PLAN.md` | TIER 2 features (Size/Athleticism, Experience/Chemistry) |
 | `EDGE_VALIDATION_GUARDRAILS.md` | Edge validation framework |
-| `PREVENTING_FALSE_EDGES.md` | False edges prevention guide |
 | `QUICK_START_PREDICTIONS.md` | Quick start for predictions |
 | `SETUP_GUIDE.md` | Setup and installation guide |
 | `API_QUICK_REFERENCE.md` | API quick reference |
 | `API_REVERSE_ENGINEERING_FINDINGS.md` | API reverse engineering findings |
 | `TEMPO_PACE_DEEP_DIVE.md` | Tempo and pace deep dive |
 | `KENPOM_DATA_COVERAGE.md` | Data coverage documentation |
+| `HIGH_VALUE_FEATURES_PLAN.md` | High-value features roadmap |
+| `ANALYTICS_ROADMAP.md` | Overall analytics roadmap |
 
-Full documentation index: See `docs/README.md`
+**Archived Documentation** (`docs/archive/`):
+- `TIER1_IMPLEMENTATION_PLAN.md` - Historical TIER 1 implementation
+- `TIER2_IMPLEMENTATION_PLAN.md` - Historical TIER 2 implementation
+- `README.md` - Legacy documentation index
 
 ## Environment Variables
 
@@ -268,6 +349,8 @@ Full documentation index: See `docs/README.md`
 | `KENPOM_API_KEY` | Official KenPom API key (for api_client.py) | For API |
 | `KENPOM_EMAIL` | KenPom subscription email (for scraper) | For scraper |
 | `KENPOM_PASSWORD` | KenPom subscription password (for scraper) | For scraper |
+| `OVERTIME_USER` | Overtime.ag username | For Vegas lines |
+| `OVERTIME_PASSWORD` | Overtime.ag password | For Vegas lines |
 | `KENPOM_CACHE_DIR` | Directory for cached data | No |
 | `LOG_LEVEL` | Logging level (DEBUG, INFO, etc.) | No |
 
@@ -360,6 +443,37 @@ metrics = framework.run_backtest(historical_games_df, train_split=0.8)
 print(f"MAE: {metrics.mae_margin} points")
 print(f"Accuracy: {metrics.accuracy:.1%}")
 print(f"ATS Record: {metrics.ats_record[0]}-{metrics.ats_record[1]}")
+```
+
+### Scraping Vegas Lines and Tracking Performance
+```python
+from kenp0m_sp0rts_analyzer.historical_odds_db import HistoricalOddsDB
+from kenp0m_sp0rts_analyzer.overtime_scraper import OvertimeScraper
+import asyncio
+
+# Scrape current lines
+async def get_lines():
+    async with OvertimeScraper(headless=True) as scraper:
+        await scraper.login()
+        return await scraper.get_college_basketball_lines()
+
+games = asyncio.run(get_lines())
+
+# Store in database for tracking
+db = HistoricalOddsDB()
+for game in games:
+    db.record_odds_snapshot(
+        game_date="2025-12-18",
+        home_team=game.home_team,
+        away_team=game.away_team,
+        spread=game.spread,
+        total=game.total,
+    )
+
+# Later: analyze CLV performance
+performance = db.calculate_clv_performance()
+print(f"CLV: {performance.average_clv:.2f}")
+print(f"ATS: {performance.ats_wins}-{performance.ats_losses}")
 ```
 
 ### Stealth Browser Scraping (Advanced)
