@@ -10,13 +10,15 @@ This roadmap focuses on implementing sophisticated basketball-specific analytics
 - ✅ Comprehensive tempo/pace analysis system
 - ✅ Player impact modeling for injury analysis
 - ✅ Conference power ratings and analytics
+- ✅ Historical odds database infrastructure
 
 **Focus Areas:**
 1. Tournament probability modeling and simulation
 2. Advanced tempo/pace matchup analysis
 3. Four Factors matchup breakdowns
 4. Historical performance backtesting
-5. Interactive visualization and dashboards
+5. Vegas line comparison and CLV tracking
+6. Interactive visualization and dashboards
 
 ---
 
@@ -75,31 +77,15 @@ class TournamentSimulator:
 
     def _simulate_game(self, team1: dict, team2: dict) -> str:
         """Simulate single game with variance."""
-        # Use efficiency margins + uncertainty
         em_diff = team1['AdjEM'] - team2['AdjEM']
-
-        # Add variance based on tempo (more possessions = more predictable)
         tempo = (team1['AdjTempo'] + team2['AdjTempo']) / 2
         variance = self._calculate_game_variance(tempo)
-
-        # Sample from normal distribution
         predicted_margin = np.random.normal(em_diff, variance)
-
         return team1['TeamName'] if predicted_margin > 0 else team2['TeamName']
 
     def _calculate_game_variance(self, tempo: float) -> float:
         """Higher tempo = lower variance (law of large numbers)."""
-        # Empirical: ~11 point standard deviation for average tempo
         return 11.0 * (68.0 / tempo) ** 0.5
-
-    def analyze_upset_probability(
-        self,
-        higher_seed: int,
-        lower_seed: int
-    ) -> float:
-        """Calculate upset probability by seed matchup."""
-        # Historical seed vs seed performance
-        # Compare to efficiency-based prediction
 ```
 
 **Features to Implement:**
@@ -115,7 +101,7 @@ class TournamentSimulator:
 **Current State**: ✅ Comprehensive `tempo_analysis.py` module implemented
 **Gap**: Visualization, historical tracking, situational analysis
 
-#### Already Implemented (temp_analysis.py):
+#### Already Implemented (tempo_analysis.py):
 - ✅ Tempo profile classification (fast/slow/methodical)
 - ✅ APL (Average Possession Length) analysis
 - ✅ Tempo control calculation (defensive/efficiency/preference weighting)
@@ -132,11 +118,7 @@ class TournamentSimulator:
 class SituationalTempoAnalyzer:
     """Analyze how teams adjust pace in different situations."""
 
-    def analyze_tempo_by_game_state(
-        self,
-        team: str,
-        season: int
-    ) -> dict:
+    def analyze_tempo_by_game_state(self, team: str, season: int) -> dict:
         """
         Analyze how team's pace changes based on:
         - Leading vs trailing
@@ -146,19 +128,8 @@ class SituationalTempoAnalyzer:
         - Early season vs tournament time
         """
 
-    def identify_tempo_adjustments(
-        self,
-        team: str,
-        opponent_style: str  # "fast", "slow", "average"
-    ) -> dict:
-        """
-        How does team adjust pace against different opponent styles?
-
-        Returns:
-            - Historical pace vs fast teams
-            - Historical pace vs slow teams
-            - Adaptability score (0-10)
-        """
+    def identify_tempo_adjustments(self, team: str, opponent_style: str) -> dict:
+        """How does team adjust pace against different opponent styles?"""
 ```
 
 **B. Tempo Trend Tracking**
@@ -166,47 +137,11 @@ class SituationalTempoAnalyzer:
 class TempoTrendAnalyzer:
     """Track tempo evolution throughout season."""
 
-    def calculate_tempo_trends(
-        self,
-        team: str,
-        season: int,
-        window_size: int = 5
-    ) -> pd.DataFrame:
-        """
-        Rolling window analysis:
-        - Is team getting faster/slower?
-        - APL trends (becoming more methodical?)
-        - Opponent-adjusted trends
-        """
+    def calculate_tempo_trends(self, team: str, season: int, window_size: int = 5) -> pd.DataFrame:
+        """Rolling window analysis of tempo changes."""
 
-    def detect_tempo_inflection_points(
-        self,
-        team: str,
-        season: int
-    ) -> list:
-        """
-        Identify games where team significantly changed pace:
-        - Coaching adjustments
-        - Personnel changes
-        - Style pivots
-        """
-```
-
-**C. Visualization Dashboard**
-```python
-# scripts/tempo_dashboard.py
-
-import streamlit as st
-import plotly.express as px
-
-def create_tempo_dashboard():
-    """Interactive tempo analysis dashboard."""
-
-    # Scatter plot: AdjTempo vs AdjEM (are faster teams better?)
-    # APL offensive vs defensive (style quadrants)
-    # Conference tempo heatmap
-    # Historical tempo trends by team
-    # Matchup-specific tempo predictions
+    def detect_tempo_inflection_points(self, team: str, season: int) -> list:
+        """Identify games where team significantly changed pace."""
 ```
 
 ---
@@ -217,49 +152,20 @@ def create_tempo_dashboard():
 **Value**: Identify specific strategic advantages
 
 ```python
-# src/kenp0m_sp0rts_analyzer/four_factors_matchup.py
-
 class FourFactorsMatchup:
     """Analyze Four Factors matchup advantages."""
 
-    def analyze_matchup(
-        self,
-        team1: str,
-        team2: str,
-        season: int
-    ) -> dict:
+    def analyze_matchup(self, team1: str, team2: str, season: int) -> dict:
         """
         Breakdown by factor:
-
-        1. eFG% Battle:
-           - Team1 shooting vs Team2 defense
-           - Team2 shooting vs Team1 defense
-
-        2. Turnover Battle:
-           - Team1 ball security vs Team2 pressure
-           - Team2 ball security vs Team1 pressure
-
-        3. Rebounding Battle:
-           - Team1 offensive boards vs Team2 defensive boards
-           - Team2 offensive boards vs Team1 defensive boards
-
-        4. Free Throw Battle:
-           - Team1 drawing fouls vs Team2 avoiding fouls
-           - Team2 drawing fouls vs Team1 avoiding fouls
+        1. eFG% Battle: Shooting vs defense
+        2. Turnover Battle: Ball security vs pressure
+        3. Rebounding Battle: Offensive vs defensive boards
+        4. Free Throw Battle: Drawing fouls vs avoiding fouls
         """
 
-    def identify_key_matchup_factors(
-        self,
-        analysis: dict
-    ) -> list:
-        """
-        Rank factors by impact on game outcome.
-
-        Example:
-        1. "Turnover battle critical - Team A forces TOs, Team B protects ball"
-        2. "Rebounding advantage to Team A (+8% OR differential)"
-        3. "eFG% neutral - both elite shooting offenses"
-        """
+    def identify_key_matchup_factors(self, analysis: dict) -> list:
+        """Rank factors by impact on game outcome."""
 ```
 
 ---
@@ -273,207 +179,204 @@ class FourFactorsMatchup:
 class HistoricalAnalyzer:
     """Analyze historical KenPom prediction performance."""
 
-    def backtest_predictions_by_season(
-        self,
-        start_year: int,
-        end_year: int
-    ) -> pd.DataFrame:
-        """
-        Test prediction accuracy across multiple seasons.
+    def backtest_predictions_by_season(self, start_year: int, end_year: int) -> pd.DataFrame:
+        """Test prediction accuracy across multiple seasons."""
 
-        Metrics by season:
-        - Accuracy (correct winner %)
-        - MAE (mean absolute error in margins)
-        - Brier score (probability calibration)
-        - Upset prediction accuracy
-        """
-
-    def analyze_model_blind_spots(
-        self,
-        predictions: pd.DataFrame,
-        actuals: pd.DataFrame
-    ) -> dict:
-        """
-        Identify systematic errors:
-        - Does model overvalue high seeds?
-        - Does it struggle with certain conferences?
-        - Tempo matchup prediction accuracy
-        - Style clash scenarios
-        """
+    def analyze_model_blind_spots(self, predictions: pd.DataFrame, actuals: pd.DataFrame) -> dict:
+        """Identify systematic errors in predictions."""
 ```
 
 ---
 
-## 🎯 TIER 2: Advanced Features
+## 🎯 TIER 2: Vegas Lines & Model Validation
 
-### 5. Conference Strength Dynamics
+### 5. Historical Odds Infrastructure ✅ COMPLETE
 
-**Current State**: ✅ Conference power ratings implemented
-**Enhancement**: Temporal dynamics and head-to-head analysis
+**Status**: Database schema and collection infrastructure implemented.
+
+#### Database Schema
+- `games` - Core game info (teams, date, scores)
+- `odds_snapshots` - Time-series odds (opening, current, closing)
+- `predictions` - Our model predictions
+- `prediction_results` - Outcomes and CLV tracking
+
+#### Automated Data Collection
+- **Pre-game**: Scrape opening lines (morning) and closing lines (before tip)
+- **Post-game**: Scrape final scores from ESPN
+- **Daily job**: Update prediction results, calculate CLV
+
+---
+
+### 6. Closing Line Value (CLV) Analysis
+
+**Why it matters**: CLV is the gold standard for measuring prediction skill.
+If you consistently beat the closing line, you're finding +EV.
+
+```
+CLV = Your Line - Closing Line
+
+Example:
+- You bet Duke -5.5 (your model said -7)
+- Line closes at Duke -7
+- CLV = -7 - (-5.5) = -1.5 points of value
+```
+
+**Metrics to Track**:
+- Average CLV per pick
+- CLV by confidence level
+- CLV by conference
+- CLV by game type (rivalry, conference, etc.)
+
+---
+
+### 7. Against The Spread (ATS) Performance
+
+Track model ATS record with breakdowns:
+- By conference
+- By spread size (favorites vs underdogs)
+- By total (high-scoring vs low-scoring games)
+- By day of week
+- By month (early season vs late season)
+- Home vs Away
+
+---
+
+### 8. Totals Performance
+
+Over/Under analysis breakdowns:
+- By pace matchups (fast vs slow)
+- By defensive efficiency
+- By altitude/location
+
+---
+
+### 9. Line Movement Correlation
+
+Study how line movement predicts outcomes:
+- Games where line moves toward our prediction = higher confidence
+- Reverse line movement (sharp action) signals
+- Steam moves and their predictive value
+
+---
+
+## 🎯 TIER 3: Model Calibration & Improvement
+
+### 10. Identify Systematic Biases
+
+**Questions to Answer**:
+1. Do we overrate home court advantage?
+2. Do we handle pace mismatches correctly?
+3. Are we accurate on conference games vs non-conference?
+4. How do we perform on back-to-backs / rest advantages?
+5. Are we calibrated on big favorites vs small favorites?
 
 ```python
-class ConferenceDynamics:
-    """Track conference strength evolution."""
-
-    def track_conference_evolution(
-        self,
-        conference: str,
-        start_year: int,
-        end_year: int
-    ) -> pd.DataFrame:
-        """
-        Multi-year conference strength trends:
-        - Average AdjEM by year
-        - Tournament success rate
-        - Non-conference performance
-        - Top team quality vs depth
-        """
-
-    def compare_conferences_head_to_head(
-        self,
-        conf1: str,
-        conf2: str,
-        season: int
-    ) -> dict:
-        """
-        Non-conference matchup analysis:
-        - Win percentage
-        - Average margin
-        - Quality of wins/losses
-        """
+# Example: Check if we're biased on big favorites
+big_favorites = games.where(spread <= -10)
+our_error = our_prediction - actual_result
+avg_error = big_favorites.our_error.mean()
+# If avg_error > 0, we're overrating big favorites
 ```
 
 ---
 
-### 6. Player Impact Extension
+### 11. Feature Importance Analysis
 
-**Current State**: ✅ Player impact modeling implemented
-**Enhancement**: Lineup combinations, rotation patterns
+Track which factors best predict when we're right/wrong:
+- Tempo differential
+- Experience gap
+- Conference strength
+- Rest days
+- Travel distance
+- Injury impact
 
+---
+
+### 12. Confidence Calibration
+
+Ensure confidence scores are well-calibrated:
+- When we say 70% confident, do we win ~70%?
+- Build calibration curves
+- Adjust confidence thresholds for picks
+
+---
+
+## 🎯 TIER 4: Advanced Analytics
+
+### 13. Market Efficiency by Segment
+
+Find where Vegas is consistently off:
+- Specific conferences (MAC? Sun Belt?)
+- Early season games (less data = more edge)
+- Games with key injuries not yet priced in
+- Revenge games / rivalry games
+- Teams after bye weeks
+
+---
+
+### 14. Situational Spots Database
+
+Build a database of profitable situations:
+- Team A after a blowout loss
+- Team B on short rest
+- Team C playing 3rd road game in a row
+- Conference tournament trends
+
+---
+
+### 15. Ensemble Prediction Model
+
+Combine multiple signals:
 ```python
-class LineupAnalyzer:
-    """Analyze lineup combinations and rotation impacts."""
-
-    def analyze_rotation_depth(
-        self,
-        team: str,
-        season: int
-    ) -> dict:
-        """
-        Rotation analysis:
-        - Bench contribution to AdjEM
-        - Starter vs bench efficiency differential
-        - Fatigue risk (minutes distribution)
-        """
-
-    def estimate_lineup_synergy(
-        self,
-        team: str,
-        season: int
-    ) -> dict:
-        """
-        Position combinations:
-        - Guard-heavy vs big lineups
-        - Shooting vs size trade-offs
-        - Defensive versatility
-        """
+final_prediction = (
+    w1 * kenpom_prediction +
+    w2 * tempo_adjusted_prediction +
+    w3 * situational_model +
+    w4 * historical_matchup_factor
+)
 ```
 
 ---
 
-### 7. Home Court Advantage Deep-Dive
+### 16. Neural Network for Edge Detection
 
-**Current State**: Basic HCA data from API
-**Enhancement**: Venue-specific analysis
-
-```python
-class HomeCourtAnalyzer:
-    """Detailed home court advantage analysis."""
-
-    def analyze_venue_advantages(
-        self,
-        season: int
-    ) -> pd.DataFrame:
-        """
-        Venue-specific factors:
-        - Crowd size impact (capacity vs actual)
-        - Altitude adjustments (Colorado, Wyoming, etc.)
-        - Court dimensions (non-standard venues)
-        - Travel distance impact
-        """
-
-    def identify_road_warriors(
-        self,
-        season: int,
-        min_road_games: int = 5
-    ) -> pd.DataFrame:
-        """
-        Teams that perform well on road:
-        - Road AdjEM vs Home AdjEM
-        - Experience factor
-        - Coaching adjustments
-        """
-```
+Train a model to predict WHEN our base model will be accurate:
+- Input: game features + our prediction + Vegas line
+- Output: probability our pick covers
+- Use this to size bets / filter picks
 
 ---
 
-## 🎯 TIER 3: Visualization & Reporting
+## 🎯 TIER 5: Visualization & Reporting
 
-### 8. Interactive Dashboards
+### 17. Interactive Dashboards
 
 **Tool**: Streamlit + Plotly
 
 **Dashboards to Build:**
-
-1. **Team Comparison Dashboard**
-   - Side-by-side efficiency metrics
-   - Four Factors radar charts
-   - Tempo profile visualizations
-   - Strength of schedule comparisons
-
-2. **Conference Analytics Dashboard**
-   - Power ratings table
-   - Inter-conference performance
-   - Tempo/pace distributions
-   - Tournament bid projections
-
-3. **Tournament Simulator Dashboard**
-   - Bracket visualization
-   - Round-by-round probabilities
-   - Upset likelihood heatmap
-   - Pool optimizer
-
-4. **Tempo Matchup Analyzer**
-   - Interactive tempo scatter plots
-   - APL mismatch visualizations
-   - Historical pace trends
-   - Style clash identification
+1. **Team Comparison Dashboard** - Side-by-side efficiency metrics
+2. **Conference Analytics Dashboard** - Power ratings and tournament projections
+3. **Tournament Simulator Dashboard** - Bracket visualization
+4. **Tempo Matchup Analyzer** - Interactive tempo scatter plots
+5. **CLV Tracking Dashboard** - Performance vs closing lines
 
 ---
 
-### 9. Automated Reporting
+### 18. Automated Reporting
 
 ```python
 class ReportGenerator:
     """Generate comprehensive game/matchup reports."""
 
-    def generate_matchup_report(
-        self,
-        team1: str,
-        team2: str,
-        game_date: str,
-        format: str = "markdown"
-    ) -> str:
+    def generate_matchup_report(self, team1: str, team2: str, game_date: str) -> str:
         """
         Comprehensive scouting report:
-
         1. Executive Summary
         2. Efficiency Comparison
         3. Four Factors Breakdown
         4. Tempo/Pace Analysis
-        5. Key Player Matchups
-        6. Historical Head-to-Head
-        7. Prediction with Confidence Intervals
+        5. Vegas Line Comparison
+        6. Prediction with Confidence Intervals
         """
 ```
 
@@ -483,162 +386,92 @@ class ReportGenerator:
 
 | Feature | Priority | Effort | Impact | Status |
 |---------|----------|--------|--------|--------|
+| **Historical Odds DB** | 🔴 HIGHEST | Medium | Very High | ✅ **Complete** |
 | **Tournament Simulator** | 🔴 HIGHEST | High | Very High | ⏳ Not Started |
-| **Tempo Dashboard** | 🔴 HIGH | Medium | High | ⏳ Not Started |
+| **CLV Tracking** | 🔴 HIGH | Medium | High | ⏳ Not Started |
+| **ATS Performance** | 🔴 HIGH | Low | High | ⏳ Not Started |
+| **Tempo Dashboard** | 🟡 MEDIUM | Medium | High | ⏳ Not Started |
 | **Four Factors Matchup** | 🟡 MEDIUM | Low | High | ⏳ Not Started |
-| **Historical Backtesting** | 🟡 MEDIUM | Medium | Medium | ✅ **Implemented** |
-| **Situational Tempo** | 🟡 MEDIUM | Medium | Medium | ⏳ Not Started |
-| **Conference Dynamics** | 🟢 LOW | Low | Medium | ✅ **Partially Done** |
-| **Lineup Analysis** | 🟢 LOW | High | Low | ⏳ Not Started |
-| **HCA Deep-Dive** | 🟢 LOW | Medium | Low | ⏳ Not Started |
-| **Automated Reports** | 🟢 LOW | Medium | Medium | ⏳ Not Started |
+| **Systematic Bias Analysis** | 🟡 MEDIUM | Medium | High | ⏳ Not Started |
+| **Confidence Calibration** | 🟡 MEDIUM | Medium | Medium | ⏳ Not Started |
+| **Situational Spots** | 🟢 LOW | High | Medium | ⏳ Not Started |
+| **Ensemble Model** | 🟢 LOW | High | Medium | ⏳ Not Started |
 
 ---
 
-## 🎓 KenPom Methodology Alignment
+## 📅 Implementation Timeline
 
-### Core Principles to Maintain:
+### Immediate (This Week)
+1. ✅ Create historical odds database
+2. ⏳ Integrate scraper to auto-store odds
+3. ⏳ Build results scraper (ESPN)
+4. ⏳ Create daily update job
 
-1. **Possession-Based Metrics**
-   - All analysis uses per-100-possession normalization
-   - Tempo-adjusted comparisons
+### Short-term (This Month)
+5. Build CLV tracking dashboard
+6. Create ATS record breakdown reports
+7. Identify first systematic biases
 
-2. **Strength-of-Schedule Adjusted**
-   - Leverage KenPom's SOS calculations
-   - Avoid naive comparisons of raw stats
+### Medium-term (This Season)
+8. Build situational spots database
+9. Implement confidence calibration
+10. Create ensemble prediction model
 
-3. **Probabilistic Thinking**
-   - Win probabilities, not binary predictions
-   - Confidence intervals for all estimates
-
-4. **Methodological Transparency**
-   - Document all assumptions
-   - Validate against historical data
-   - Report model limitations honestly
-
----
-
-## 📝 Next Steps
-
-### Immediate (This Sprint):
-1. ✅ Implement Tournament Simulator with Monte Carlo
-2. ⏳ Create Tempo Analysis Dashboard (Streamlit)
-3. ⏳ Build Four Factors Matchup Breakdown
-
-### Short-Term (Next Month):
-4. ⏳ Add Situational Tempo Analysis
-5. ⏳ Conference Dynamics Tracking
-6. ⏳ Matchup Report Generator
-
-### Medium-Term (Next Quarter):
-7. ⏳ Historical Performance Backtesting Extension
-8. ⏳ Player/Lineup Impact Analysis
-9. ⏳ Home Court Advantage Deep-Dive
-
----
-
-## 🔗 Data Requirements
-
-### KenPom API Endpoints (Already Integrated):
-- ✅ `ratings` - Team efficiency metrics
-- ✅ `four-factors` - Dean Oliver's four factors
-- ✅ `archive` - Historical ratings snapshots
-- ✅ `fanmatch` - Game predictions
-- ✅ `teams` - Team metadata
-- ✅ `conferences` - Conference listings
-- ✅ `misc-stats` - Additional team statistics
-- ✅ `height` - Team height/experience
-- ✅ `pointdist` - Point distribution
-
-### Additional Data Sources (Optional):
-- **Bart Torvik** - Complementary college hoops ratings
-- **HoopMath** - Shot chart data (if available)
-- **TeamRankings** - Trends and situational stats
-
----
-
-## 💡 Innovation Opportunities
-
-### Novel Analytics Not in Standard KenPom:
-
-1. **Recency-Weighted Ratings**
-   - Weight recent games more heavily (momentum)
-   - Detect teams "peaking" at tournament time
-   - Identify late-season slumps
-
-2. **Injury Impact Quantification**
-   - Model drop in AdjEM based on missing players
-   - Practice report integration (if available)
-   - Rotation depth analysis
-
-3. **Coaching Adjustments**
-   - Track coaches' tournament performance vs seed
-   - Identify "underdog specialists"
-   - Timeout usage patterns
-
-4. **Schedule Difficulty Timing**
-   - Not just SOS average, but "when" tough games occur
-   - Rest disadvantage quantification
-   - Conference tournament fatigue
-
-5. **Style Evolution Tracking**
-   - How teams adjust tempo throughout season
-   - Pre-conference vs conference play differences
-   - Tournament pace adjustments
-
----
-
-## 📚 Documentation Needs
-
-**To Add:**
-
-1. **`docs/TEMPO_ANALYSIS_GUIDE.md`**
-   - Explain APL metrics and their importance
-   - How tempo control is calculated
-   - Style mismatch interpretation
-
-2. **`docs/PREDICTION_METHODOLOGY.md`**
-   - Document all model assumptions
-   - Feature engineering details
-   - Validation procedures
-
-3. **`docs/TOURNAMENT_SIMULATION.md`**
-   - Monte Carlo methodology
-   - Variance calculations
-   - Upset probability interpretation
+### Long-term (Next Season)
+11. Full backtesting framework
+12. Live line movement integration
+13. Automated pick generation with Kelly sizing
 
 ---
 
 ## 🎯 Success Metrics
 
-**How We'll Measure Progress:**
+### Prediction Accuracy
+- Tournament bracket performance (percentile vs public)
+- Regular season game predictions (accuracy %)
+- Upset identification rate
 
-1. **Prediction Accuracy**
-   - Tournament bracket performance (percentile vs public)
-   - Regular season game predictions (accuracy %)
-   - Upset identification rate
+### Model Performance
+- Calibration (Brier score < 0.20)
+- MAE for margins (< 10 points)
+- R² for efficiency predictions (> 0.40)
 
-2. **Model Performance**
-   - Calibration (Brier score < 0.20)
-   - MAE for margins (< 10 points)
-   - R² for efficiency predictions (> 0.40)
+### Vegas Performance
+- **Target**: 54%+ ATS win rate (profitable after vig)
+- Consistent positive CLV
+- 2-3 profitable situational spots identified
 
-3. **User Value**
-   - Dashboards built and functional
-   - Reports generated automatically
-   - Analysis insights actionable
+---
+
+## 🔗 Data Sources
+
+| Source | Data | Status |
+|--------|------|--------|
+| KenPom API | Predictions, ratings | ✅ Integrated |
+| Overtime.ag | Vegas lines | ✅ Integrated |
+| ESPN | Final scores | ✅ Integrated |
+| Covers.com | Injury reports | ✅ Integrated |
+
+---
+
+## 📝 Notes
+
+- Need ~500+ games for statistically significant analysis
+- Conference play (Jan-Mar) has less variance than early season
+- Tournament games are unique situations
+- Always track confidence level with picks
 
 ---
 
 ## Summary
 
-**Current State**: Strong foundation with API integration, ML predictions, and tempo analysis
+**Current State**: Strong foundation with API integration, ML predictions, tempo analysis, and historical odds infrastructure
 
-**Focus**: NCAA Division I Men's Basketball analytics using KenPom's rigorous methodology
+**Focus**: NCAA Division I Men's Basketball analytics using KenPom's rigorous methodology combined with Vegas line comparison
 
-**Top 3 Priorities**:
-1. Tournament Monte Carlo simulator
-2. Interactive tempo/pace dashboard
-3. Four Factors matchup breakdown
+**Top Priorities**:
+1. CLV tracking and ATS performance analysis
+2. Tournament Monte Carlo simulator
+3. Interactive dashboards for all analytics
 
-**Expected Outcome**: Comprehensive basketball analytics platform with tournament simulation, advanced tempo analysis, and data-driven matchup insights.
+**Expected Outcome**: Comprehensive basketball analytics platform with tournament simulation, advanced tempo analysis, Vegas line comparison, and data-driven matchup insights.

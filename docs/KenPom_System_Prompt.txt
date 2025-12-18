@@ -1,0 +1,80 @@
+# Explore the codebase to understand its structure
+- Explore the codebase systematically to understand its structure and identify opportunities for cleanup.
+- Identify outdated scripts and markdown files that can be removed
+- Consider merging documents to keep things tidy
+- Improve management of temp files from tests or session summaries
+- Ensure files get stored in clear, organized directory locations
+
+<methods>
+Let me start by exploring the project structure to understand what we're working with.
+- Analyze the API structure for captured data to understand how to build a direct API client
+- build a direct API client API with browser session cookies for websites found to have well structured API and if not:
+	- revert to DOM scraping
+	- use the page text which is more reliable
+	- add a more targeted JavaScript extraction based on the actual HTML structure visible in the screenshots
+</methods>
+
+# Use Case 
+## Benefit
+- Closing Line Value (CLV)
+	- Gold standard - beating the closing line consistently = profitable
+- Model Calibration
+	- Compare your predictions to market consensus
+- Line Movement Analysis
+	- Track how sharp money moves lines
+- Backtesting
+	- Test strategies on historical data before betting
+- Market Efficiency
+	- Find where Vegas is consistently off (conferences, situations)
+- Feature Engineering
+	- Use opening/closing line diff as ML feature
+
+## Database Design
+<purpose>
+- Create a performance analytics script that generates reports from the historical database.
+- SQLite database for storing odds, results, predictions
+- Fetch final scores from ESPN and update database
+- Generate performance analytics and reports
+- Strategic plan for model improvement
+- Complete the database schema and integration
+- Create a script to scrape and store results
+- Outline a roadmap for model improvement using historical data
+- Suggest specific analytics and features
+- Confirmation this is an excellent approach
+- Complete the database integration with the scraper
+- Create a results scraper/updater
+- Outline analytics opportunities
+- Suggest ML/statistical improvements
+</purpose>
+
+# Running the Overtime Scraper
+- update the main script to handle the case when no games are found more gracefully, with a helpful message about why and when to try again.
+PowerShell   
+```uv run python scrape_overtime_lines.py```
+## Initialize the database:
+PowerShell   
+```uv run python -c "from kenp0m_sp0rts_analyzer.historical_odds_db import get_db; get_db()"```
+## After games complete, update results:
+PowerShell   
+```uv run python scrape_results.py```
+## View analytics:
+PowerShell   
+```uv run python analyze_performance.py```
+
+<goals>
+Provide the data infrastructure to continuously improve predictions based on empirical results rather than assumptions. After ~100 games, obtain enough data for meaningful statistical analysis!
+</goals>
+<features>
+- Graceful empty state handling where no games are available:
+	- Shows a helpful explanation of why
+	- Provides tips on when to try again
+	- Saves an empty snapshot file (useful for tracking)
+	- Returns success (exit code 0) - it's not an error
+## Tonight (games completed/in progress) - will show helpful message
+```uv run python scrape_overtime_lines.py```
+## Tomorrow's lines (usually available late evening)
+```uv run python scrape_overtime_lines.py --tomorrow```
+## Opening lines (run in morning)
+```uv run python scrape_overtime_lines.py --tomorrow --open```
+## Closing lines (run ~30 min before first game)
+```uv run python scrape_overtime_lines.py --close```

@@ -30,14 +30,14 @@ This project provides advanced analytics for college basketball using Ken Pomero
 
 ## What This Project IS NOT
 
-### **❌ Not an NFL/Football Analytics System**
+### **âŒ Not an NFL/Football Analytics System**
 
 - This project does **NOT** use Billy Walters methodology
 - This project does **NOT** analyze NFL football
 - This project does **NOT** incorporate weather factors (basketball is indoors)
 - Billy Walters principles and NFL betting analysis are **OUT OF SCOPE**
 
-### **❌ Not a General Sports Betting Platform**
+### **âŒ Not a General Sports Betting Platform**
 
 While the analytics can inform betting decisions:
 - Focus is on analytical accuracy, not gambling strategy
@@ -45,7 +45,7 @@ While the analytics can inform betting decisions:
 - CLV tracking and edge detection are for model validation only
 - Educational and research purposes
 
-### **❌ Not a Multi-Sport System**
+### **âŒ Not a Multi-Sport System**
 
 - **ONLY NCAA Men's Basketball**
 - No NFL, NBA, MLB, NHL, soccer, or other sports
@@ -56,7 +56,7 @@ While the analytics can inform betting decisions:
 
 ## Scope Boundaries
 
-### In Scope ✅
+### In Scope âœ…
 
 | Feature Category | Included |
 |------------------|----------|
@@ -69,7 +69,7 @@ While the analytics can inform betting decisions:
 | **Methodology** | Ken Pomeroy's efficiency-based system |
 | **Tools** | Python, ML models, statistical analysis |
 
-### Out of Scope ❌
+### Out of Scope âŒ
 
 | Feature Category | Excluded |
 |------------------|----------|
@@ -117,11 +117,11 @@ While the analytics can inform betting decisions:
 5. **Historical Depth**: Data back to 1999 season
 
 **Forbidden Data Sources**:
-- ❌ ESPN stats (not opponent-adjusted)
-- ❌ CBS Sports (different methodology)
-- ❌ Web searches for "recent games" (introduces bias)
-- ❌ Manual game selection (cherry-picking)
-- ❌ Non-KenPom box scores (inconsistent adjustments)
+- âŒ ESPN stats (not opponent-adjusted)
+- âŒ CBS Sports (different methodology)
+- âŒ Web searches for "recent games" (introduces bias)
+- âŒ Manual game selection (cherry-picking)
+- âŒ Non-KenPom box scores (inconsistent adjustments)
 
 ### KenPom Metrics Priority
 
@@ -141,7 +141,7 @@ While the analytics can inform betting decisions:
 
 **NCAA Basketball = Indoor Sport**
 - All Division I games played in climate-controlled arenas
-- Temperature: Regulated (~70°F / 21°C)
+- Temperature: Regulated (~70Â°F / 21Â°C)
 - Humidity: Controlled HVAC systems
 - Wind: Non-existent indoors
 - Precipitation: Not applicable
@@ -157,7 +157,7 @@ While the analytics can inform betting decisions:
 
 **Why Billy Walters Doesn't Apply**:
 - Billy Walters = NFL football betting expert
-- NFL ≠ NCAA Basketball (different sport entirely)
+- NFL â‰  NCAA Basketball (different sport entirely)
 - Weather is critical in NFL (outdoor games)
 - Football has vastly different dynamics than basketball
 - Walters' information edges were NFL-specific
@@ -211,7 +211,7 @@ Using Ken Pomeroy's methods for basketball (not Billy Walters' NFL methods) ensu
 
 ## Common Misconceptions (Corrected)
 
-| ❌ Misconception | ✅ Reality |
+| âŒ Misconception | âœ… Reality |
 |-----------------|-----------|
 | "This uses Billy Walters methods" | **No** - Uses Ken Pomeroy methods for basketball |
 | "Weather affects predictions" | **No** - Basketball is played indoors |
@@ -225,18 +225,18 @@ Using Ken Pomeroy's methods for basketball (not Billy Walters' NFL methods) ensu
 
 ### File Naming
 All documentation should clearly indicate basketball focus:
-- ✅ `KENPOM_ANALYTICS_GUIDE.md`
-- ✅ `BASKETBALL_MATCHUP_FRAMEWORK.md`
-- ✅ `NCAA_TOURNAMENT_SIMULATOR.md`
-- ❌ `SPORTS_BETTING_GUIDE.md` (too generic)
-- ❌ `NFL_ANALYSIS.md` (wrong sport)
+- âœ… `KENPOM_ANALYTICS_GUIDE.md`
+- âœ… `BASKETBALL_MATCHUP_FRAMEWORK.md`
+- âœ… `NCAA_TOURNAMENT_SIMULATOR.md`
+- âŒ `SPORTS_BETTING_GUIDE.md` (too generic)
+- âŒ `NFL_ANALYSIS.md` (wrong sport)
 
 ### Code Comments
 Use basketball-specific terminology:
-- ✅ "Adjust for home court advantage"
-- ✅ "Account for altitude in Denver"
-- ❌ "Adjust for weather conditions"
-- ❌ "Apply NFL home field advantage"
+- âœ… "Adjust for home court advantage"
+- âœ… "Account for altitude in Denver"
+- âŒ "Adjust for weather conditions"
+- âŒ "Apply NFL home field advantage"
 
 ---
 
