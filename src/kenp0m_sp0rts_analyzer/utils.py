@@ -94,10 +94,37 @@ def get_cache_dir() -> Path:
     return cache_dir
 
 
+@lru_cache(maxsize=1)
+def _load_team_aliases() -> dict[str, str]:
+    """Load team aliases from JSON file.
+
+    Returns:
+        Dictionary mapping alias -> canonical KenPom name.
+    """
+    aliases_path = (
+        Path(__file__).parent.parent.parent / "data" / "team_aliases.json"
+    )
+
+    if not aliases_path.exists():
+        logger.warning(f"Team aliases file not found: {aliases_path}")
+        return {}
+
+    try:
+        import json
+
+        with open(aliases_path) as f:
+            data = json.load(f)
+        return data.get("aliases", {})
+    except Exception as e:
+        logger.warning(f"Failed to load team aliases: {e}")
+        return {}
+
+
 def normalize_team_name(team: str) -> str:
     """Normalize team name for consistent lookups.
 
     Maps common abbreviations and name variations to official KenPom team names.
+    Uses data/team_aliases.json for comprehensive mappings with fallback rules.
 
     Args:
         team: Raw team name input.
@@ -105,75 +132,67 @@ def normalize_team_name(team: str) -> str:
     Returns:
         Normalized team name matching KenPom API format.
     """
-    # Common abbreviation and name variation mappings
-    # Format: input_variation -> official_kenpom_name
-    name_map = {
-        # Common abbreviations
-        "unc": "North Carolina",
-        "nc": "North Carolina",
-        "uconn": "Connecticut",
-        "ucla": "UCLA",
-        "lsu": "LSU",
-        "uk": "Kentucky",
-        "osu": "Ohio St.",
-        "msu": "Michigan St.",
-        "psu": "Penn St.",
-        "tcu": "TCU",
-        "smu": "SMU",
-        "byu": "BYU",
-        "vcu": "VCU",
-        "unlv": "UNLV",
-        "utep": "UTEP",
-        "iupui": "IUPUI",
-        "umbc": "UMBC",
-        # USC variations (KenPom uses "USC" not "Southern California")
-        "usc": "USC",
-        "southern california": "USC",
-        "so california": "USC",
-        "southern cal": "USC",
-        # NC State variations (KenPom uses "N.C. State")
-        "north carolina state": "N.C. State",
-        "north carolina st": "N.C. State",
-        "north carolina st.": "N.C. State",
-        "nc state": "N.C. State",
-        "ncstate": "N.C. State",
-        # USC Upstate variations (KenPom uses "USC Upstate")
-        "south carolina upstate": "USC Upstate",
-        "sc upstate": "USC Upstate",
-        # Miami variations (disambiguate FL vs OH)
-        "miami florida": "Miami FL",
-        "miami (fl)": "Miami FL",
-        "miami fl": "Miami FL",
-        "miami ohio": "Miami OH",
-        "miami (oh)": "Miami OH",
-        "miami oh": "Miami OH",
-        # St. John's variations
-        "st. john's": "St. John's",
-        "saint john's": "St. John's",
-        "st johns": "St. John's",
-        # St. Mary's variations
-        "st. mary's": "St. Mary's",
-        "saint mary's": "St. Mary's",
-        "st marys": "St. Mary's",
-        # Dakota State variations (need to disambiguate)
-        "north dakota state": "North Dakota St.",
-        "north dakota st": "North Dakota St.",
-        "north dakota st.": "North Dakota St.",
-        "ndsu": "North Dakota St.",
-        "south dakota state": "South Dakota St.",
-        "south dakota st": "South Dakota St.",
-        "south dakota st.": "South Dakota St.",
-        "sdsu": "San Diego St.",  # More commonly SDSU = San Diego State
-    }
-
     normalized = team.strip()
 
-    # Check if it's a known abbreviation/variation (case-insensitive)
+    # 1. Check exact match in aliases (case-sensitive first)
+    aliases = _load_team_aliases()
+    if normalized in aliases:
+        return aliases[normalized]
+
+    # 2. Check case-insensitive match
     lower_name = normalized.lower()
-    if lower_name in name_map:
-        return name_map[lower_name]
+    for alias, canonical in aliases.items():
+        if alias.lower() == lower_name:
+            return canonical
+
+    # 3. Apply "State" -> "St." fallback rule
+    # But NOT for teams where "State" is part of a different pattern
+    state_exceptions = {
+        "penn state": "Penn St.",
+        "ohio state": "Ohio St.",
+        "michigan state": "Michigan St.",
+        "iowa state": "Iowa St.",
+        "kansas state": "Kansas St.",
+        "oregon state": "Oregon St.",
+        "washington state": "Washington St.",
+        "florida state": "Florida St.",
+        "nc state": "N.C. State",
+        "north carolina state": "N.C. State",
+    }
+
+    if lower_name in state_exceptions:
+        return state_exceptions[lower_name]
+
+    # General "State" -> "St." conversion
+    if " state" in lower_name and not lower_name.endswith(" st."):
+        # Convert "X State" to "X St."
+        result = normalized.replace(" State", " St.").replace(" state", " St.")
+        return result
+
+    # 4. Handle common patterns that might slip through
+    # "St." at start usually means "Saint" in KenPom for some teams
+    if normalized.startswith("St. ") and "Joseph" in normalized:
+        return "Saint Joseph's"
 
     return normalized
+
+
+def normalize_team_name_bidirectional(
+    team: str, source: str = "kenpom"
+) -> tuple[str, bool]:
+    """Normalize team name with match confidence indicator.
+
+    Args:
+        team: Raw team name input.
+        source: Source format ("kenpom", "overtime", "espn").
+
+    Returns:
+        Tuple of (normalized_name, was_exact_match).
+    """
+    original = team.strip()
+    normalized = normalize_team_name(original)
+    was_exact = original == normalized or original in _load_team_aliases()
+    return normalized, was_exact
 
 
 def calculate_expected_score(

@@ -240,7 +240,7 @@ def analyze_game(
             kp_spread = -kenpom_spread
             spread_edge = kp_spread - vegas_spread
 
-            print("\n  📊 SPREAD ANALYSIS:")
+            print("\n  [SPREAD ANALYSIS]")
             print(f"     KenPom: {team2} {kp_spread:+.1f}")
             print(f"     Vegas:  {team2} {vegas_spread:+.1f}")
             print(f"     Edge:   {spread_edge:+.1f} points")
@@ -249,22 +249,22 @@ def analyze_game(
                 if spread_edge > 0:
                     # KenPom sees home team as BIGGER favorite than Vegas
                     spread_pick = f"{team2} {vegas_spread}"
-                    print(f"     ✅ VALUE: {spread_pick}")
+                    print(f"     [VALUE] {spread_pick}")
                     print("        (KenPom sees home stronger)")
                 else:
                     # KenPom sees away team as better than Vegas thinks
                     spread_pick = f"{team1} +{abs(vegas_spread)}"
-                    print(f"     ✅ VALUE: {spread_pick}")
+                    print(f"     [VALUE] {spread_pick}")
                     print("        (KenPom sees away stronger)")
             elif abs(spread_edge) < 1:
-                print("     ➖ NO EDGE - Lines agree")
+                print("     -- NO EDGE - Lines agree")
             else:
-                print("     ⚠️  Small edge - proceed with caution")
+                print("     [WARN] Small edge - proceed with caution")
 
         if vegas_total is not None:
             total_edge = kenpom_total - vegas_total
 
-            print("\n  📊 TOTAL ANALYSIS:")
+            print("\n  [TOTAL ANALYSIS]")
             print(f"     KenPom: {kenpom_total:.1f}")
             print(f"     Vegas:  {vegas_total}")
             print(f"     Edge:   {total_edge:+.1f} points")
@@ -272,14 +272,14 @@ def analyze_game(
             if abs(total_edge) >= 5:
                 if total_edge > 0:
                     total_pick = f"OVER {vegas_total}"
-                    print(f"     ✅ VALUE: {total_pick}")
+                    print(f"     [VALUE] {total_pick}")
                 else:
                     total_pick = f"UNDER {vegas_total}"
-                    print(f"     ✅ VALUE: {total_pick}")
+                    print(f"     [VALUE] {total_pick}")
             elif abs(total_edge) < 2:
-                print("     ➖ NO EDGE - Lines agree")
+                print("     -- NO EDGE - Lines agree")
             else:
-                print("     ⚠️  Small edge - proceed with caution")
+                print("     [WARN] Small edge - proceed with caution")
 
         return {
             "team1": team1,
@@ -450,7 +450,7 @@ def main():
     # Value picks (spread)
     spread_value = [r for r in results if r.get("spread_pick")]
     if spread_value:
-        print(f"\n🎯 SPREAD VALUE PICKS (Edge >= {args.min_edge} pts):")
+        print(f"\n[PICK] SPREAD VALUE PICKS (Edge >= {args.min_edge} pts):")
         print("-" * 60)
         for r in spread_value:
             print(f"   {r['team1']} @ {r['team2']}")
@@ -463,7 +463,7 @@ def main():
     # Value picks (totals)
     total_value = [r for r in results if r.get("total_pick")]
     if total_value:
-        print("\n🎯 TOTAL VALUE PICKS (Edge >= 5 pts):")
+        print("\n[PICK] TOTAL VALUE PICKS (Edge >= 5 pts):")
         print("-" * 60)
         for r in total_value:
             print(f"   {r['team1']} @ {r['team2']}")
@@ -477,14 +477,14 @@ def main():
     # Close games
     close_games = [r for r in results if r.get("is_close_game")]
     if close_games:
-        print(f"\n⚠️  CLOSE GAMES ({len(close_games)} games, 35-65% WP):")
+        print(f"\n[WARN] CLOSE GAMES ({len(close_games)} games, 35-65% WP):")
         for r in close_games:
             wp = r['home_win_prob']
             print(f"   {r['team1']} @ {r['team2']} ({wp}% home)")
 
     # Stats
     games_with_lines = [r for r in results if r["vegas_spread"] is not None]
-    print("\n📈 ANALYSIS COMPLETE")
+    print("\n[OK] ANALYSIS COMPLETE")
     print(f"   Date: {date_display}")
     print(f"   Total Games: {len(results)}")
     print(f"   Games with Vegas Lines: {len(games_with_lines)}")
