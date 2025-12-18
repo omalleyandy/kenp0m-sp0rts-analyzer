@@ -15,8 +15,14 @@ secrets.json
 .kenpom_cache/
 data/cache/
 data/*.parquet
+data/vegas_lines.json
 *.pickle
 *.pkl
+
+# Overtime monitoring generated files
+data/overtime_monitoring/*.db
+data/overtime_monitoring/responses_*.json
+data/overtime_monitoring/screenshot_*.png
 
 # Analysis outputs
 output/
