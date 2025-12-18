@@ -1,9 +1,36 @@
 {
-  "scraped_at": "2025-12-17T05:07:46.597846",
+  "scraped_at": "2025-12-18T12:29:44.114481",
   "source": "covers.com",
-  "count": 186,
+  "count": 194,
   "teams": 104,
   "injuries": [
+    {
+      "team": "Air Force FALCONS",
+      "player": "C. Catchings",
+      "position": "G",
+      "status": "Questionable",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:33.976374"
+    },
+    {
+      "team": "Air Force FALCONS",
+      "player": "R. Dering",
+      "position": "F",
+      "status": "Questionable",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:33.998143"
+    },
+    {
+      "team": "Alabama CRIMSON TIDE",
+      "player": "L. Jemison",
+      "position": "F",
+      "status": "Questionable",
+      "injury_type": "Knee",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:34.052614"
+    },
     {
       "team": "Alabama CRIMSON TIDE",
       "player": "A. Allen",
@@ -11,7 +38,7 @@
       "status": "Questionable",
       "injury_type": "Hip",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:38.844178"
+      "scraped_at": "2025-12-18T12:29:34.074856"
     },
     {
       "team": "Appalachian State MOUNTAINEERS",
@@ -20,7 +47,16 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Thu, Nov 6",
-      "scraped_at": "2025-12-17T05:07:38.943127"
+      "scraped_at": "2025-12-18T12:29:34.200342"
+    },
+    {
+      "team": "Arizona State SUN DEVILS",
+      "player": "T. Best",
+      "position": "G",
+      "status": "Questionable",
+      "injury_type": "Leg",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:34.274747"
     },
     {
       "team": "Arizona State SUN DEVILS",
@@ -29,7 +65,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:39.001696"
+      "scraped_at": "2025-12-18T12:29:34.297482"
     },
     {
       "team": "Arizona State SUN DEVILS",
@@ -38,7 +74,7 @@
       "status": "Out",
       "injury_type": "Elbow",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:39.017979"
+      "scraped_at": "2025-12-18T12:29:34.318995"
     },
     {
       "team": "Arizona State SUN DEVILS",
@@ -47,7 +83,7 @@
       "status": "Out",
       "injury_type": "Ankle",
       "date_updated": "Sat, Oct 25",
-      "scraped_at": "2025-12-17T05:07:39.035350"
+      "scraped_at": "2025-12-18T12:29:34.340928"
     },
     {
       "team": "Auburn TIGERS",
@@ -56,7 +92,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:39.107407"
+      "scraped_at": "2025-12-18T12:29:34.429640"
     },
     {
       "team": "Auburn TIGERS",
@@ -65,7 +101,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:39.124467"
+      "scraped_at": "2025-12-18T12:29:34.450836"
     },
     {
       "team": "Auburn TIGERS",
@@ -74,7 +110,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Tue, Dec 2",
-      "scraped_at": "2025-12-17T05:07:39.141141"
+      "scraped_at": "2025-12-18T12:29:34.473541"
     },
     {
       "team": "Baylor BEARS",
@@ -83,7 +119,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:39.196992"
+      "scraped_at": "2025-12-18T12:29:34.545214"
     },
     {
       "team": "Baylor BEARS",
@@ -92,7 +128,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Sun, Nov 23",
-      "scraped_at": "2025-12-17T05:07:39.213950"
+      "scraped_at": "2025-12-18T12:29:34.566344"
     },
     {
       "team": "Baylor BEARS",
@@ -101,7 +137,7 @@
       "status": "Questionable",
       "injury_type": "Arm",
       "date_updated": "Sun, Oct 12",
-      "scraped_at": "2025-12-17T05:07:39.230993"
+      "scraped_at": "2025-12-18T12:29:34.588764"
     },
     {
       "team": "Baylor BEARS",
@@ -110,7 +146,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Wed, Sep 17",
-      "scraped_at": "2025-12-17T05:07:39.248526"
+      "scraped_at": "2025-12-18T12:29:34.611553"
     },
     {
       "team": "Bethune-Cookman WILDCATS",
@@ -119,7 +155,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Wed, Dec 3",
-      "scraped_at": "2025-12-17T05:07:39.304506"
+      "scraped_at": "2025-12-18T12:29:34.679539"
     },
     {
       "team": "Boston University TERRIERS",
@@ -128,7 +164,7 @@
       "status": "Out",
       "injury_type": "Leg",
       "date_updated": "Thu, Nov 6",
-      "scraped_at": "2025-12-17T05:07:39.374931"
+      "scraped_at": "2025-12-18T12:29:34.768480"
     },
     {
       "team": "BYU COUGARS",
@@ -137,7 +173,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Sun, Nov 30",
-      "scraped_at": "2025-12-17T05:07:39.430007"
+      "scraped_at": "2025-12-18T12:29:34.840048"
     },
     {
       "team": "BYU COUGARS",
@@ -146,7 +182,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Nov 7",
-      "scraped_at": "2025-12-17T05:07:39.446445"
+      "scraped_at": "2025-12-18T12:29:34.861154"
     },
     {
       "team": "BYU COUGARS",
@@ -155,7 +191,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:39.463166"
+      "scraped_at": "2025-12-18T12:29:34.882987"
     },
     {
       "team": "Butler BULLDOGS",
@@ -164,7 +200,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:39.544005"
+      "scraped_at": "2025-12-18T12:29:34.988397"
     },
     {
       "team": "Butler BULLDOGS",
@@ -173,7 +209,7 @@
       "status": "Out",
       "injury_type": "Ankle",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:39.560791"
+      "scraped_at": "2025-12-18T12:29:35.009032"
     },
     {
       "team": "California GOLDEN BEARS",
@@ -182,7 +218,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:39.615673"
+      "scraped_at": "2025-12-18T12:29:35.077229"
     },
     {
       "team": "California GOLDEN BEARS",
@@ -191,7 +227,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Mon, Dec 8",
-      "scraped_at": "2025-12-17T05:07:39.632271"
+      "scraped_at": "2025-12-18T12:29:35.097923"
     },
     {
       "team": "Charleston COUGARS",
@@ -200,7 +236,7 @@
       "status": "Questionable",
       "injury_type": "Concussion",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:39.740811"
+      "scraped_at": "2025-12-18T12:29:35.238437"
     },
     {
       "team": "Charleston COUGARS",
@@ -209,7 +245,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Sun, Nov 23",
-      "scraped_at": "2025-12-17T05:07:39.757916"
+      "scraped_at": "2025-12-18T12:29:35.259714"
     },
     {
       "team": "Charleston COUGARS",
@@ -218,7 +254,16 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Thu, Nov 6",
-      "scraped_at": "2025-12-17T05:07:39.774445"
+      "scraped_at": "2025-12-18T12:29:35.280268"
+    },
+    {
+      "team": "Chattanooga MOCS",
+      "player": "L. Vitters",
+      "position": "G-F",
+      "status": "Out",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:35.349461"
     },
     {
       "team": "Chattanooga MOCS",
@@ -227,7 +272,16 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:39.827704"
+      "scraped_at": "2025-12-18T12:29:35.370328"
+    },
+    {
+      "team": "Cincinnati BEARCATS",
+      "player": "T. McKinley",
+      "position": "F",
+      "status": "Questionable",
+      "injury_type": "Lower Body",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:35.421890"
     },
     {
       "team": "Cincinnati BEARCATS",
@@ -236,16 +290,16 @@
       "status": "Out",
       "injury_type": "Lower Body",
       "date_updated": "Mon, Oct 13",
-      "scraped_at": "2025-12-17T05:07:39.866460"
+      "scraped_at": "2025-12-18T12:29:35.441873"
     },
     {
       "team": "Clemson TIGERS",
       "player": "Z. Foster",
       "position": "G",
-      "status": "Questionable",
+      "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:39.893273"
+      "scraped_at": "2025-12-18T12:29:35.476162"
     },
     {
       "team": "Colorado BUFFALOES",
@@ -254,7 +308,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:39.959791"
+      "scraped_at": "2025-12-18T12:29:35.561806"
     },
     {
       "team": "Colorado BUFFALOES",
@@ -263,7 +317,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:39.975856"
+      "scraped_at": "2025-12-18T12:29:35.582141"
     },
     {
       "team": "Colorado State RAMS",
@@ -272,7 +326,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:40.001939"
+      "scraped_at": "2025-12-18T12:29:35.614568"
     },
     {
       "team": "Colorado State RAMS",
@@ -281,7 +335,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:40.018696"
+      "scraped_at": "2025-12-18T12:29:35.637344"
     },
     {
       "team": "Creighton BLUEJAYS",
@@ -290,7 +344,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:40.097786"
+      "scraped_at": "2025-12-18T12:29:35.747037"
     },
     {
       "team": "Creighton BLUEJAYS",
@@ -299,7 +353,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Thu, Nov 20",
-      "scraped_at": "2025-12-17T05:07:40.113551"
+      "scraped_at": "2025-12-18T12:29:35.770621"
     },
     {
       "team": "Davidson WILDCATS",
@@ -308,7 +362,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:40.193855"
+      "scraped_at": "2025-12-18T12:29:35.873421"
     },
     {
       "team": "Dayton FLYERS",
@@ -317,7 +371,7 @@
       "status": "Out",
       "injury_type": "Shoulder",
       "date_updated": "Sat, Oct 18",
-      "scraped_at": "2025-12-17T05:07:40.220108"
+      "scraped_at": "2025-12-18T12:29:35.906083"
     },
     {
       "team": "Delaware FIGHTIN' BLUE HENS",
@@ -326,7 +380,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Tue, Dec 9",
-      "scraped_at": "2025-12-17T05:07:40.248655"
+      "scraped_at": "2025-12-18T12:29:35.942985"
     },
     {
       "team": "Delaware FIGHTIN' BLUE HENS",
@@ -335,7 +389,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:40.264425"
+      "scraped_at": "2025-12-18T12:29:35.963528"
     },
     {
       "team": "Delaware FIGHTIN' BLUE HENS",
@@ -344,7 +398,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Nov 22",
-      "scraped_at": "2025-12-17T05:07:40.280446"
+      "scraped_at": "2025-12-18T12:29:35.984168"
     },
     {
       "team": "Delaware FIGHTIN' BLUE HENS",
@@ -353,7 +407,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Thu, Nov 6",
-      "scraped_at": "2025-12-17T05:07:40.296846"
+      "scraped_at": "2025-12-18T12:29:36.007150"
     },
     {
       "team": "Delaware FIGHTIN' BLUE HENS",
@@ -362,7 +416,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:40.313799"
+      "scraped_at": "2025-12-18T12:29:36.027057"
     },
     {
       "team": "DePaul BLUE DEMONS",
@@ -371,7 +425,7 @@
       "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:40.367019"
+      "scraped_at": "2025-12-18T12:29:36.099009"
     },
     {
       "team": "DePaul BLUE DEMONS",
@@ -380,7 +434,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Sun, Jun 29",
-      "scraped_at": "2025-12-17T05:07:40.384581"
+      "scraped_at": "2025-12-18T12:29:36.120798"
     },
     {
       "team": "Duke BLUE DEVILS",
@@ -389,7 +443,16 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Sun, Nov 9",
-      "scraped_at": "2025-12-17T05:07:40.456579"
+      "scraped_at": "2025-12-18T12:29:36.220803"
+    },
+    {
+      "team": "East Carolina PIRATES",
+      "player": "J. Woodard",
+      "position": "G",
+      "status": "Out",
+      "injury_type": "Undisclosed",
+      "date_updated": "Wed, Dec 17",
+      "scraped_at": "2025-12-18T12:29:36.272608"
     },
     {
       "team": "East Carolina PIRATES",
@@ -398,7 +461,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Sat, Dec 6",
-      "scraped_at": "2025-12-17T05:07:40.497867"
+      "scraped_at": "2025-12-18T12:29:36.293227"
     },
     {
       "team": "East Carolina PIRATES",
@@ -407,7 +470,7 @@
       "status": "Out",
       "injury_type": "Lower Body",
       "date_updated": "Wed, Nov 12",
-      "scraped_at": "2025-12-17T05:07:40.513613"
+      "scraped_at": "2025-12-18T12:29:36.313913"
     },
     {
       "team": "Eastern Washington EAGLES",
@@ -416,7 +479,7 @@
       "status": "Out",
       "injury_type": "Ankle",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:40.591748"
+      "scraped_at": "2025-12-18T12:29:36.419868"
     },
     {
       "team": "Florida Atlantic OWLS",
@@ -425,7 +488,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Sat, Nov 29",
-      "scraped_at": "2025-12-17T05:07:40.735261"
+      "scraped_at": "2025-12-18T12:29:36.610308"
     },
     {
       "team": "Fordham RAMS",
@@ -434,7 +497,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:40.775951"
+      "scraped_at": "2025-12-18T12:29:36.662165"
     },
     {
       "team": "Fordham RAMS",
@@ -443,7 +506,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:40.791953"
+      "scraped_at": "2025-12-18T12:29:36.683225"
     },
     {
       "team": "Fordham RAMS",
@@ -452,7 +515,7 @@
       "status": "Questionable",
       "injury_type": "Concussion",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:40.808391"
+      "scraped_at": "2025-12-18T12:29:36.705029"
     },
     {
       "team": "George Mason PATRIOTS",
@@ -461,16 +524,25 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Sat, Nov 8",
-      "scraped_at": "2025-12-17T05:07:40.886253"
+      "scraped_at": "2025-12-18T12:29:36.811471"
+    },
+    {
+      "team": "Georgetown HOYAS",
+      "player": "H. Asadallah",
+      "position": "G",
+      "status": "Questionable",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:36.845230"
     },
     {
       "team": "Georgetown HOYAS",
       "player": "D. Harris-Smith",
       "position": "G",
-      "status": "Out",
+      "status": "Questionable",
       "injury_type": "Personal",
       "date_updated": "Wed, Dec 3",
-      "scraped_at": "2025-12-17T05:07:40.914492"
+      "scraped_at": "2025-12-18T12:29:36.866006"
     },
     {
       "team": "Georgetown HOYAS",
@@ -479,7 +551,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Mon, Nov 17",
-      "scraped_at": "2025-12-17T05:07:40.931183"
+      "scraped_at": "2025-12-18T12:29:36.888002"
     },
     {
       "team": "Georgia State PANTHERS",
@@ -488,7 +560,7 @@
       "status": "Questionable",
       "injury_type": "Personal",
       "date_updated": "Thu, Nov 13",
-      "scraped_at": "2025-12-17T05:07:40.987042"
+      "scraped_at": "2025-12-18T12:29:36.956783"
     },
     {
       "team": "Hawai'i RAINBOW WARRIORS",
@@ -497,7 +569,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Mon, Nov 17",
-      "scraped_at": "2025-12-17T05:07:41.125450"
+      "scraped_at": "2025-12-18T12:29:37.128231"
     },
     {
       "team": "Houston COUGARS",
@@ -506,7 +578,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Tue, Dec 9",
-      "scraped_at": "2025-12-17T05:07:41.204520"
+      "scraped_at": "2025-12-18T12:29:37.235243"
     },
     {
       "team": "Houston COUGARS",
@@ -515,7 +587,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Mon, Dec 8",
-      "scraped_at": "2025-12-17T05:07:41.220507"
+      "scraped_at": "2025-12-18T12:29:37.256290"
     },
     {
       "team": "Illinois FIGHTING ILLINI",
@@ -524,7 +596,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Sun, Oct 12",
-      "scraped_at": "2025-12-17T05:07:41.284688"
+      "scraped_at": "2025-12-18T12:29:37.339621"
     },
     {
       "team": "Indiana HOOSIERS",
@@ -533,7 +605,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:41.360598"
+      "scraped_at": "2025-12-18T12:29:37.426760"
     },
     {
       "team": "Indiana HOOSIERS",
@@ -542,7 +614,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:41.378739"
+      "scraped_at": "2025-12-18T12:29:37.448136"
     },
     {
       "team": "Indiana HOOSIERS",
@@ -551,7 +623,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:41.396945"
+      "scraped_at": "2025-12-18T12:29:37.469757"
     },
     {
       "team": "Indiana HOOSIERS",
@@ -560,7 +632,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:41.414686"
+      "scraped_at": "2025-12-18T12:29:37.490490"
     },
     {
       "team": "Iowa HAWKEYES",
@@ -569,7 +641,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:41.472505"
+      "scraped_at": "2025-12-18T12:29:37.558111"
     },
     {
       "team": "Iowa State CYCLONES",
@@ -578,7 +650,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Wed, Dec 10",
-      "scraped_at": "2025-12-17T05:07:41.499414"
+      "scraped_at": "2025-12-18T12:29:37.592505"
     },
     {
       "team": "Iowa State CYCLONES",
@@ -587,7 +659,7 @@
       "status": "Out",
       "injury_type": "Hip",
       "date_updated": "Thu, Jun 19",
-      "scraped_at": "2025-12-17T05:07:41.515643"
+      "scraped_at": "2025-12-18T12:29:37.621984"
     },
     {
       "team": "Kansas JAYHAWKS",
@@ -596,7 +668,7 @@
       "status": "Questionable",
       "injury_type": "Quadricep",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:41.610189"
+      "scraped_at": "2025-12-18T12:29:37.752810"
     },
     {
       "team": "Kansas JAYHAWKS",
@@ -605,16 +677,25 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Mon, Oct 27",
-      "scraped_at": "2025-12-17T05:07:41.626885"
+      "scraped_at": "2025-12-18T12:29:37.775776"
     },
     {
       "team": "Kennesaw State OWLS",
-      "player": "J. Smith",
+      "player": "C. Clemmons",
+      "position": "G",
+      "status": "Out",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:37.851077"
+    },
+    {
+      "team": "Kennesaw State OWLS",
+      "player": "P. Smith",
       "position": "C",
       "status": "Questionable",
       "injury_type": "Personal",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:41.683535"
+      "scraped_at": "2025-12-18T12:29:37.873021"
     },
     {
       "team": "Kennesaw State OWLS",
@@ -623,7 +704,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Jul 12",
-      "scraped_at": "2025-12-17T05:07:41.699477"
+      "scraped_at": "2025-12-18T12:29:37.893972"
     },
     {
       "team": "Kentucky WILDCATS",
@@ -632,7 +713,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:41.738056"
+      "scraped_at": "2025-12-18T12:29:37.957715"
     },
     {
       "team": "La Salle EXPLORERS",
@@ -641,7 +722,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Nov 29",
-      "scraped_at": "2025-12-17T05:07:41.764116"
+      "scraped_at": "2025-12-18T12:29:37.990916"
     },
     {
       "team": "Liberty FLAMES",
@@ -650,7 +731,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:41.843366"
+      "scraped_at": "2025-12-18T12:29:38.092671"
     },
     {
       "team": "Liberty FLAMES",
@@ -659,7 +740,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Sun, Oct 12",
-      "scraped_at": "2025-12-17T05:07:41.859916"
+      "scraped_at": "2025-12-18T12:29:38.114112"
     },
     {
       "team": "LSU TIGERS",
@@ -668,7 +749,7 @@
       "status": "Out",
       "injury_type": "Achilles",
       "date_updated": "Sat, Nov 29",
-      "scraped_at": "2025-12-17T05:07:41.964814"
+      "scraped_at": "2025-12-18T12:29:38.250972"
     },
     {
       "team": "Louisville CARDINALS",
@@ -677,7 +758,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:42.003947"
+      "scraped_at": "2025-12-18T12:29:38.301266"
     },
     {
       "team": "Marquette GOLDEN EAGLES",
@@ -686,7 +767,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Wed, Oct 22",
-      "scraped_at": "2025-12-17T05:07:42.109592"
+      "scraped_at": "2025-12-18T12:29:38.447155"
     },
     {
       "team": "Marquette GOLDEN EAGLES",
@@ -695,7 +776,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Sun, Jul 27",
-      "scraped_at": "2025-12-17T05:07:42.125652"
+      "scraped_at": "2025-12-18T12:29:38.467192"
     },
     {
       "team": "Maryland TERRAPINS",
@@ -704,7 +785,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:42.165544"
+      "scraped_at": "2025-12-18T12:29:38.518212"
     },
     {
       "team": "Maryland TERRAPINS",
@@ -713,7 +794,7 @@
       "status": "Out",
       "injury_type": "Achilles",
       "date_updated": "Mon, Sep 29",
-      "scraped_at": "2025-12-17T05:07:42.182028"
+      "scraped_at": "2025-12-18T12:29:38.540620"
     },
     {
       "team": "Memphis TIGERS",
@@ -722,7 +803,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:42.251540"
+      "scraped_at": "2025-12-18T12:29:38.625462"
     },
     {
       "team": "Memphis TIGERS",
@@ -731,7 +812,7 @@
       "status": "Questionable",
       "injury_type": "Thigh",
       "date_updated": "Wed, Nov 26",
-      "scraped_at": "2025-12-17T05:07:42.267881"
+      "scraped_at": "2025-12-18T12:29:38.646753"
     },
     {
       "team": "Miami (FL) HURRICANES",
@@ -740,7 +821,7 @@
       "status": "Questionable",
       "injury_type": "Groin",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:42.346071"
+      "scraped_at": "2025-12-18T12:29:38.748009"
     },
     {
       "team": "Miami (FL) HURRICANES",
@@ -749,7 +830,7 @@
       "status": "Questionable",
       "injury_type": "Hand",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:42.362967"
+      "scraped_at": "2025-12-18T12:29:38.772196"
     },
     {
       "team": "Michigan WOLVERINES",
@@ -758,7 +839,7 @@
       "status": "Out",
       "injury_type": "Thumb",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:42.392323"
+      "scraped_at": "2025-12-18T12:29:38.806442"
     },
     {
       "team": "Michigan WOLVERINES",
@@ -767,7 +848,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Tue, Jul 8",
-      "scraped_at": "2025-12-17T05:07:42.410605"
+      "scraped_at": "2025-12-18T12:29:38.828553"
     },
     {
       "team": "Michigan State SPARTANS",
@@ -776,7 +857,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Tue, Jun 17",
-      "scraped_at": "2025-12-17T05:07:42.437335"
+      "scraped_at": "2025-12-18T12:29:38.862511"
     },
     {
       "team": "Minnesota GOLDEN GOPHERS",
@@ -785,7 +866,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Tue, Dec 9",
-      "scraped_at": "2025-12-17T05:07:42.517825"
+      "scraped_at": "2025-12-18T12:29:38.933112"
     },
     {
       "team": "Minnesota GOLDEN GOPHERS",
@@ -794,7 +875,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:42.534548"
+      "scraped_at": "2025-12-18T12:29:38.953780"
     },
     {
       "team": "Minnesota GOLDEN GOPHERS",
@@ -803,7 +884,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Nov 21",
-      "scraped_at": "2025-12-17T05:07:42.550439"
+      "scraped_at": "2025-12-18T12:29:38.974112"
     },
     {
       "team": "Minnesota GOLDEN GOPHERS",
@@ -812,7 +893,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:42.566568"
+      "scraped_at": "2025-12-18T12:29:38.994695"
     },
     {
       "team": "Minnesota GOLDEN GOPHERS",
@@ -821,7 +902,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Tue, Oct 14",
-      "scraped_at": "2025-12-17T05:07:42.583660"
+      "scraped_at": "2025-12-18T12:29:39.015381"
     },
     {
       "team": "Missouri TIGERS",
@@ -830,7 +911,7 @@
       "status": "Out",
       "injury_type": "Hand",
       "date_updated": "Mon, Nov 24",
-      "scraped_at": "2025-12-17T05:07:42.635348"
+      "scraped_at": "2025-12-18T12:29:39.083604"
     },
     {
       "team": "Missouri TIGERS",
@@ -839,7 +920,7 @@
       "status": "Questionable",
       "injury_type": "Lower Body",
       "date_updated": "Sat, Nov 8",
-      "scraped_at": "2025-12-17T05:07:42.651854"
+      "scraped_at": "2025-12-18T12:29:39.103955"
     },
     {
       "team": "Missouri State BEARS",
@@ -848,7 +929,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:42.678163"
+      "scraped_at": "2025-12-18T12:29:39.138628"
     },
     {
       "team": "Mount St. Mary's MOUNTAINEERS",
@@ -857,7 +938,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:42.771664"
+      "scraped_at": "2025-12-18T12:29:39.259972"
     },
     {
       "team": "Mount St. Mary's MOUNTAINEERS",
@@ -866,7 +947,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Nov 28",
-      "scraped_at": "2025-12-17T05:07:42.787757"
+      "scraped_at": "2025-12-18T12:29:39.280376"
     },
     {
       "team": "Mount St. Mary's MOUNTAINEERS",
@@ -875,7 +956,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Nov 28",
-      "scraped_at": "2025-12-17T05:07:42.804701"
+      "scraped_at": "2025-12-18T12:29:39.300549"
     },
     {
       "team": "Nebraska CORNHUSKERS",
@@ -884,7 +965,7 @@
       "status": "Out",
       "injury_type": "Ankle",
       "date_updated": "Fri, Nov 28",
-      "scraped_at": "2025-12-17T05:07:42.935126"
+      "scraped_at": "2025-12-18T12:29:39.454892"
     },
     {
       "team": "Nebraska CORNHUSKERS",
@@ -893,7 +974,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:42.951475"
+      "scraped_at": "2025-12-18T12:29:39.475784"
     },
     {
       "team": "Nebraska CORNHUSKERS",
@@ -902,7 +983,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:42.968575"
+      "scraped_at": "2025-12-18T12:29:39.500787"
     },
     {
       "team": "Nevada WOLF PACK",
@@ -911,7 +992,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Sat, Dec 6",
-      "scraped_at": "2025-12-17T05:07:43.008468"
+      "scraped_at": "2025-12-18T12:29:39.552879"
     },
     {
       "team": "Nevada WOLF PACK",
@@ -920,7 +1001,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Dec 6",
-      "scraped_at": "2025-12-17T05:07:43.025280"
+      "scraped_at": "2025-12-18T12:29:39.574464"
     },
     {
       "team": "Nevada WOLF PACK",
@@ -929,7 +1010,7 @@
       "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:43.040932"
+      "scraped_at": "2025-12-18T12:29:39.594556"
     },
     {
       "team": "New Mexico LOBOS",
@@ -938,7 +1019,7 @@
       "status": "Questionable",
       "injury_type": "Wrist",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:43.092861"
+      "scraped_at": "2025-12-18T12:29:39.661860"
     },
     {
       "team": "New Mexico LOBOS",
@@ -947,7 +1028,7 @@
       "status": "Questionable",
       "injury_type": "Hamstring",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:43.109454"
+      "scraped_at": "2025-12-18T12:29:39.682646"
     },
     {
       "team": "North Carolina TAR HEELS",
@@ -956,7 +1037,7 @@
       "status": "Questionable",
       "injury_type": "Forearm",
       "date_updated": "Sat, Nov 8",
-      "scraped_at": "2025-12-17T05:07:43.250837"
+      "scraped_at": "2025-12-18T12:29:39.860327"
     },
     {
       "team": "Northern Iowa PANTHERS",
@@ -965,7 +1046,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:43.356744"
+      "scraped_at": "2025-12-18T12:29:39.994649"
     },
     {
       "team": "Northwestern WILDCATS",
@@ -974,7 +1055,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:43.396750"
+      "scraped_at": "2025-12-18T12:29:40.045130"
     },
     {
       "team": "Northwestern WILDCATS",
@@ -983,7 +1064,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:43.412685"
+      "scraped_at": "2025-12-18T12:29:40.064867"
     },
     {
       "team": "Notre Dame FIGHTING IRISH",
@@ -992,7 +1073,7 @@
       "status": "Out",
       "injury_type": "Ankle",
       "date_updated": "Thu, Dec 4",
-      "scraped_at": "2025-12-17T05:07:43.452293"
+      "scraped_at": "2025-12-18T12:29:40.117484"
     },
     {
       "team": "Notre Dame FIGHTING IRISH",
@@ -1001,7 +1082,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Wed, Oct 15",
-      "scraped_at": "2025-12-17T05:07:43.468871"
+      "scraped_at": "2025-12-18T12:29:40.137902"
     },
     {
       "team": "Ohio State BUCKEYES",
@@ -1010,7 +1091,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Thu, Nov 6",
-      "scraped_at": "2025-12-17T05:07:43.521991"
+      "scraped_at": "2025-12-18T12:29:40.205448"
     },
     {
       "team": "Ohio State BUCKEYES",
@@ -1019,7 +1100,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Mon, Oct 27",
-      "scraped_at": "2025-12-17T05:07:43.539461"
+      "scraped_at": "2025-12-18T12:29:40.226684"
     },
     {
       "team": "Oklahoma SOONERS",
@@ -1028,7 +1109,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:43.565117"
+      "scraped_at": "2025-12-18T12:29:40.274102"
     },
     {
       "team": "Oklahoma State COWBOYS",
@@ -1037,7 +1118,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:43.591109"
+      "scraped_at": "2025-12-18T12:29:40.309157"
     },
     {
       "team": "Oklahoma State COWBOYS",
@@ -1046,7 +1127,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Nov 21",
-      "scraped_at": "2025-12-17T05:07:43.607624"
+      "scraped_at": "2025-12-18T12:29:40.328993"
     },
     {
       "team": "Oklahoma State COWBOYS",
@@ -1055,7 +1136,16 @@
       "status": "Out",
       "injury_type": "Hip",
       "date_updated": "Tue, Nov 18",
-      "scraped_at": "2025-12-17T05:07:43.624362"
+      "scraped_at": "2025-12-18T12:29:40.350075"
+    },
+    {
+      "team": "Oregon DUCKS",
+      "player": "L. Johnson",
+      "position": "F",
+      "status": "Questionable",
+      "injury_type": "Undisclosed",
+      "date_updated": "Tue, Dec 16",
+      "scraped_at": "2025-12-18T12:29:40.419234"
     },
     {
       "team": "Oregon DUCKS",
@@ -1064,7 +1154,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:43.676328"
+      "scraped_at": "2025-12-18T12:29:40.440081"
     },
     {
       "team": "Oregon DUCKS",
@@ -1073,16 +1163,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:43.693371"
-    },
-    {
-      "team": "Oregon State BEAVERS",
-      "player": "K. Ekissi",
-      "position": "G",
-      "status": "Questionable",
-      "injury_type": "Undisclosed",
-      "date_updated": "Fri, Nov 28",
-      "scraped_at": "2025-12-17T05:07:43.718634"
+      "scraped_at": "2025-12-18T12:29:40.461709"
     },
     {
       "team": "Penn State NITTANY LIONS",
@@ -1091,7 +1172,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Fri, Nov 7",
-      "scraped_at": "2025-12-17T05:07:43.761873"
+      "scraped_at": "2025-12-18T12:29:40.528241"
     },
     {
       "team": "Pittsburgh PANTHERS",
@@ -1100,7 +1181,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Mon, Dec 1",
-      "scraped_at": "2025-12-17T05:07:43.814435"
+      "scraped_at": "2025-12-18T12:29:40.601471"
     },
     {
       "team": "Pittsburgh PANTHERS",
@@ -1109,7 +1190,7 @@
       "status": "Out",
       "injury_type": "Undisclosed",
       "date_updated": "Wed, Nov 12",
-      "scraped_at": "2025-12-17T05:07:43.830741"
+      "scraped_at": "2025-12-18T12:29:40.622342"
     },
     {
       "team": "Providence FRIARS",
@@ -1118,7 +1199,7 @@
       "status": "Out",
       "injury_type": "Concussion",
       "date_updated": "Mon, Nov 17",
-      "scraped_at": "2025-12-17T05:07:43.922025"
+      "scraped_at": "2025-12-18T12:29:40.748554"
     },
     {
       "team": "Providence FRIARS",
@@ -1127,7 +1208,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Mon, Nov 17",
-      "scraped_at": "2025-12-17T05:07:43.938157"
+      "scraped_at": "2025-12-18T12:29:40.770725"
     },
     {
       "team": "Quinnipiac BOBCATS",
@@ -1136,7 +1217,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:43.990056"
+      "scraped_at": "2025-12-18T12:29:40.840103"
     },
     {
       "team": "Rhode Island RAMS",
@@ -1145,7 +1226,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:44.029597"
+      "scraped_at": "2025-12-18T12:29:40.892817"
     },
     {
       "team": "Rhode Island RAMS",
@@ -1154,7 +1235,7 @@
       "status": "Out",
       "injury_type": "Leg",
       "date_updated": "Sun, Nov 23",
-      "scraped_at": "2025-12-17T05:07:44.046840"
+      "scraped_at": "2025-12-18T12:29:40.913119"
     },
     {
       "team": "Rutgers SCARLET KNIGHTS",
@@ -1163,7 +1244,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Tue, Nov 4",
-      "scraped_at": "2025-12-17T05:07:44.123983"
+      "scraped_at": "2025-12-18T12:29:41.020537"
     },
     {
       "team": "Sacramento State HORNETS",
@@ -1172,7 +1253,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Thu, Nov 20",
-      "scraped_at": "2025-12-17T05:07:44.149202"
+      "scraped_at": "2025-12-18T12:29:41.052737"
     },
     {
       "team": "Saint Joseph's HAWKS",
@@ -1181,7 +1262,16 @@
       "status": "Questionable",
       "injury_type": "Hip",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:44.187656"
+      "scraped_at": "2025-12-18T12:29:41.102454"
+    },
+    {
+      "team": "Saint Louis BILLIKENS",
+      "player": "K. Thames",
+      "position": "G",
+      "status": "Questionable",
+      "injury_type": "Illness",
+      "date_updated": "Wed, Dec 17",
+      "scraped_at": "2025-12-18T12:29:41.136705"
     },
     {
       "team": "Saint Louis BILLIKENS",
@@ -1190,7 +1280,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Wed, Oct 22",
-      "scraped_at": "2025-12-17T05:07:44.213241"
+      "scraped_at": "2025-12-18T12:29:41.157790"
     },
     {
       "team": "Saint Mary's GAELS",
@@ -1199,16 +1289,7 @@
       "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:44.240088"
-    },
-    {
-      "team": "San Francisco DONS",
-      "player": "D. Fuchs",
-      "position": "F",
-      "status": "Questionable",
-      "injury_type": "Upper Body",
-      "date_updated": "Tue, Dec 2",
-      "scraped_at": "2025-12-17T05:07:44.334743"
+      "scraped_at": "2025-12-18T12:29:41.190087"
     },
     {
       "team": "San Francisco DONS",
@@ -1217,7 +1298,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Fri, Oct 31",
-      "scraped_at": "2025-12-17T05:07:44.350630"
+      "scraped_at": "2025-12-18T12:29:41.308077"
     },
     {
       "team": "San Jose State SPARTANS",
@@ -1226,7 +1307,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:44.377813"
+      "scraped_at": "2025-12-18T12:29:41.340985"
     },
     {
       "team": "San Jose State SPARTANS",
@@ -1235,7 +1316,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sat, Nov 29",
-      "scraped_at": "2025-12-17T05:07:44.396452"
+      "scraped_at": "2025-12-18T12:29:41.361646"
     },
     {
       "team": "Seton Hall PIRATES",
@@ -1244,7 +1325,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Sun, Nov 9",
-      "scraped_at": "2025-12-17T05:07:44.510225"
+      "scraped_at": "2025-12-18T12:29:41.496206"
     },
     {
       "team": "Seton Hall PIRATES",
@@ -1253,7 +1334,7 @@
       "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Wed, Oct 29",
-      "scraped_at": "2025-12-17T05:07:44.527225"
+      "scraped_at": "2025-12-18T12:29:41.516335"
     },
     {
       "team": "Seton Hall PIRATES",
@@ -1262,34 +1343,25 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Wed, Oct 29",
-      "scraped_at": "2025-12-17T05:07:44.543868"
+      "scraped_at": "2025-12-18T12:29:41.536378"
     },
     {
       "team": "Siena SAINTS",
       "player": "O. Schlager",
       "position": "G",
-      "status": "Out",
+      "status": "Questionable",
       "injury_type": "Rib",
       "date_updated": "Thu, Dec 4",
-      "scraped_at": "2025-12-17T05:07:44.585158"
-    },
-    {
-      "team": "Siena SAINTS",
-      "player": "R. Mulvey",
-      "position": "C",
-      "status": "Questionable",
-      "injury_type": "Concussion",
-      "date_updated": "Sun, Nov 16",
-      "scraped_at": "2025-12-17T05:07:44.601643"
+      "scraped_at": "2025-12-18T12:29:41.586397"
     },
     {
       "team": "Siena SAINTS",
       "player": "R. Ducharme",
       "position": "G",
-      "status": "Out",
+      "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:44.617233"
+      "scraped_at": "2025-12-18T12:29:41.606987"
     },
     {
       "team": "SMU MUSTANGS",
@@ -1298,7 +1370,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Thu, Nov 20",
-      "scraped_at": "2025-12-17T05:07:44.655892"
+      "scraped_at": "2025-12-18T12:29:41.656898"
     },
     {
       "team": "South Alabama JAGUARS",
@@ -1307,7 +1379,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Mon, Dec 8",
-      "scraped_at": "2025-12-17T05:07:44.681080"
+      "scraped_at": "2025-12-18T12:29:41.690077"
     },
     {
       "team": "South Carolina GAMECOCKS",
@@ -1316,7 +1388,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:44.706376"
+      "scraped_at": "2025-12-18T12:29:41.724111"
     },
     {
       "team": "St. John's RED STORM",
@@ -1325,7 +1397,7 @@
       "status": "Out",
       "injury_type": "Hip",
       "date_updated": "Mon, Dec 8",
-      "scraped_at": "2025-12-17T05:07:44.849951"
+      "scraped_at": "2025-12-18T12:29:41.926195"
     },
     {
       "team": "St. John's RED STORM",
@@ -1334,7 +1406,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Thu, Oct 16",
-      "scraped_at": "2025-12-17T05:07:44.865829"
+      "scraped_at": "2025-12-18T12:29:41.946948"
     },
     {
       "team": "Stanford CARDINAL",
@@ -1343,7 +1415,7 @@
       "status": "Questionable",
       "injury_type": "Lower Body",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:44.904875"
+      "scraped_at": "2025-12-18T12:29:41.996023"
     },
     {
       "team": "Stanford CARDINAL",
@@ -1352,7 +1424,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:44.924638"
+      "scraped_at": "2025-12-18T12:29:42.016085"
     },
     {
       "team": "Syracuse ORANGE",
@@ -1361,7 +1433,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Thu, Dec 4",
-      "scraped_at": "2025-12-17T05:07:44.995063"
+      "scraped_at": "2025-12-18T12:29:42.100451"
     },
     {
       "team": "Syracuse ORANGE",
@@ -1370,7 +1442,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Sun, Nov 23",
-      "scraped_at": "2025-12-17T05:07:45.015783"
+      "scraped_at": "2025-12-18T12:29:42.120404"
     },
     {
       "team": "Temple OWLS",
@@ -1379,7 +1451,7 @@
       "status": "Questionable",
       "injury_type": "Shoulder",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:45.056077"
+      "scraped_at": "2025-12-18T12:29:42.169243"
     },
     {
       "team": "Tennessee VOLUNTEERS",
@@ -1388,7 +1460,7 @@
       "status": "Out",
       "injury_type": "Shoulder",
       "date_updated": "Sun, Dec 7",
-      "scraped_at": "2025-12-17T05:07:45.096193"
+      "scraped_at": "2025-12-18T12:29:42.218997"
     },
     {
       "team": "TCU HORNED FROGS",
@@ -1397,7 +1469,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:45.186830"
+      "scraped_at": "2025-12-18T12:29:42.339105"
     },
     {
       "team": "Texas Tech RED RAIDERS",
@@ -1406,7 +1478,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Fri, Dec 12",
-      "scraped_at": "2025-12-17T05:07:45.252307"
+      "scraped_at": "2025-12-18T12:29:42.423707"
     },
     {
       "team": "Texas Tech RED RAIDERS",
@@ -1415,7 +1487,7 @@
       "status": "Questionable",
       "injury_type": "Lower Body",
       "date_updated": "Sat, Nov 29",
-      "scraped_at": "2025-12-17T05:07:45.268566"
+      "scraped_at": "2025-12-18T12:29:42.443951"
     },
     {
       "team": "Texas Tech RED RAIDERS",
@@ -1424,7 +1496,7 @@
       "status": "Out",
       "injury_type": "Lower Body",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:45.284759"
+      "scraped_at": "2025-12-18T12:29:42.464010"
     },
     {
       "team": "UAB BLAZERS",
@@ -1433,7 +1505,7 @@
       "status": "Out",
       "injury_type": "Wrist",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:45.418956"
+      "scraped_at": "2025-12-18T12:29:42.638836"
     },
     {
       "team": "UC Santa Barbara GAUCHOS",
@@ -1442,7 +1514,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Mon, Dec 15",
-      "scraped_at": "2025-12-17T05:07:45.504123"
+      "scraped_at": "2025-12-18T12:29:42.741563"
     },
     {
       "team": "UC Santa Barbara GAUCHOS",
@@ -1451,7 +1523,7 @@
       "status": "Questionable",
       "injury_type": "Leg",
       "date_updated": "Sat, Dec 6",
-      "scraped_at": "2025-12-17T05:07:45.519895"
+      "scraped_at": "2025-12-18T12:29:42.764316"
     },
     {
       "team": "UCLA BRUINS",
@@ -1460,7 +1532,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Sun, Nov 2",
-      "scraped_at": "2025-12-17T05:07:45.547995"
+      "scraped_at": "2025-12-18T12:29:42.799684"
     },
     {
       "team": "Louisiana RAGIN' CAJUNS",
@@ -1469,7 +1541,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Sun, Dec 7",
-      "scraped_at": "2025-12-17T05:07:45.574966"
+      "scraped_at": "2025-12-18T12:29:42.847503"
     },
     {
       "team": "Louisiana RAGIN' CAJUNS",
@@ -1478,7 +1550,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Sun, Dec 7",
-      "scraped_at": "2025-12-17T05:07:45.592960"
+      "scraped_at": "2025-12-18T12:29:42.869706"
     },
     {
       "team": "Louisiana RAGIN' CAJUNS",
@@ -1487,7 +1559,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Sun, Dec 7",
-      "scraped_at": "2025-12-17T05:07:45.609473"
+      "scraped_at": "2025-12-18T12:29:42.890257"
     },
     {
       "team": "UNLV RUNNIN' REBELS",
@@ -1496,7 +1568,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Wed, Nov 26",
-      "scraped_at": "2025-12-17T05:07:45.723418"
+      "scraped_at": "2025-12-18T12:29:43.032432"
     },
     {
       "team": "UNLV RUNNIN' REBELS",
@@ -1505,7 +1577,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Mon, Nov 3",
-      "scraped_at": "2025-12-17T05:07:45.739456"
+      "scraped_at": "2025-12-18T12:29:43.054161"
     },
     {
       "team": "UNLV RUNNIN' REBELS",
@@ -1514,7 +1586,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Wed, Oct 22",
-      "scraped_at": "2025-12-17T05:07:45.755921"
+      "scraped_at": "2025-12-18T12:29:43.074168"
     },
     {
       "team": "UNLV RUNNIN' REBELS",
@@ -1523,7 +1595,7 @@
       "status": "Out",
       "injury_type": "Hip",
       "date_updated": "Thu, Oct 16",
-      "scraped_at": "2025-12-17T05:07:45.771592"
+      "scraped_at": "2025-12-18T12:29:43.095791"
     },
     {
       "team": "USC TROJANS",
@@ -1532,7 +1604,7 @@
       "status": "Out",
       "injury_type": "Hip",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:45.797726"
+      "scraped_at": "2025-12-18T12:29:43.130367"
     },
     {
       "team": "USC TROJANS",
@@ -1541,7 +1613,7 @@
       "status": "Out",
       "injury_type": "Shoulder",
       "date_updated": "Mon, Nov 24",
-      "scraped_at": "2025-12-17T05:07:45.813947"
+      "scraped_at": "2025-12-18T12:29:43.150412"
     },
     {
       "team": "USC TROJANS",
@@ -1550,7 +1622,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Tue, Jul 22",
-      "scraped_at": "2025-12-17T05:07:45.830036"
+      "scraped_at": "2025-12-18T12:29:43.170510"
     },
     {
       "team": "Utah RUNNIN' UTES",
@@ -1559,7 +1631,7 @@
       "status": "Out",
       "injury_type": "Leg",
       "date_updated": "Sun, Sep 21",
-      "scraped_at": "2025-12-17T05:07:45.867777"
+      "scraped_at": "2025-12-18T12:29:43.220013"
     },
     {
       "team": "Vanderbilt COMMODORES",
@@ -1568,7 +1640,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Wed, Jun 4",
-      "scraped_at": "2025-12-17T05:07:45.959316"
+      "scraped_at": "2025-12-18T12:29:43.343826"
     },
     {
       "team": "VCU RAMS",
@@ -1577,7 +1649,7 @@
       "status": "Out",
       "injury_type": "Personal",
       "date_updated": "Fri, Nov 21",
-      "scraped_at": "2025-12-17T05:07:45.984081"
+      "scraped_at": "2025-12-18T12:29:43.375438"
     },
     {
       "team": "Villanova WILDCATS",
@@ -1586,7 +1658,7 @@
       "status": "Questionable",
       "injury_type": "Knee",
       "date_updated": "Mon, Nov 24",
-      "scraped_at": "2025-12-17T05:07:46.023144"
+      "scraped_at": "2025-12-18T12:29:43.425926"
     },
     {
       "team": "Virginia Tech HOKIES",
@@ -1595,7 +1667,7 @@
       "status": "Questionable",
       "injury_type": "Back",
       "date_updated": "Sun, Dec 14",
-      "scraped_at": "2025-12-17T05:07:46.062330"
+      "scraped_at": "2025-12-18T12:29:43.476949"
     },
     {
       "team": "Virginia Tech HOKIES",
@@ -1604,7 +1676,7 @@
       "status": "Questionable",
       "injury_type": "Illness",
       "date_updated": "Sat, Dec 13",
-      "scraped_at": "2025-12-17T05:07:46.079168"
+      "scraped_at": "2025-12-18T12:29:43.497052"
     },
     {
       "team": "Virginia Tech HOKIES",
@@ -1613,7 +1685,7 @@
       "status": "Questionable",
       "injury_type": "Ankle",
       "date_updated": "Thu, Nov 27",
-      "scraped_at": "2025-12-17T05:07:46.095923"
+      "scraped_at": "2025-12-18T12:29:43.517819"
     },
     {
       "team": "VMI KEYDETS",
@@ -1622,7 +1694,7 @@
       "status": "Questionable",
       "injury_type": "Undisclosed",
       "date_updated": "Tue, Nov 11",
-      "scraped_at": "2025-12-17T05:07:46.121282"
+      "scraped_at": "2025-12-18T12:29:43.550533"
     },
     {
       "team": "Washington HUSKIES",
@@ -1631,7 +1703,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Wed, Oct 8",
-      "scraped_at": "2025-12-17T05:07:46.178437"
+      "scraped_at": "2025-12-18T12:29:43.618448"
     },
     {
       "team": "Washington HUSKIES",
@@ -1640,7 +1712,7 @@
       "status": "Out",
       "injury_type": "Foot",
       "date_updated": "Wed, Oct 8",
-      "scraped_at": "2025-12-17T05:07:46.194488"
+      "scraped_at": "2025-12-18T12:29:43.639397"
     },
     {
       "team": "Western Kentucky HILLTOPPERS",
@@ -1649,7 +1721,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Fri, Dec 5",
-      "scraped_at": "2025-12-17T05:07:46.307735"
+      "scraped_at": "2025-12-18T12:29:43.774461"
     },
     {
       "team": "Wichita State SHOCKERS",
@@ -1658,7 +1730,7 @@
       "status": "Questionable",
       "injury_type": "Foot",
       "date_updated": "Fri, Nov 21",
-      "scraped_at": "2025-12-17T05:07:46.347086"
+      "scraped_at": "2025-12-18T12:29:43.823117"
     },
     {
       "team": "Xavier MUSKETEERS",
@@ -1667,7 +1739,7 @@
       "status": "Out",
       "injury_type": "Redshirt",
       "date_updated": "Wed, Nov 5",
-      "scraped_at": "2025-12-17T05:07:46.451762"
+      "scraped_at": "2025-12-18T12:29:43.959601"
     },
     {
       "team": "Xavier MUSKETEERS",
@@ -1676,7 +1748,7 @@
       "status": "Out",
       "injury_type": "Knee",
       "date_updated": "Wed, Oct 29",
-      "scraped_at": "2025-12-17T05:07:46.467642"
+      "scraped_at": "2025-12-18T12:29:43.981527"
     }
   ]
 }

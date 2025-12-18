@@ -24,9 +24,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from kenp0m_sp0rts_analyzer.overtime_scraper import OvertimeScraper
-from kenp0m_sp0rts_analyzer.overtime_timing import TimingDatabase
-from kenp0m_sp0rts_analyzer.historical_odds_db import get_db
+from kenp0m_sp0rts_analyzer.overtime_scraper import OvertimeScraper  # noqa: E402
+from kenp0m_sp0rts_analyzer.overtime_timing import TimingDatabase  # noqa: E402
+from kenp0m_sp0rts_analyzer.historical_odds_db import get_db  # noqa: E402
 
 
 class ComprehensiveMonitor:
