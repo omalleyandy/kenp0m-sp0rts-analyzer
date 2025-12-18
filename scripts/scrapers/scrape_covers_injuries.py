@@ -1,19 +1,41 @@
-"""Scrape college basketball injury reports from Covers.com.
+"""Scrape college basketball injury reports from Covers.com (Fixed Version).
 
-This scraper uses Playwright to load the JavaScript-heavy Covers.com injury page
-and extracts current injury data for all NCAA Division I teams.
+This scraper uses the correct selectors for Covers.com's injury page structure.
 
 Usage:
-    python scripts/scrapers/scrape_covers_injuries.py
-    python scripts/scrapers/scrape_covers_injuries.py --output injuries.json
+    python scripts/scrapers/scrape_covers_injuries_v2.py
+    python scripts/scrapers/scrape_covers_injuries_v2.py --output injuries.json
 """
 
 import argparse
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
+
+
+def extract_team_name(team_container):
+    """Extract team name from container.
+
+    Args:
+        team_container: Playwright element for team injury container
+
+    Returns:
+        Team name string or None
+    """
+    try:
+        # Team name is in the header within the injury container
+        team_elem = team_container.evaluate(
+            """el => {
+                let teamName = el.querySelector('.covers-CoversMatchups-teamName');
+                return teamName ? teamName.textContent.trim() : null;
+            }"""
+        )
+        return team_elem
+    except Exception as e:
+        return None
 
 
 def scrape_covers_injuries(headless: bool = True) -> list[dict]:
@@ -26,7 +48,7 @@ def scrape_covers_injuries(headless: bool = True) -> list[dict]:
         List of injury dictionaries with team, player, status, etc.
     """
     print("\n" + "="*80)
-    print("COVERS.COM INJURY SCRAPER")
+    print("COVERS.COM INJURY SCRAPER V2")
     print("="*80 + "\n")
 
     injuries = []
@@ -44,59 +66,97 @@ def scrape_covers_injuries(headless: bool = True) -> list[dict]:
 
         # Wait for page to fully load
         print("Waiting for content to load...")
-        page.wait_for_timeout(3000)  # Give JavaScript time to render
+        page.wait_for_timeout(5000)
 
-        # Try to find injury data
-        # Covers.com uses various class names, we'll try multiple selectors
+        # Find all team injury containers
         print("Extracting injury data...")
+        team_containers = page.query_selector_all('.covers-CoversSeasonInjuries-blockContainer')
 
-        # Method 1: Try to find injury table rows
-        injury_rows = page.query_selector_all('tr.injury-row, tr[class*="injury"], tbody tr')
+        print(f"Found {len(team_containers)} team sections")
 
-        if injury_rows:
-            print(f"Found {len(injury_rows)} potential injury rows")
-
-            for row in injury_rows:
-                try:
-                    # Extract text from all cells
-                    cells = row.query_selector_all('td')
-                    if len(cells) >= 4:  # Need at least team, player, status, injury
-                        injury = {
-                            'team': cells[0].text_content().strip() if len(cells) > 0 else '',
-                            'player': cells[1].text_content().strip() if len(cells) > 1 else '',
-                            'position': cells[2].text_content().strip() if len(cells) > 2 else '',
-                            'status': cells[3].text_content().strip() if len(cells) > 3 else '',
-                            'injury_type': cells[4].text_content().strip() if len(cells) > 4 else '',
-                            'date_updated': cells[5].text_content().strip() if len(cells) > 5 else '',
-                            'scraped_at': datetime.now().isoformat()
-                        }
-
-                        # Only add if we have team and player
-                        if injury['team'] and injury['player']:
-                            injuries.append(injury)
-
-                except Exception as e:
-                    print(f"Warning: Error parsing row: {e}")
+        for team_container in team_containers:
+            try:
+                # Get team name
+                team_elem = team_container.query_selector('.covers-CoversMatchups-teamName')
+                if not team_elem:
                     continue
 
-        # Method 2: If no structured table, try to extract from text
-        if not injuries:
-            print("No structured table found, trying alternative extraction...")
+                # Use inner_text to preserve line breaks, then normalize whitespace
+                team_name = team_elem.inner_text().strip()
+                team_name = ' '.join(team_name.split())  # Normalize whitespace
 
-            # Look for team sections
-            team_sections = page.query_selector_all('div[class*="team"], div[class*="injury"]')
-            print(f"Found {len(team_sections)} potential sections")
+                # Find injury table within this team's section
+                injury_table = team_container.query_selector('table')
+                if not injury_table:
+                    continue
 
-            # Save page content for debugging
-            content = page.content()
-            debug_file = Path('data/covers_debug.html')
-            debug_file.parent.mkdir(exist_ok=True)
-            debug_file.write_text(content, encoding='utf-8')
-            print(f"Saved page HTML to {debug_file} for debugging")
+                # Get all injury rows (skip header row)
+                injury_rows = injury_table.query_selector_all('tbody > tr')
+
+                for row in injury_rows:
+                    try:
+                        # Skip collapsible detail rows
+                        if 'collapse' in (row.get_attribute('class') or ''):
+                            continue
+
+                        # Extract cells
+                        cells = row.query_selector_all('td')
+                        if len(cells) < 3:
+                            continue
+
+                        # Parse injury data
+                        # Structure: [Name] [Position] [Status - Injury] [Date] [Expand Icon]
+                        player_name = ' '.join(cells[0].inner_text().split())
+                        position = ' '.join(cells[1].inner_text().split())
+
+                        # Status cell contains: "<b>Status - InjuryType</b><br>(Date)"
+                        status_cell = cells[2]
+                        status_text = status_cell.inner_text().strip()
+
+                        # Parse status and injury type
+                        status = "Unknown"
+                        injury_type = ""
+                        date_updated = ""
+
+                        # Extract from bold tag
+                        bold_elem = status_cell.query_selector('b')
+                        if bold_elem:
+                            status_injury = bold_elem.text_content().strip()
+                            # Split "Status - Injury"
+                            if ' - ' in status_injury:
+                                status, injury_type = status_injury.split(' - ', 1)
+                            else:
+                                status = status_injury
+
+                        # Extract date
+                        date_match = re.search(r'\((.*?)\)', status_text)
+                        if date_match:
+                            date_updated = date_match.group(1).strip()
+
+                        # Only add if we have meaningful data
+                        if player_name and team_name:
+                            injury = {
+                                'team': team_name,
+                                'player': player_name,
+                                'position': position,
+                                'status': status.strip(),
+                                'injury_type': injury_type.strip(),
+                                'date_updated': date_updated,
+                                'scraped_at': datetime.now().isoformat()
+                            }
+                            injuries.append(injury)
+
+                    except Exception as e:
+                        print(f"Warning: Error parsing injury row: {e}")
+                        continue
+
+            except Exception as e:
+                print(f"Warning: Error processing team container: {e}")
+                continue
 
         browser.close()
 
-    print(f"\n[OK] Scraped {len(injuries)} injuries")
+    print(f"\n[OK] Scraped {len(injuries)} injuries from {len(set(i['team'] for i in injuries))} teams")
     return injuries
 
 
@@ -115,6 +175,7 @@ def save_injuries(injuries: list[dict], output_file: str | Path):
             'scraped_at': datetime.now().isoformat(),
             'source': 'covers.com',
             'count': len(injuries),
+            'teams': len(set(i['team'] for i in injuries)),
             'injuries': injuries
         }, f, indent=2)
 
@@ -141,14 +202,23 @@ def print_injury_summary(injuries: list[dict]):
         status = injury.get('status', 'Unknown')
         by_status.setdefault(status, []).append(injury)
 
-    print(f"Total Injuries: {len(injuries)}\n")
+    print(f"Total Injuries: {len(injuries)}")
+    print(f"Teams Affected: {len(set(i['team'] for i in injuries))}\n")
 
-    for status, inj_list in sorted(by_status.items()):
-        print(f"{status}: {len(inj_list)}")
-        for inj in inj_list[:5]:  # Show first 5
-            print(f"  - {inj.get('player', 'Unknown')} ({inj.get('team', 'Unknown')})")
-        if len(inj_list) > 5:
-            print(f"  ... and {len(inj_list) - 5} more")
+    print("By Status:")
+    for status, inj_list in sorted(by_status.items(), key=lambda x: -len(x[1])):
+        print(f"  {status}: {len(inj_list)}")
+
+    print()
+
+    # Show recent major injuries (Out/Doubtful)
+    major_injuries = [i for i in injuries if i.get('status') in ['Out', 'Doubtful']]
+    if major_injuries:
+        print(f"Major Injuries (Out/Doubtful): {len(major_injuries)}")
+        for inj in major_injuries[:10]:
+            print(f"  - {inj['player']} ({inj['team']}) - {inj['status']} ({inj['injury_type']})")
+        if len(major_injuries) > 10:
+            print(f"  ... and {len(major_injuries) - 10} more")
         print()
 
     # Show teams with multiple injuries
@@ -157,10 +227,10 @@ def print_injury_summary(injuries: list[dict]):
         team = injury.get('team', 'Unknown')
         by_team.setdefault(team, []).append(injury)
 
-    teams_multiple = {t: inj for t, inj in by_team.items() if len(inj) > 1}
+    teams_multiple = {t: inj for t, inj in by_team.items() if len(inj) >= 3}
     if teams_multiple:
-        print("Teams with Multiple Injuries:")
-        for team, inj_list in sorted(teams_multiple.items(), key=lambda x: -len(x[1])):
+        print(f"Teams with 3+ Injuries ({len(teams_multiple)} teams):")
+        for team, inj_list in sorted(teams_multiple.items(), key=lambda x: -len(x[1]))[:10]:
             print(f"  {team}: {len(inj_list)} injured")
 
 
@@ -193,6 +263,10 @@ def main():
     headless = args.headless and not args.show_browser
     injuries = scrape_covers_injuries(headless=headless)
 
+    if not injuries:
+        print("\n[WARN] No injuries found - scraper may need updating")
+        return 1
+
     # Save to file
     save_injuries(injuries, args.output)
 
@@ -202,11 +276,6 @@ def main():
     print("\n" + "="*80)
     print("SCRAPING COMPLETE")
     print("="*80)
-
-    # Return non-zero exit code if no injuries found (might indicate scraping issue)
-    if not injuries:
-        print("\n[WARN] No injuries found - scraper may need updating")
-        return 1
 
     return 0
 

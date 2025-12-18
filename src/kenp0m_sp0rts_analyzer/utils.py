@@ -65,6 +65,18 @@ def get_credentials() -> tuple[str, str]:
     return email, password
 
 
+def get_overtime_credentials() -> tuple[str | None, str | None]:
+    """Get Overtime.ag credentials from environment variables.
+
+    Returns:
+        Tuple of (username, password). May be (None, None) if not configured.
+    """
+    load_dotenv()
+    username = os.getenv("OVERTIME_USER")
+    password = os.getenv("OVERTIME_PASSWORD")
+    return username, password
+
+
 @lru_cache(maxsize=1)
 def get_cache_dir() -> Path:
     """Get the cache directory for storing data.

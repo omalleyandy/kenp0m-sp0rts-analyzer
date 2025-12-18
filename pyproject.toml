@@ -76,8 +76,8 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 target-version = "py311"
-line-length = 88
-src = ["src", "tests"]
+line-length = 79  # Strict PEP 8 compliance
+src = ["src", "tests", "."]  # Include root for analyze_todays_games.py
 
 [tool.ruff.lint]
 select = [
@@ -94,7 +94,7 @@ select = [
     "PTH",    # flake8-use-pathlib
 ]
 ignore = [
-    "E501",   # line too long (handled by formatter)
+    # E501 now enforced - line length checked by formatter at 79 chars
 ]
 
 [tool.ruff.lint.isort]
