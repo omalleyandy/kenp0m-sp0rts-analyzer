@@ -246,16 +246,26 @@ def analyze_game(
             print(f"     Edge:   {spread_edge:+.1f} points")
 
             if abs(spread_edge) >= 3:
-                if spread_edge > 0:
-                    # KenPom sees home team as BIGGER favorite than Vegas
-                    spread_pick = f"{team2} {vegas_spread}"
+                if spread_edge < 0:
+                    # Vegas gives home team MORE points than KenPom
+                    # VALUE: Bet HOME team (they cover with extra points)
+                    if vegas_spread > 0:
+                        spread_pick = f"{team2} +{vegas_spread}"
+                    else:
+                        spread_pick = f"{team2} {vegas_spread}"
                     print(f"     [VALUE] {spread_pick}")
-                    print("        (KenPom sees home stronger)")
+                    print("        (Home getting extra points from Vegas)")
                 else:
-                    # KenPom sees away team as better than Vegas thinks
-                    spread_pick = f"{team1} +{abs(vegas_spread)}"
+                    # KenPom gives home team MORE credit than Vegas
+                    # VALUE: Bet AWAY team (home is overvalued)
+                    if vegas_spread > 0:
+                        # Home is underdog, away is favorite
+                        spread_pick = f"{team1} -{vegas_spread}"
+                    else:
+                        # Home is favorite, away is underdog
+                        spread_pick = f"{team1} +{abs(vegas_spread)}"
                     print(f"     [VALUE] {spread_pick}")
-                    print("        (KenPom sees away stronger)")
+                    print("        (Away team undervalued by Vegas)")
             elif abs(spread_edge) < 1:
                 print("     -- NO EDGE - Lines agree")
             else:
