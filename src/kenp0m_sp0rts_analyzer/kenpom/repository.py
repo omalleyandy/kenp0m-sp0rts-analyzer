@@ -1,0 +1,864 @@
+"""Repository layer for KenPom data access.
+
+This module provides a clean interface for all database operations,
+abstracting away SQL queries and transaction management.
+"""
+
+import logging
+from datetime import date, datetime, timedelta
+from typing import Any, Optional
+
+from .database import DatabaseManager
+from .exceptions import DatabaseError, TeamNotFoundError
+from .models import (
+    AccuracyReport,
+    FourFactors,
+    GamePrediction,
+    GameResult,
+    PointDistribution,
+    Team,
+    TeamRating,
+)
+from .validators import DataValidator
+
+logger = logging.getLogger(__name__)
+
+
+class KenPomRepository:
+    """Repository for KenPom data with full CRUD operations.
+
+    Provides clean interface for:
+    - Team management
+    - Ratings snapshots
+    - Four Factors data
+    - Point distribution data
+    - Predictions and accuracy tracking
+    """
+
+    def __init__(self, db_path: str = "data/kenpom.db"):
+        """Initialize repository.
+
+        Args:
+            db_path: Path to SQLite database.
+        """
+        self.db = DatabaseManager(db_path)
+        self.validator = DataValidator()
+
+    # ==================== Teams ====================
+
+    def upsert_teams(self, teams: list[dict[str, Any]]) -> int:
+        """Insert or update team records.
+
+        Args:
+            teams: List of team dictionaries with team_id, team_name, etc.
+
+        Returns:
+            Number of teams upserted.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for team in teams:
+                conn.execute(
+                    """
+                    INSERT INTO teams (team_id, team_name, conference, coach, arena)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(team_id) DO UPDATE SET
+                        team_name = excluded.team_name,
+                        conference = excluded.conference,
+                        coach = excluded.coach,
+                        arena = excluded.arena,
+                        updated_at = CURRENT_TIMESTAMP
+                    """,
+                    (
+                        team.get("team_id") or team.get("TeamID"),
+                        team.get("team_name") or team.get("TeamName"),
+                        team.get("conference") or team.get("ConfShort"),
+                        team.get("coach") or team.get("Coach"),
+                        team.get("arena") or team.get("Arena"),
+                    ),
+                )
+                count += 1
+        logger.debug(f"Upserted {count} teams")
+        return count
+
+    def get_team_by_id(self, team_id: int) -> Team | None:
+        """Get team by ID.
+
+        Args:
+            team_id: KenPom team ID.
+
+        Returns:
+            Team model or None if not found.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                "SELECT * FROM teams WHERE team_id = ?", (team_id,)
+            )
+            row = cursor.fetchone()
+            return Team(**dict(row)) if row else None
+
+    def get_team_by_name(self, name: str) -> Team | None:
+        """Get team by name (case-insensitive).
+
+        Args:
+            name: Team name.
+
+        Returns:
+            Team model or None if not found.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                "SELECT * FROM teams WHERE LOWER(team_name) = LOWER(?)", (name,)
+            )
+            row = cursor.fetchone()
+            return Team(**dict(row)) if row else None
+
+    def get_all_teams(self) -> list[Team]:
+        """Get all teams.
+
+        Returns:
+            List of all Team models.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute("SELECT * FROM teams ORDER BY team_name")
+            return [Team(**dict(row)) for row in cursor.fetchall()]
+
+    def search_teams(self, query: str, limit: int = 10) -> list[Team]:
+        """Search teams by name.
+
+        Args:
+            query: Search string.
+            limit: Maximum results.
+
+        Returns:
+            List of matching teams.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM teams 
+                WHERE team_name LIKE ?
+                ORDER BY team_name
+                LIMIT ?
+                """,
+                (f"%{query}%", limit),
+            )
+            return [Team(**dict(row)) for row in cursor.fetchall()]
+
+    # ==================== Ratings Snapshots ====================
+
+    def save_ratings_snapshot(
+        self,
+        snapshot_date: date,
+        season: int,
+        ratings: list[dict[str, Any]],
+    ) -> int:
+        """Save a daily ratings snapshot.
+
+        Args:
+            snapshot_date: Date of the snapshot.
+            season: Season year.
+            ratings: List of rating dictionaries.
+
+        Returns:
+            Number of ratings saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for rating in ratings:
+                # Validate before saving
+                result = self.validator.validate_rating(rating)
+                if not result.valid:
+                    logger.warning(
+                        f"Skipping invalid rating for {rating.get('TeamName')}: "
+                        f"{result.errors}"
+                    )
+                    continue
+
+                # Map both API and internal field names
+                team_id = rating.get("team_id") or rating.get("TeamID")
+                team_name = rating.get("team_name") or rating.get("TeamName")
+
+                conn.execute(
+                    """
+                    INSERT INTO ratings_snapshots (
+                        snapshot_date, season, team_id, team_name, conference,
+                        adj_em, adj_oe, adj_de, adj_tempo,
+                        luck, sos, soso, sosd, ncsos, pythag,
+                        rank_adj_em, rank_adj_oe, rank_adj_de, rank_tempo,
+                        rank_sos, rank_luck,
+                        wins, losses, apl_off, apl_def
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                              ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
+                        adj_em = excluded.adj_em,
+                        adj_oe = excluded.adj_oe,
+                        adj_de = excluded.adj_de,
+                        adj_tempo = excluded.adj_tempo,
+                        luck = excluded.luck,
+                        sos = excluded.sos,
+                        pythag = excluded.pythag,
+                        rank_adj_em = excluded.rank_adj_em,
+                        wins = excluded.wins,
+                        losses = excluded.losses
+                    """,
+                    (
+                        snapshot_date,
+                        season,
+                        team_id,
+                        team_name,
+                        rating.get("conference") or rating.get("ConfShort"),
+                        rating.get("adj_em") or rating.get("AdjEM"),
+                        rating.get("adj_oe") or rating.get("AdjOE"),
+                        rating.get("adj_de") or rating.get("AdjDE"),
+                        rating.get("adj_tempo") or rating.get("AdjTempo"),
+                        rating.get("luck") or rating.get("Luck", 0),
+                        rating.get("sos") or rating.get("SOS", 0),
+                        rating.get("soso") or rating.get("SOSO", 0),
+                        rating.get("sosd") or rating.get("SOSD", 0),
+                        rating.get("ncsos") or rating.get("NCSOS", 0),
+                        rating.get("pythag") or rating.get("Pythag", 0.5),
+                        rating.get("rank_adj_em") or rating.get("RankAdjEM"),
+                        rating.get("rank_adj_oe") or rating.get("RankAdjOE"),
+                        rating.get("rank_adj_de") or rating.get("RankAdjDE"),
+                        rating.get("rank_tempo") or rating.get("RankAdjTempo"),
+                        rating.get("rank_sos") or rating.get("RankSOS"),
+                        rating.get("rank_luck") or rating.get("RankLuck"),
+                        rating.get("wins") or rating.get("Wins", 0),
+                        rating.get("losses") or rating.get("Losses", 0),
+                        rating.get("apl_off") or rating.get("APL_Off"),
+                        rating.get("apl_def") or rating.get("APL_Def"),
+                    ),
+                )
+                count += 1
+
+        logger.info(f"Saved {count} ratings for {snapshot_date}")
+        return count
+
+    def get_latest_ratings(self) -> list[TeamRating]:
+        """Get the most recent ratings for all teams.
+
+        Returns:
+            List of TeamRating models.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM ratings_snapshots r
+                WHERE snapshot_date = (
+                    SELECT MAX(snapshot_date) FROM ratings_snapshots
+                )
+                ORDER BY rank_adj_em
+                """
+            )
+            return [TeamRating(**dict(row)) for row in cursor.fetchall()]
+
+    def get_ratings_on_date(self, snapshot_date: date) -> list[TeamRating]:
+        """Get ratings for a specific date.
+
+        Args:
+            snapshot_date: Date to query.
+
+        Returns:
+            List of TeamRating models.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM ratings_snapshots
+                WHERE snapshot_date = ?
+                ORDER BY rank_adj_em
+                """,
+                (snapshot_date,),
+            )
+            return [TeamRating(**dict(row)) for row in cursor.fetchall()]
+
+    def get_team_rating(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> TeamRating | None:
+        """Get a team's rating for a specific date.
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Date to query (defaults to latest).
+
+        Returns:
+            TeamRating model or None.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots
+                    WHERE team_id = ? AND snapshot_date = ?
+                    """,
+                    (team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (team_id,),
+                )
+            row = cursor.fetchone()
+            return TeamRating(**dict(row)) if row else None
+
+    def get_team_rating_history(
+        self,
+        team_id: int,
+        days: int = 30,
+        season: int | None = None,
+    ) -> list[TeamRating]:
+        """Get historical ratings for a team.
+
+        Args:
+            team_id: Team ID.
+            days: Number of days of history.
+            season: Optional season filter.
+
+        Returns:
+            List of TeamRating models, newest first.
+        """
+        with self.db.connection() as conn:
+            if season:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots
+                    WHERE team_id = ? AND season = ?
+                    ORDER BY snapshot_date DESC
+                    """,
+                    (team_id, season),
+                )
+            else:
+                cutoff = date.today() - timedelta(days=days)
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots
+                    WHERE team_id = ? AND snapshot_date >= ?
+                    ORDER BY snapshot_date DESC
+                    """,
+                    (team_id, cutoff),
+                )
+            return [TeamRating(**dict(row)) for row in cursor.fetchall()]
+
+    def get_available_dates(self, season: int | None = None) -> list[date]:
+        """Get list of dates with rating snapshots.
+
+        Args:
+            season: Optional season filter.
+
+        Returns:
+            List of dates with data.
+        """
+        with self.db.connection() as conn:
+            if season:
+                cursor = conn.execute(
+                    """
+                    SELECT DISTINCT snapshot_date FROM ratings_snapshots
+                    WHERE season = ?
+                    ORDER BY snapshot_date
+                    """,
+                    (season,),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT DISTINCT snapshot_date FROM ratings_snapshots
+                    ORDER BY snapshot_date
+                    """
+                )
+            return [row["snapshot_date"] for row in cursor.fetchall()]
+
+    # ==================== Four Factors ====================
+
+    def save_four_factors(
+        self,
+        snapshot_date: date,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save four factors data.
+
+        Args:
+            snapshot_date: Date of the data.
+            data: List of four factors dictionaries.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                team_id = record.get("team_id") or record.get("TeamID")
+
+                conn.execute(
+                    """
+                    INSERT INTO four_factors (
+                        snapshot_date, team_id,
+                        efg_pct_off, to_pct_off, or_pct_off, ft_rate_off,
+                        efg_pct_def, to_pct_def, or_pct_def, ft_rate_def,
+                        rank_efg_off, rank_efg_def, rank_to_off, rank_to_def,
+                        rank_or_off, rank_or_def, rank_ft_rate_off, rank_ft_rate_def
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
+                        efg_pct_off = excluded.efg_pct_off,
+                        to_pct_off = excluded.to_pct_off,
+                        or_pct_off = excluded.or_pct_off,
+                        ft_rate_off = excluded.ft_rate_off,
+                        efg_pct_def = excluded.efg_pct_def,
+                        to_pct_def = excluded.to_pct_def,
+                        or_pct_def = excluded.or_pct_def,
+                        ft_rate_def = excluded.ft_rate_def
+                    """,
+                    (
+                        snapshot_date,
+                        team_id,
+                        record.get("efg_pct_off") or record.get("eFG_Off"),
+                        record.get("to_pct_off") or record.get("TO_Off"),
+                        record.get("or_pct_off") or record.get("OR_Off"),
+                        record.get("ft_rate_off") or record.get("FTR_Off"),
+                        record.get("efg_pct_def") or record.get("eFG_Def"),
+                        record.get("to_pct_def") or record.get("TO_Def"),
+                        record.get("or_pct_def") or record.get("OR_Def"),
+                        record.get("ft_rate_def") or record.get("FTR_Def"),
+                        record.get("rank_efg_off"),
+                        record.get("rank_efg_def"),
+                        record.get("rank_to_off"),
+                        record.get("rank_to_def"),
+                        record.get("rank_or_off"),
+                        record.get("rank_or_def"),
+                        record.get("rank_ft_rate_off"),
+                        record.get("rank_ft_rate_def"),
+                    ),
+                )
+                count += 1
+
+        logger.debug(f"Saved {count} four factors records for {snapshot_date}")
+        return count
+
+    def get_four_factors(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> FourFactors | None:
+        """Get four factors for a team.
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            FourFactors model or None.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM four_factors
+                    WHERE team_id = ? AND snapshot_date = ?
+                    """,
+                    (team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM four_factors
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (team_id,),
+                )
+            row = cursor.fetchone()
+            return FourFactors(**dict(row)) if row else None
+
+    # ==================== Point Distribution ====================
+
+    def save_point_distribution(
+        self,
+        snapshot_date: date,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save point distribution data.
+
+        Args:
+            snapshot_date: Date of the data.
+            data: List of point distribution dictionaries.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                team_id = record.get("team_id") or record.get("TeamID")
+
+                conn.execute(
+                    """
+                    INSERT INTO point_distribution (
+                        snapshot_date, team_id,
+                        ft_pct, two_pct, three_pct,
+                        ft_pct_def, two_pct_def, three_pct_def,
+                        rank_three_pct, rank_two_pct, rank_ft_pct
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
+                        ft_pct = excluded.ft_pct,
+                        two_pct = excluded.two_pct,
+                        three_pct = excluded.three_pct,
+                        ft_pct_def = excluded.ft_pct_def,
+                        two_pct_def = excluded.two_pct_def,
+                        three_pct_def = excluded.three_pct_def
+                    """,
+                    (
+                        snapshot_date,
+                        team_id,
+                        record.get("ft_pct") or record.get("FT_Pct"),
+                        record.get("two_pct") or record.get("TwoP_Pct"),
+                        record.get("three_pct") or record.get("ThreeP_Pct"),
+                        record.get("ft_pct_def") or record.get("FT_Pct_Def", 0),
+                        record.get("two_pct_def") or record.get("TwoP_Pct_Def", 0),
+                        record.get("three_pct_def") or record.get("ThreeP_Pct_Def", 0),
+                        record.get("rank_three_pct"),
+                        record.get("rank_two_pct"),
+                        record.get("rank_ft_pct"),
+                    ),
+                )
+                count += 1
+
+        logger.debug(f"Saved {count} point distribution records for {snapshot_date}")
+        return count
+
+    def get_point_distribution(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> PointDistribution | None:
+        """Get point distribution for a team.
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            PointDistribution model or None.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM point_distribution
+                    WHERE team_id = ? AND snapshot_date = ?
+                    """,
+                    (team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM point_distribution
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (team_id,),
+                )
+            row = cursor.fetchone()
+            return PointDistribution(**dict(row)) if row else None
+
+    # ==================== Predictions ====================
+
+    def save_prediction(self, prediction: GamePrediction) -> int:
+        """Save a game prediction.
+
+        Args:
+            prediction: GamePrediction model.
+
+        Returns:
+            ID of saved prediction.
+        """
+        with self.db.transaction() as conn:
+            cursor = conn.execute(
+                """
+                INSERT INTO game_predictions (
+                    game_date, team1_id, team2_id, team1_name, team2_name,
+                    predicted_margin, predicted_total, win_probability,
+                    confidence_lower, confidence_upper,
+                    vegas_spread, vegas_total,
+                    neutral_site, model_version
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    prediction.game_date,
+                    prediction.team1_id,
+                    prediction.team2_id,
+                    prediction.team1_name,
+                    prediction.team2_name,
+                    prediction.predicted_margin,
+                    prediction.predicted_total,
+                    prediction.win_probability,
+                    prediction.confidence_lower,
+                    prediction.confidence_upper,
+                    prediction.vegas_spread,
+                    prediction.vegas_total,
+                    1 if prediction.neutral_site else 0,
+                    prediction.model_version,
+                ),
+            )
+            return cursor.lastrowid
+
+    def get_pending_predictions(self) -> list[GamePrediction]:
+        """Get predictions that haven't been resolved.
+
+        Returns:
+            List of unresolved GamePrediction models.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM game_predictions
+                WHERE resolved_at IS NULL
+                ORDER BY game_date
+                """
+            )
+            return [GamePrediction(**dict(row)) for row in cursor.fetchall()]
+
+    def update_prediction_result(
+        self,
+        prediction_id: int,
+        result: GameResult,
+    ) -> None:
+        """Update a prediction with actual game results.
+
+        Args:
+            prediction_id: ID of prediction to update.
+            result: GameResult with actual outcome.
+        """
+        with self.db.transaction() as conn:
+            # Get the prediction to calculate metrics
+            cursor = conn.execute(
+                "SELECT * FROM game_predictions WHERE id = ?",
+                (prediction_id,),
+            )
+            row = cursor.fetchone()
+            if not row:
+                raise DatabaseError(f"Prediction {prediction_id} not found")
+
+            pred = dict(row)
+
+            # Calculate error and ATS result
+            prediction_error = result.actual_margin - pred["predicted_margin"]
+
+            beat_spread = None
+            if pred["vegas_spread"] is not None:
+                spread_diff = result.actual_margin - pred["vegas_spread"]
+                beat_spread = 1 if spread_diff > 0 else 0
+
+            # Calculate CLV if closing line differs from prediction time line
+            clv = None
+
+            conn.execute(
+                """
+                UPDATE game_predictions SET
+                    actual_margin = ?,
+                    actual_total = ?,
+                    team1_score = ?,
+                    team2_score = ?,
+                    prediction_error = ?,
+                    beat_spread = ?,
+                    clv = ?,
+                    resolved_at = ?
+                WHERE id = ?
+                """,
+                (
+                    result.actual_margin,
+                    result.actual_total,
+                    result.team1_score,
+                    result.team2_score,
+                    prediction_error,
+                    beat_spread,
+                    clv,
+                    result.resolved_at,
+                    prediction_id,
+                ),
+            )
+
+    def get_accuracy_report(
+        self,
+        days: int = 30,
+        model_version: str | None = None,
+    ) -> AccuracyReport:
+        """Generate accuracy report for recent predictions.
+
+        Args:
+            days: Number of days to include.
+            model_version: Optional filter by model version.
+
+        Returns:
+            AccuracyReport with performance metrics.
+        """
+        import statistics
+
+        start_date = date.today() - timedelta(days=days)
+        end_date = date.today()
+
+        with self.db.connection() as conn:
+            if model_version:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM game_predictions
+                    WHERE game_date >= ? AND resolved_at IS NOT NULL
+                    AND model_version = ?
+                    """,
+                    (start_date, model_version),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM game_predictions
+                    WHERE game_date >= ? AND resolved_at IS NOT NULL
+                    """,
+                    (start_date,),
+                )
+
+            predictions = [dict(row) for row in cursor.fetchall()]
+
+        if not predictions:
+            return AccuracyReport(
+                start_date=start_date,
+                end_date=end_date,
+                games_predicted=0,
+                games_resolved=0,
+                mae_margin=0.0,
+                rmse_margin=0.0,
+                r2_margin=0.0,
+                win_accuracy=0.0,
+                brier_score=0.0,
+            )
+
+        # Calculate metrics
+        errors = [
+            p["prediction_error"] for p in predictions if p["prediction_error"]
+        ]
+        mae = statistics.mean([abs(e) for e in errors]) if errors else 0
+        rmse = (
+            statistics.mean([e**2 for e in errors]) ** 0.5
+            if errors
+            else 0
+        )
+
+        # Win accuracy
+        correct_wins = sum(
+            1
+            for p in predictions
+            if (p["predicted_margin"] > 0 and p["actual_margin"] > 0)
+            or (p["predicted_margin"] < 0 and p["actual_margin"] < 0)
+        )
+        win_accuracy = correct_wins / len(predictions) if predictions else 0
+
+        # ATS record
+        ats_wins = sum(1 for p in predictions if p["beat_spread"] == 1)
+        ats_losses = sum(1 for p in predictions if p["beat_spread"] == 0)
+        total_ats = ats_wins + ats_losses
+        ats_pct = ats_wins / total_ats if total_ats > 0 else 0
+
+        # Brier score
+        brier_scores = []
+        for p in predictions:
+            if p["win_probability"] is not None and p["actual_margin"] is not None:
+                actual_win = 1 if p["actual_margin"] > 0 else 0
+                brier_scores.append((p["win_probability"] - actual_win) ** 2)
+        brier = statistics.mean(brier_scores) if brier_scores else 0
+
+        return AccuracyReport(
+            start_date=start_date,
+            end_date=end_date,
+            games_predicted=len(predictions),
+            games_resolved=len(predictions),
+            mae_margin=round(mae, 2),
+            rmse_margin=round(rmse, 2),
+            r2_margin=0.0,
+            win_accuracy=round(win_accuracy, 3),
+            brier_score=round(brier, 3),
+            ats_wins=ats_wins,
+            ats_losses=ats_losses,
+            ats_percentage=round(ats_pct, 3),
+        )
+
+    # ==================== Convenience Methods ====================
+
+    def get_matchup_data(
+        self,
+        team1_id: int,
+        team2_id: int,
+        snapshot_date: date | None = None,
+    ) -> dict:
+        """Get comprehensive matchup data for two teams.
+
+        Args:
+            team1_id: First team ID.
+            team2_id: Second team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            Dictionary with all relevant matchup data.
+        """
+        team1_rating = self.get_team_rating(team1_id, snapshot_date)
+        team2_rating = self.get_team_rating(team2_id, snapshot_date)
+
+        if not team1_rating or not team2_rating:
+            raise TeamNotFoundError(
+                f"Rating not found for team(s): {team1_id}, {team2_id}"
+            )
+
+        return {
+            "team1": team1_rating,
+            "team2": team2_rating,
+            "team1_four_factors": self.get_four_factors(team1_id, snapshot_date),
+            "team2_four_factors": self.get_four_factors(team2_id, snapshot_date),
+            "team1_point_dist": self.get_point_distribution(team1_id, snapshot_date),
+            "team2_point_dist": self.get_point_distribution(team2_id, snapshot_date),
+            "team1_history": self.get_team_rating_history(team1_id, days=28),
+            "team2_history": self.get_team_rating_history(team2_id, days=28),
+        }
+
+    def get_conference_standings(
+        self,
+        conference: str,
+        snapshot_date: date | None = None,
+    ) -> list[TeamRating]:
+        """Get ratings for all teams in a conference.
+
+        Args:
+            conference: Conference abbreviation (e.g., 'B12', 'SEC').
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            List of TeamRating models sorted by rank.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots
+                    WHERE conference = ? AND snapshot_date = ?
+                    ORDER BY rank_adj_em
+                    """,
+                    (conference, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM ratings_snapshots r
+                    WHERE conference = ?
+                    AND snapshot_date = (
+                        SELECT MAX(snapshot_date) FROM ratings_snapshots
+                    )
+                    ORDER BY rank_adj_em
+                    """,
+                    (conference,),
+                )
+            return [TeamRating(**dict(row)) for row in cursor.fetchall()]

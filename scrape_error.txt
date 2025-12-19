@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\omall\Documents\python_projects\kenp0m-sp0rts-analyzer\scrape_overtime_cbb.py", line 12, in <module>
+    from kenp0m_sp0rts_analyzer.overtime_scraper import OvertimeScraper
+  File "C:\Users\omall\Documents\python_projects\kenp0m-sp0rts-analyzer\src\kenp0m_sp0rts_analyzer\__init__.py", line 9, in <module>
+    from .integrated_predictor import IntegratedPredictor, GameAnalysis
+  File "C:\Users\omall\Documents\python_projects\kenp0m-sp0rts-analyzer\src\kenp0m_sp0rts_analyzer\integrated_predictor.py", line 39, in <module>
+    from .prediction import (
+    ...<3 lines>...
+    )
+ImportError: cannot import name 'XGBoostPredictor' from 'kenp0m_sp0rts_analyzer.prediction' (C:\Users\omall\Documents\python_projects\kenp0m-sp0rts-analyzer\src\kenp0m_sp0rts_analyzer\prediction.py)

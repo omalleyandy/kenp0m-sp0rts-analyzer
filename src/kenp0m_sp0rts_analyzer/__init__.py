@@ -1,5 +1,43 @@
-"""KenPom Sports Analyzer - NCAA Division I Men's Basketball advanced analytics."""
+"""KenPom Sports Analyzer - NCAA Division I Men's Basketball analytics.
 
+Combines KenPom data with XGBoost ML for game predictions and edge detection.
+"""
+
+__version__ = "1.0.0"
+
+# Core integrated predictor
+from .integrated_predictor import IntegratedPredictor, GameAnalysis
+
+# KenPom module
+from .kenpom import (
+    KenPomService,
+    ArchiveLoader,
+    BatchScheduler,
+    RealtimeMonitor,
+    DatabaseManager,
+    KenPomRepository,
+    DataValidator,
+    TeamRating,
+    FourFactors as KenPomFourFactors,
+    PointDistribution,
+    GamePrediction,
+    AccuracyReport,
+    MatchupData,
+    KenPomError,
+    TeamNotFoundError,
+)
+
+# XGBoost prediction
+from .prediction import (
+    XGBoostPredictor,
+    XGBoostFeatureEngineer,
+    PredictionResult,
+)
+
+# API client
+from .api_client import KenPomAPI
+
+# Analysis
 from .analysis import (
     analyze_matchup,
     analyze_team_trends,
@@ -7,144 +45,122 @@ from .analysis import (
     find_value_games,
     get_conference_standings,
 )
-from .client import KenPomClient
+
+# Comprehensive matchup
 from .comprehensive_matchup_analysis import (
     ComprehensiveMatchupAnalyzer,
     ComprehensiveMatchupReport,
     DimensionScore,
     MatchupWeights,
 )
-from .defensive_analysis import (
-    DefensiveAnalyzer,
-    DefensiveMatchup,
-    DefensiveProfile,
-)
-from .experience_chemistry_analysis import (
-    ExperienceChemistryAnalyzer,
-    ExperienceMatchup,
-    ExperienceProfile,
-    TournamentReadiness,
-)
+
+# Four Factors
 from .four_factors_matchup import (
-    FactorMatchup,
-    FourFactorsAnalysis,
     FourFactorsMatchup,
+    FourFactorsAnalysis,
+    FactorMatchup,
 )
+
+# Tournament simulation
+from .tournament_simulator import (
+    TournamentSimulator,
+    TournamentTeam,
+    TournamentProbabilities,
+    GameSimulation,
+    UpsetPick,
+    BracketRecommendation,
+)
+
+# Report generation
+from .report_generator import MatchupReportGenerator, MatchupReport
+
+# Luck regression
+from .luck_regression import LuckRegressor
+
+# Legacy client
+from .client import KenPomClient
+
+# Models
 from .models import (
     FourFactors,
     HomeCourtAdvantage,
     MatchupAnalysis,
-    ScoutingReport,
     TeamEfficiency,
-    TeamScheduleGame,
 )
-from .point_distribution_analysis import (
-    PointDistributionAnalyzer,
-    ScoringStyleMatchup,
-    ScoringStyleProfile,
-)
-from .report_generator import MatchupReport, MatchupReportGenerator
-from .size_athleticism_analysis import (
-    PositionMatchup,
-    ReboundingCorrelation,
-    SizeAthleticismAnalyzer,
-    SizeMatchup,
-    SizeProfile,
-)
-from .tournament_simulator import (
-    BracketRecommendation,
-    GameSimulation,
-    TournamentProbabilities,
-    TournamentSimulator,
-    TournamentTeam,
-    UpsetPick,
-)
+
+# Utils
 from .utils import get_credentials, normalize_team_name, setup_logging
 
-__version__ = "0.1.0"
-
 __all__ = [
-    # Version
     "__version__",
-    # Client
-    "KenPomClient",
+    # Core
+    "IntegratedPredictor",
+    "GameAnalysis",
+    # KenPom Module
+    "KenPomService",
+    "ArchiveLoader",
+    "BatchScheduler",
+    "RealtimeMonitor",
+    "DatabaseManager",
+    "KenPomRepository",
+    "DataValidator",
+    "TeamRating",
+    "KenPomFourFactors",
+    "PointDistribution",
+    "GamePrediction",
+    "AccuracyReport",
+    "MatchupData",
+    "KenPomError",
+    "TeamNotFoundError",
+    # XGBoost
+    "XGBoostPredictor",
+    "XGBoostFeatureEngineer",
+    "PredictionResult",
+    # API
+    "KenPomAPI",
     # Analysis
     "analyze_matchup",
     "analyze_team_trends",
     "calculate_tournament_seed_line",
     "find_value_games",
     "get_conference_standings",
-    # Four Factors Matchup (TIER 1)
-    "FactorMatchup",
-    "FourFactorsAnalysis",
-    "FourFactorsMatchup",
-    # Point Distribution Analysis (TIER 1)
-    "PointDistributionAnalyzer",
-    "ScoringStyleMatchup",
-    "ScoringStyleProfile",
-    # Defensive Analysis (TIER 1)
-    "DefensiveAnalyzer",
-    "DefensiveMatchup",
-    "DefensiveProfile",
-    # Comprehensive Integration (All 7 Modules)
+    # Comprehensive
     "ComprehensiveMatchupAnalyzer",
     "ComprehensiveMatchupReport",
     "DimensionScore",
     "MatchupWeights",
-    # Report Generation
-    "MatchupReport",
-    "MatchupReportGenerator",
-    # Size & Athleticism Analysis (TIER 2)
-    "SizeAthleticismAnalyzer",
-    "SizeProfile",
-    "SizeMatchup",
-    "PositionMatchup",
-    "ReboundingCorrelation",
-    # Experience & Chemistry Analysis (TIER 2)
-    "ExperienceChemistryAnalyzer",
-    "ExperienceProfile",
-    "ExperienceMatchup",
-    "TournamentReadiness",
-    # Tournament Simulation
+    # Four Factors
+    "FourFactorsMatchup",
+    "FourFactorsAnalysis",
+    "FactorMatchup",
+    # Tournament
     "TournamentSimulator",
     "TournamentTeam",
     "TournamentProbabilities",
     "GameSimulation",
     "UpsetPick",
     "BracketRecommendation",
+    # Reports
+    "MatchupReportGenerator",
+    "MatchupReport",
+    # Luck
+    "LuckRegressor",
+    # Legacy
+    "KenPomClient",
     # Models
     "FourFactors",
     "HomeCourtAdvantage",
     "MatchupAnalysis",
-    "ScoutingReport",
     "TeamEfficiency",
-    "TeamScheduleGame",
     # Utils
     "get_credentials",
     "normalize_team_name",
     "setup_logging",
 ]
 
-# Optional browser/scraper exports (require optional dependencies)
+# Optional imports
 try:
-    from .browser import (  # noqa: F401
-        BrowserConfig,
-        StealthBrowser,
-        create_stealth_browser,
-    )
-    from .scraper import KenPomScraper, scrape_kenpom  # noqa: F401
-
-    __all__.extend(
-        [
-            # Browser automation
-            "BrowserConfig",
-            "StealthBrowser",
-            "create_stealth_browser",
-            # Scraper
-            "KenPomScraper",
-            "scrape_kenpom",
-        ]
-    )
+    from .overtime_scraper import OvertimeScraper
+    __all__.append("OvertimeScraper")
 except ImportError:
-    # Browser dependencies not installed
     pass

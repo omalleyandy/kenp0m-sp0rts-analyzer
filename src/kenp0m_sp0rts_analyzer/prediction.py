@@ -482,10 +482,15 @@ class GamePredictor:
                 "Model must be fitted before prediction. Call fit() first."
             )
 
-        # Create features
-        features = self.feature_engineer.create_features(
-            team1_stats, team2_stats, neutral_site, home_team1
-        )
+        # Create features using appropriate method based on mode
+        if self.use_enhanced_features:
+            features = XGBoostFeatureEngineer.create_enhanced_features(
+                team1_stats, team2_stats, neutral_site, home_team1
+            )
+        else:
+            features = FeatureEngineer.create_features(
+                team1_stats, team2_stats, neutral_site, home_team1
+            )
         feature_array = pd.DataFrame([features])
 
         # Predict margin and bounds
@@ -635,19 +640,33 @@ class XGBoostGamePredictor:
     - Native handling of missing values
 
     Example:
+        >>> # Base features (14)
         >>> predictor = XGBoostGamePredictor()
         >>> predictor.fit(games_df, margins, totals)
+        >>>
+        >>> # Enhanced features (27) for betting edge detection
+        >>> predictor = XGBoostGamePredictor(use_enhanced_features=True)
+        >>> predictor.fit(enhanced_games_df, margins, totals)
         >>> result = predictor.predict_with_confidence(team1_stats, team2_stats)
         >>> print(f"Margin: {result.predicted_margin} ({result.confidence_interval})")
         >>> importance = predictor.get_feature_importance(importance_type='gain')
     """
 
-    def __init__(self) -> None:
-        """Initialize XGBoost models with optimized hyperparameters."""
+    def __init__(self, use_enhanced_features: bool = False) -> None:
+        """Initialize XGBoost models with optimized hyperparameters.
+
+        Args:
+            use_enhanced_features: If True, use 27 enhanced features including
+                luck regression, point distribution, and momentum. If False,
+                use 14 base features only.
+        """
         if not XGBOOST_AVAILABLE:
             raise ImportError(
                 "XGBoost is not installed. Install with: uv add xgboost"
             )
+
+        # Track which feature set to use
+        self.use_enhanced_features = use_enhanced_features
 
         # Margin prediction (point estimate)
         self.margin_model = xgb.XGBRegressor(
@@ -689,7 +708,10 @@ class XGBoostGamePredictor:
         # Total prediction
         self.total_model = xgb.XGBRegressor(**quantile_params)
 
-        self.feature_engineer = FeatureEngineer()
+        # Use appropriate feature engineer based on mode
+        self.feature_engineer = (
+            XGBoostFeatureEngineer() if use_enhanced_features else FeatureEngineer()
+        )
         self.is_fitted = False
 
     def fit(
@@ -717,12 +739,17 @@ class XGBoostGamePredictor:
         Raises:
             ValueError: If feature columns are missing from games_df.
         """
-        # Validate feature columns
-        missing_features = set(FeatureEngineer.FEATURE_NAMES) - set(games_df.columns)
+        # Validate feature columns based on mode
+        expected_features = (
+            XGBoostFeatureEngineer.ENHANCED_FEATURE_NAMES
+            if self.use_enhanced_features
+            else FeatureEngineer.FEATURE_NAMES
+        )
+        missing_features = set(expected_features) - set(games_df.columns)
         if missing_features:
             raise ValueError(
                 f"Missing required feature columns: {missing_features}. "
-                f"Expected: {FeatureEngineer.FEATURE_NAMES}"
+                f"Expected: {expected_features}"
             )
 
         # Train models (simple approach for Phase 1)
