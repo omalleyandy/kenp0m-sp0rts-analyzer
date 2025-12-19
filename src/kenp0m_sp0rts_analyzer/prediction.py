@@ -763,10 +763,15 @@ class XGBoostGamePredictor:
                 "Model must be fitted before prediction. Call fit() first."
             )
 
-        # Create features
-        features = self.feature_engineer.create_features(
-            team1_stats, team2_stats, neutral_site, home_team1
-        )
+        # Create features (use enhanced if configured)
+        if self.use_enhanced_features:
+            features = self.feature_engineer.create_enhanced_features(
+                team1_stats, team2_stats, neutral_site, home_team1
+            )
+        else:
+            features = self.feature_engineer.create_features(
+                team1_stats, team2_stats, neutral_site, home_team1
+            )
         feature_array = pd.DataFrame([features])
 
         # Predict margin and bounds

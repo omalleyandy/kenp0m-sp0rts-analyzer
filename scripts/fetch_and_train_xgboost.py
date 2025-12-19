@@ -413,14 +413,14 @@ def save_model(
     models_dir = Path("data/xgboost_models")
     models_dir.mkdir(parents=True, exist_ok=True)
 
-    # Save margin model
+    # Save margin model (use get_booster() for proper XGBoost saving)
     model_type = "enhanced" if enhanced else "base"
     margin_path = models_dir / f"margin_model_{season}_{model_type}.json"
-    predictor.margin_model.save_model(margin_path)
+    predictor.margin_model.get_booster().save_model(str(margin_path))
 
     # Save total model
     total_path = models_dir / f"total_model_{season}_{model_type}.json"
-    predictor.total_model.save_model(total_path)
+    predictor.total_model.get_booster().save_model(str(total_path))
 
     # Save metadata
     metadata = {
