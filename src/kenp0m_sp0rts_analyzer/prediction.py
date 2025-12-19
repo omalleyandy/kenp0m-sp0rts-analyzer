@@ -906,6 +906,47 @@ class XGBoostGamePredictor:
         # Sort and return top N
         return df.sort_values("importance", ascending=False).head(top_n)
 
+    def load_model(self, margin_path: str, total_path: str | None = None) -> None:
+        """Load trained XGBoost models from disk.
+
+        Args:
+            margin_path: Path to margin model JSON file
+            total_path: Path to total model JSON file (optional, will infer from margin_path)
+
+        Raises:
+            FileNotFoundError: If model files don't exist
+            ValueError: If models can't be loaded
+
+        Example:
+            >>> predictor = XGBoostGamePredictor(use_enhanced_features=True)
+            >>> predictor.load_model('data/xgboost_models/margin_model_2025_enhanced.json')
+        """
+        from pathlib import Path
+
+        margin_path = Path(margin_path)
+        if not margin_path.exists():
+            raise FileNotFoundError(f"Margin model not found: {margin_path}")
+
+        # Infer total model path if not provided
+        if total_path is None:
+            total_path = margin_path.parent / margin_path.name.replace(
+                "margin_model", "total_model"
+            )
+        else:
+            total_path = Path(total_path)
+
+        if not total_path.exists():
+            raise FileNotFoundError(f"Total model not found: {total_path}")
+
+        # Load models into booster objects
+        self.margin_model.get_booster().load_model(str(margin_path))
+        self.margin_upper.get_booster().load_model(str(margin_path))  # Use same model
+        self.margin_lower.get_booster().load_model(str(margin_path))  # Use same model
+        self.total_model.get_booster().load_model(str(total_path))
+
+        self.is_fitted = True
+        logger.info(f"Loaded models from {margin_path.parent}/")
+
 
 class BacktestingFramework:
     """Validate predictions against historical outcomes.
