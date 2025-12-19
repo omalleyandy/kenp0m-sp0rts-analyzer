@@ -31,17 +31,20 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import httpx
+
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from openpyxl.utils import get_column_letter
 from playwright.async_api import async_playwright
 
 from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
-from kenp0m_sp0rts_analyzer.utils import get_overtime_credentials, normalize_team_name
-
+from kenp0m_sp0rts_analyzer.luck_regression import LuckRegressionAnalyzer
+from kenp0m_sp0rts_analyzer.utils import (
+    normalize_team_name,
+)
 
 # ============================================================================
 # BETTING SLIP GENERATION
@@ -67,7 +70,9 @@ def generate_betting_slip(
         date = datetime.now().strftime("%Y-%m-%d")
 
     if output_dir is None:
-        output_dir = Path(__file__).parent.parent.parent / "reports" / "bet_slips"
+        output_dir = (
+            Path(__file__).parent.parent.parent / "reports" / "bet_slips"
+        )
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -79,13 +84,17 @@ def generate_betting_slip(
 
     # Load Vegas lines
     vegas_path = (
-        Path(__file__).parent.parent.parent / "data" / "overtime_cbb_lines.json"
+        Path(__file__).parent.parent.parent
+        / "data"
+        / "overtime_cbb_lines.json"
     )
     if not vegas_path.exists():
-        print("[ERROR] No Vegas lines found. Run scrape_overtime_cbb.py first.")
+        print(
+            "[ERROR] No Vegas lines found. Run scrape_overtime_cbb.py first."
+        )
         return None
 
-    with open(vegas_path) as f:
+    with vegas_path.open() as f:
         vegas_data = json.load(f)
 
     # Build Vegas lookup
@@ -109,6 +118,21 @@ def generate_betting_slip(
     if not fanmatch.data:
         print(f"[ERROR] No games found for {date}")
         return None
+
+    # Load ratings for luck analysis
+    luck_analyzer = LuckRegressionAnalyzer()
+    ratings_cache: dict[str, dict] = {}
+    try:
+        ratings = api.get_ratings(year=int(date[:4]))
+        for team in ratings.data:
+            team_name = team.get("TeamName", "")
+            if team_name:
+                ratings_cache[team_name] = team
+        print(
+            f"[OK] Loaded {len(ratings_cache)} team ratings for luck analysis"
+        )
+    except Exception as e:
+        print(f"[WARN] Could not load ratings for luck: {e}")
 
     # Analyze games and find value picks
     spread_picks = []
@@ -138,13 +162,57 @@ def generate_betting_slip(
         v_spread = vegas.get("spread")
         v_total = vegas.get("total")
 
+        # Get luck values for luck regression analysis
+        visitor_luck = None
+        home_luck = None
+        luck_edge = 0.0
+
+        # Look up in ratings cache
+        for team_data in ratings_cache.values():
+            team_name = team_data.get("TeamName", "")
+            if team_name == visitor:
+                visitor_luck = team_data.get("Luck", 0.0)
+            if team_name == home:
+                home_luck = team_data.get("Luck", 0.0)
+
+        # Try normalized lookup if direct match failed
+        if visitor_luck is None or home_luck is None:
+            for team_data in ratings_cache.values():
+                team_name = team_data.get("TeamName", "")
+                norm_name = normalize_team_name(team_name)
+                if norm_name == norm_away and visitor_luck is None:
+                    visitor_luck = team_data.get("Luck", 0.0)
+                if norm_name == norm_home and home_luck is None:
+                    home_luck = team_data.get("Luck", 0.0)
+
+        # Calculate luck edge if we have both values
+        if visitor_luck is not None and home_luck is not None:
+            # Get AdjEM values
+            visitor_em = ratings_cache.get(visitor, {}).get("AdjEM", 0)
+            home_em = ratings_cache.get(home, {}).get("AdjEM", 0)
+
+            luck_result = luck_analyzer.analyze_matchup_luck(
+                team1_name=visitor,
+                team1_adjEM=visitor_em,
+                team1_luck=visitor_luck,
+                team2_name=home,
+                team2_adjEM=home_em,
+                team2_luck=home_luck,
+                games_remaining=15,
+                neutral_site=False,
+                home_court_advantage=3.5,
+            )
+            luck_edge = luck_result.luck_edge
+
         if v_spread is not None:
             spread_edge = kp_spread - v_spread
+            composite_edge = spread_edge + luck_edge
 
-            if abs(spread_edge) >= min_edge:
-                # Determine pick
-                if spread_edge < 0:
-                    # Vegas gives home MORE points - bet HOME
+            # Use COMPOSITE edge for value determination
+            if abs(composite_edge) >= min_edge:
+                # Determine pick based on composite
+                if composite_edge < 0:
+                    # Composite favors HOME - bet HOME
                     if v_spread > 0:
                         pick = f"{home} +{v_spread}"
                         pick_team = home
@@ -152,7 +220,7 @@ def generate_betting_slip(
                         pick = f"{home} {v_spread}"
                         pick_team = home
                 else:
-                    # KenPom gives home MORE credit - bet AWAY
+                    # Composite favors AWAY - bet AWAY
                     if v_spread > 0:
                         pick = f"{visitor} -{v_spread}"
                         pick_team = visitor
@@ -167,7 +235,11 @@ def generate_betting_slip(
                         "pick_team": pick_team,
                         "kp_spread": kp_spread,
                         "vegas_spread": v_spread,
-                        "edge": spread_edge,
+                        "kp_edge": spread_edge,
+                        "luck_edge": luck_edge,
+                        "composite_edge": composite_edge,
+                        "visitor_luck": visitor_luck,
+                        "home_luck": home_luck,
                         "home_wp": home_wp,
                         "bet_type": "SPREAD",
                     }
@@ -200,8 +272,12 @@ def generate_betting_slip(
 
     # Styles
     header_font = Font(bold=True, color="FFFFFF")
-    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-    value_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    header_fill = PatternFill(
+        start_color="4472C4", end_color="4472C4", fill_type="solid"
+    )
+    value_fill = PatternFill(
+        start_color="C6EFCE", end_color="C6EFCE", fill_type="solid"
+    )
     thin_border = Border(
         left=Side(style="thin"),
         right=Side(style="thin"),
@@ -210,20 +286,20 @@ def generate_betting_slip(
     )
 
     # Title
-    ws.merge_cells("A1:H1")
+    ws.merge_cells("A1:J1")
     ws["A1"] = f"NCAA CBB BETTING SLIP - {date}"
     ws["A1"].font = Font(bold=True, size=14)
     ws["A1"].alignment = Alignment(horizontal="center")
 
     # Generated timestamp
-    ws.merge_cells("A2:H2")
+    ws.merge_cells("A2:J2")
     ws["A2"] = f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     ws["A2"].alignment = Alignment(horizontal="center")
 
     # Spread Picks Section
     row = 4
-    ws.merge_cells(f"A{row}:H{row}")
-    ws[f"A{row}"] = "SPREAD VALUE PICKS"
+    ws.merge_cells(f"A{row}:J{row}")
+    ws[f"A{row}"] = "SPREAD VALUE PICKS (w/ Luck Regression)"
     ws[f"A{row}"].font = Font(bold=True, size=12)
     ws[f"A{row}"].fill = PatternFill(
         start_color="FFC000", end_color="FFC000", fill_type="solid"
@@ -235,8 +311,10 @@ def generate_betting_slip(
         "Pick",
         "KP Spread",
         "Vegas",
-        "Edge",
-        "Home WP%",
+        "KP Edge",
+        "Luck Edge",
+        "COMPOSITE",
+        "WP%",
         "Placed",
         "Result",
     ]
@@ -248,18 +326,35 @@ def generate_betting_slip(
         cell.alignment = Alignment(horizontal="center")
 
     row += 1
-    for pick in sorted(spread_picks, key=lambda x: abs(x["edge"]), reverse=True):
+    for pick in sorted(
+        spread_picks, key=lambda x: abs(x["composite_edge"]), reverse=True
+    ):
         ws.cell(row=row, column=1, value=pick["matchup"]).border = thin_border
         ws.cell(row=row, column=2, value=pick["pick"]).border = thin_border
         ws.cell(row=row, column=2).fill = value_fill
-        ws.cell(row=row, column=3, value=f"{pick['kp_spread']:+.1f}").border = thin_border
+        ws.cell(
+            row=row, column=3, value=f"{pick['kp_spread']:+.1f}"
+        ).border = thin_border
         ws.cell(
             row=row, column=4, value=f"{pick['vegas_spread']:+.1f}"
         ).border = thin_border
-        ws.cell(row=row, column=5, value=f"{pick['edge']:+.1f}").border = thin_border
-        ws.cell(row=row, column=6, value=f"{pick['home_wp']}%").border = thin_border
-        ws.cell(row=row, column=7, value="").border = thin_border  # Placed checkbox
-        ws.cell(row=row, column=8, value="").border = thin_border  # Result
+        ws.cell(
+            row=row, column=5, value=f"{pick['kp_edge']:+.1f}"
+        ).border = thin_border
+        ws.cell(
+            row=row, column=6, value=f"{pick['luck_edge']:+.1f}"
+        ).border = thin_border
+        # Highlight composite edge
+        comp_cell = ws.cell(
+            row=row, column=7, value=f"{pick['composite_edge']:+.1f}"
+        )
+        comp_cell.border = thin_border
+        comp_cell.font = Font(bold=True)
+        ws.cell(
+            row=row, column=8, value=f"{pick['home_wp']}%"
+        ).border = thin_border
+        ws.cell(row=row, column=9, value="").border = thin_border  # Placed
+        ws.cell(row=row, column=10, value="").border = thin_border  # Result
         row += 1
 
     if not spread_picks:
@@ -268,7 +363,7 @@ def generate_betting_slip(
 
     # Total Picks Section
     row += 2
-    ws.merge_cells(f"A{row}:H{row}")
+    ws.merge_cells(f"A{row}:J{row}")
     ws[f"A{row}"] = "TOTAL VALUE PICKS"
     ws[f"A{row}"].font = Font(bold=True, size=12)
     ws[f"A{row}"].fill = PatternFill(
@@ -283,6 +378,8 @@ def generate_betting_slip(
         "Vegas",
         "Edge",
         "",
+        "",
+        "",
         "Placed",
         "Result",
     ]
@@ -294,16 +391,27 @@ def generate_betting_slip(
         cell.alignment = Alignment(horizontal="center")
 
     row += 1
-    for pick in sorted(total_picks, key=lambda x: abs(x["edge"]), reverse=True):
+    for pick in sorted(
+        total_picks, key=lambda x: abs(x["edge"]), reverse=True
+    ):
         ws.cell(row=row, column=1, value=pick["matchup"]).border = thin_border
         ws.cell(row=row, column=2, value=pick["pick"]).border = thin_border
         ws.cell(row=row, column=2).fill = value_fill
-        ws.cell(row=row, column=3, value=f"{pick['kp_total']:.1f}").border = thin_border
-        ws.cell(row=row, column=4, value=f"{pick['vegas_total']}").border = thin_border
-        ws.cell(row=row, column=5, value=f"{pick['edge']:+.1f}").border = thin_border
+        ws.cell(
+            row=row, column=3, value=f"{pick['kp_total']:.1f}"
+        ).border = thin_border
+        ws.cell(
+            row=row, column=4, value=f"{pick['vegas_total']}"
+        ).border = thin_border
+        # Bold the edge for totals
+        edge_cell = ws.cell(row=row, column=5, value=f"{pick['edge']:+.1f}")
+        edge_cell.border = thin_border
+        edge_cell.font = Font(bold=True)
         ws.cell(row=row, column=6, value="").border = thin_border
-        ws.cell(row=row, column=7, value="").border = thin_border  # Placed checkbox
-        ws.cell(row=row, column=8, value="").border = thin_border  # Result
+        ws.cell(row=row, column=7, value="").border = thin_border
+        ws.cell(row=row, column=8, value="").border = thin_border
+        ws.cell(row=row, column=9, value="").border = thin_border  # Placed
+        ws.cell(row=row, column=10, value="").border = thin_border  # Result
         row += 1
 
     if not total_picks:
@@ -319,17 +427,21 @@ def generate_betting_slip(
     row += 1
     ws[f"A{row}"] = f"Total Picks: {len(total_picks)}"
     row += 1
-    ws[f"A{row}"] = f"Min Edge Threshold: {min_edge} pts"
+    ws[f"A{row}"] = f"Min Composite Edge: {min_edge} pts"
+    row += 1
+    ws[f"A{row}"] = "Note: Composite = KenPom Edge + Luck Regression Edge"
 
     # Adjust column widths
-    ws.column_dimensions["A"].width = 35
-    ws.column_dimensions["B"].width = 20
-    ws.column_dimensions["C"].width = 12
-    ws.column_dimensions["D"].width = 12
-    ws.column_dimensions["E"].width = 10
-    ws.column_dimensions["F"].width = 12
-    ws.column_dimensions["G"].width = 10
-    ws.column_dimensions["H"].width = 10
+    ws.column_dimensions["A"].width = 32
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 10
+    ws.column_dimensions["D"].width = 8
+    ws.column_dimensions["E"].width = 9
+    ws.column_dimensions["F"].width = 9
+    ws.column_dimensions["G"].width = 11
+    ws.column_dimensions["H"].width = 6
+    ws.column_dimensions["I"].width = 8
+    ws.column_dimensions["J"].width = 8
 
     # Save
     wb.save(output_path)
@@ -345,7 +457,9 @@ def generate_betting_slip(
 
 def get_user_data_dir() -> Path:
     """Get persistent browser data directory for overtime.ag session."""
-    data_dir = Path.home() / ".cache" / "kenp0m_sp0rts_analyzer" / "overtime_browser"
+    data_dir = (
+        Path.home() / ".cache" / "kenp0m_sp0rts_analyzer" / "overtime_browser"
+    )
     data_dir.mkdir(parents=True, exist_ok=True)
     return data_dir
 
@@ -385,7 +499,9 @@ async def fetch_open_bets(headless: bool = False) -> dict:
             await asyncio.sleep(3)
 
             # Navigate to open bets page
-            await page.goto("https://overtime.ag/sports#/openBets", timeout=30000)
+            await page.goto(
+                "https://overtime.ag/sports#/openBets", timeout=30000
+            )
             await asyncio.sleep(3)
 
             # Try to get open bets via page content scraping
@@ -460,7 +576,9 @@ def display_open_bets(data: dict) -> None:
     if status == "not_logged_in":
         print("\n[WARN] Not logged in to overtime.ag")
         print("       Run with visible browser to log in:")
-        print("       uv run python scripts/betting/betting_tracker.py open-bets")
+        print(
+            "       uv run python scripts/betting/betting_tracker.py open-bets"
+        )
         return
 
     if status == "found":
@@ -472,7 +590,11 @@ def display_open_bets(data: dict) -> None:
 
     # Legacy API format
     if "d" in data and data["d"]:
-        bets = data["d"].get("Data", []) if isinstance(data["d"], dict) else data["d"]
+        bets = (
+            data["d"].get("Data", [])
+            if isinstance(data["d"], dict)
+            else data["d"]
+        )
         for bet in bets:
             print(f"\nBet ID: {bet.get('BetId', 'N/A')}")
             print(f"  Type: {bet.get('BetType', 'N/A')}")
@@ -494,7 +616,9 @@ def display_open_bets(data: dict) -> None:
 # ============================================================================
 
 
-async def fetch_daily_figures(date: str | None = None, headless: bool = False) -> dict:
+async def fetch_daily_figures(
+    date: str | None = None, headless: bool = False
+) -> dict:
     """Fetch daily P&L figures from overtime.ag.
 
     Uses a persistent browser context to maintain login session.
@@ -524,7 +648,9 @@ async def fetch_daily_figures(date: str | None = None, headless: bool = False) -
 
         try:
             # Navigate to daily figures page
-            await page.goto("https://overtime.ag/sports#/dailyFigures", timeout=30000)
+            await page.goto(
+                "https://overtime.ag/sports#/dailyFigures", timeout=30000
+            )
             await asyncio.sleep(3)
 
             # Try to scrape daily figures from page
@@ -610,9 +736,10 @@ def display_daily_figures(data: dict, date: str) -> None:
             lines = content.split("\n")
             for line in lines:
                 line = line.strip()
-                if any(kw in line.lower() for kw in ["p&l", "profit", "loss", "win", "total"]):
-                    if len(line) < 100:
-                        print(f"  {line}")
+                keywords = ["p&l", "profit", "loss", "win", "total"]
+                has_keyword = any(kw in line.lower() for kw in keywords)
+                if has_keyword and len(line) < 100:
+                    print(f"  {line}")
         return
 
     # Legacy API format
@@ -676,10 +803,15 @@ def analyze_results(date: str | None = None) -> dict:
         / f"results_{date_suffix}.json"
     )
 
-    results = {"date": date, "slip_path": str(slip_path), "picks": [], "summary": {}}
+    results = {
+        "date": date,
+        "slip_path": str(slip_path),
+        "picks": [],
+        "summary": {},
+    }
 
     if results_path.exists():
-        with open(results_path) as f:
+        with results_path.open() as f:
             actual_results = json.load(f)
 
         # Analyze each pick
@@ -717,13 +849,19 @@ def analyze_results(date: str | None = None) -> dict:
         print("\nPick-by-Pick:")
         for pick in results["picks"]:
             status = pick.get("result", "PENDING")
-            emoji = "[WIN]" if status == "WIN" else "[LOSS]" if status == "LOSS" else "[--]"
+            emoji = (
+                "[WIN]"
+                if status == "WIN"
+                else "[LOSS]"
+                if status == "LOSS"
+                else "[--]"
+            )
             print(f"  {emoji} {pick.get('pick', 'N/A')}")
             if pick.get("notes"):
                 print(f"       Notes: {pick['notes']}")
 
     else:
-        print(f"[INFO] No results file found. Create one at:")
+        print("[INFO] No results file found. Create one at:")
         print(f"       {results_path}")
         print("\nExpected format:")
         print(
@@ -742,6 +880,516 @@ def analyze_results(date: str | None = None) -> dict:
 
 
 # ============================================================================
+# LIVE SCORE TRACKING
+# ============================================================================
+
+ESPN_SCOREBOARD_URL = (
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball"
+    "/scoreboard"
+)
+
+# Common college basketball mascots to strip from ESPN names
+ESPN_MASCOTS = [
+    "Bulldogs", "Tigers", "Wildcats", "Catamounts", "Eagles", "Bears",
+    "Cavaliers", "Tar Heels", "Blue Devils", "Cardinals", "Wolfpack",
+    "Hoosiers", "Boilermakers", "Hawkeyes", "Spartans", "Wolverines",
+    "Buckeyes", "Nittany Lions", "Fighting Irish", "Seminoles", "Hurricanes",
+    "Yellow Jackets", "Crimson Tide", "Volunteers", "Gators", "Gamecocks",
+    "Razorbacks", "Longhorns", "Jayhawks", "Cyclones", "Sooners", "Cowboys",
+    "Red Raiders", "Horned Frogs", "Cougars", "Mountaineers", "Panthers",
+    "Orange", "Hokies", "Demon Deacons", "Commodores", "Rebels", "Aggies",
+    "Sun Devils", "Bruins", "Trojans", "Ducks", "Beavers", "Huskies",
+    "Golden Bears", "Buffaloes", "Utes", "Aztecs", "Toreros", "Broncos",
+    "Gaels", "Pilots", "Zags", "Gonzaga Bulldogs", "Wave", "Saints",
+    "Bearcats", "Musketeers", "Flyers", "Explorers", "Hawks", "Owls",
+    "Minutemen", "Friars", "Bluejays", "Red Storm", "Hoyas", "Pirates",
+    "Golden Eagles", "Peacocks", "Bonnies", "Rams", "Billikens", "Colonials",
+    "Dukes", "Spiders", "Monarchs", "Phoenix", "49ers", "Chanticleers",
+    "Paladins", "Terriers", "Keydets", "Tribe", "Pride", "Dolphins",
+    "Flames", "Scarlet Knights", "Sycamores", "Penguins", "Redhawks",
+    "Bobcats", "Thundering Herd", "Golden Flashes", "Chippewas", "Broncos",
+    "Rockets", "Falcons", "Zips", "RedHawks", "Bulls", "Leopards",
+    "Mountain Hawks", "Bison", "Crusaders", "Mastodons", "Leathernecks",
+    "Fighting Illini", "Badgers", "Golden Gophers", "Cornhuskers", "Wildcats",
+    "Terrapins", "Blue Hens", "Retrievers", "Great Danes", "Seawolves",
+    "River Hawks", "Catamounts", "Black Bears", "Wildcats", "Huskies",
+]
+
+
+def strip_espn_mascot(team_name: str) -> str:
+    """Strip ESPN mascot from team name to get just the school name.
+
+    ESPN returns names like "Georgia Bulldogs" but we need "Georgia".
+
+    Args:
+        team_name: Full ESPN team name with mascot.
+
+    Returns:
+        School name without mascot.
+    """
+    name = team_name.strip()
+
+    # Sort mascots by length (longest first) to avoid partial matches
+    for mascot in sorted(ESPN_MASCOTS, key=len, reverse=True):
+        if name.endswith(f" {mascot}"):
+            return name[: -(len(mascot) + 1)].strip()
+
+    # No mascot found, return as-is
+    return name
+
+
+async def fetch_live_scores(date: str | None = None) -> list[dict]:
+    """Fetch live scores from ESPN API.
+
+    Args:
+        date: Date in YYYY-MM-DD format (default: today)
+
+    Returns:
+        List of game dictionaries with scores and status.
+    """
+    if date is None:
+        date = datetime.now().strftime("%Y-%m-%d")
+
+    # Format date for ESPN API (YYYYMMDD)
+    espn_date = date.replace("-", "")
+
+    url = f"{ESPN_SCOREBOARD_URL}?dates={espn_date}"
+
+    games = []
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            data = response.json()
+
+        for event in data.get("events", []):
+            competition = event.get("competitions", [{}])[0]
+            competitors = competition.get("competitors", [])
+
+            if len(competitors) != 2:
+                continue
+
+            # ESPN has home team first, away team second
+            home_data = None
+            away_data = None
+            for comp in competitors:
+                if comp.get("homeAway") == "home":
+                    home_data = comp
+                else:
+                    away_data = comp
+
+            if not home_data or not away_data:
+                continue
+
+            status = event.get("status", {})
+            status_type = status.get("type", {}).get(
+                "name", "STATUS_SCHEDULED"
+            )
+            period = status.get("period", 0)
+            clock = status.get("displayClock", "0:00")
+
+            # Determine game state
+            if status_type == "STATUS_FINAL":
+                game_status = "FINAL"
+            elif status_type == "STATUS_IN_PROGRESS":
+                if period == 1:
+                    game_status = f"1H {clock}"
+                elif period == 2:
+                    game_status = f"2H {clock}"
+                else:
+                    game_status = (
+                        f"OT{period - 2} {clock}" if period > 2 else "LIVE"
+                    )
+            elif status_type == "STATUS_HALFTIME":
+                game_status = "HALF"
+            else:
+                game_status = "PRE"
+
+            home_score = int(home_data.get("score", 0) or 0)
+            away_score = int(away_data.get("score", 0) or 0)
+
+            games.append(
+                {
+                    "home_team": home_data.get("team", {}).get(
+                        "displayName", "Unknown"
+                    ),
+                    "away_team": away_data.get("team", {}).get(
+                        "displayName", "Unknown"
+                    ),
+                    "home_abbrev": home_data.get("team", {}).get(
+                        "abbreviation", "???"
+                    ),
+                    "away_abbrev": away_data.get("team", {}).get(
+                        "abbreviation", "???"
+                    ),
+                    "home_score": home_score,
+                    "away_score": away_score,
+                    "total": home_score + away_score,
+                    "margin": home_score
+                    - away_score,  # Positive = home winning
+                    "status": game_status,
+                    "period": period,
+                    "clock": clock,
+                    "is_final": status_type == "STATUS_FINAL",
+                    "is_live": status_type == "STATUS_IN_PROGRESS",
+                }
+            )
+
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch scores: {e}")
+
+    return games
+
+
+def calculate_cover_status(
+    pick: dict,
+    game: dict,
+) -> dict:
+    """Calculate whether a pick is covering, pushing, or not covering.
+
+    Args:
+        pick: Pick dictionary from betting slip
+        game: Live game data from ESPN
+
+    Returns:
+        Dictionary with cover status details.
+    """
+    bet_type = pick.get("bet_type", "SPREAD")
+    status = game.get("status", "PRE")
+    is_final = game.get("is_final", False)
+    is_live = game.get("is_live", False)
+
+    result = {
+        "pick": pick.get("pick", "N/A"),
+        "matchup": pick.get("matchup", "N/A"),
+        "status": status,
+        "home_score": game.get("home_score", 0),
+        "away_score": game.get("away_score", 0),
+        "is_final": is_final,
+        "cover_status": "PENDING",
+        "margin_vs_spread": None,
+        "current_total": game.get("total", 0),
+    }
+
+    if not is_live and not is_final:
+        result["cover_status"] = "NOT STARTED"
+        return result
+
+    if bet_type == "SPREAD":
+        vegas_spread = pick.get("vegas_spread", 0)
+        pick_str = pick.get("pick", "")
+
+        # Determine which team we're betting on
+        home_team = (
+            pick.get("matchup", "").split(" @ ")[-1]
+            if " @ " in pick.get("matchup", "")
+            else ""
+        )
+        away_team = (
+            pick.get("matchup", "").split(" @ ")[0]
+            if " @ " in pick.get("matchup", "")
+            else ""
+        )
+
+        current_margin = game.get("margin", 0)  # Positive = home winning
+
+        # Check if we bet on home or away
+        if home_team and home_team in pick_str:
+            # We bet on home team
+            # Home team covers if: current_margin > -spread
+            # e.g., Home +5: covers if loses by less than 5
+            spread_for_home = vegas_spread
+            margin_vs_spread = current_margin - (-spread_for_home)
+            if margin_vs_spread > 0:
+                result["cover_status"] = "COVERING" if is_live else "WIN"
+            elif margin_vs_spread < 0:
+                result["cover_status"] = "NOT COVERING" if is_live else "LOSS"
+            else:
+                result["cover_status"] = "PUSH"
+            result["margin_vs_spread"] = margin_vs_spread
+        elif away_team and away_team in pick_str:
+            # We bet on away team
+            # Away covers if: -current_margin > -spread (for away)
+            spread_for_away = -vegas_spread
+            away_margin = -current_margin  # Positive = away winning
+            margin_vs_spread = away_margin - (-spread_for_away)
+            if margin_vs_spread > 0:
+                result["cover_status"] = "COVERING" if is_live else "WIN"
+            elif margin_vs_spread < 0:
+                result["cover_status"] = "NOT COVERING" if is_live else "LOSS"
+            else:
+                result["cover_status"] = "PUSH"
+            result["margin_vs_spread"] = margin_vs_spread
+
+    elif bet_type == "TOTAL":
+        vegas_total = pick.get("vegas_total", 0)
+        current_total = game.get("total", 0)
+        pick_str = pick.get("pick", "")
+
+        is_over = "OVER" in pick_str.upper()
+
+        if is_over:
+            margin_vs_total = current_total - vegas_total
+            if current_total > vegas_total:
+                result["cover_status"] = "COVERING" if is_live else "WIN"
+            elif current_total < vegas_total:
+                result["cover_status"] = "NOT COVERING" if is_live else "LOSS"
+            else:
+                result["cover_status"] = "PUSH"
+            result["margin_vs_spread"] = margin_vs_total
+        else:  # UNDER
+            margin_vs_total = vegas_total - current_total
+            if current_total < vegas_total:
+                result["cover_status"] = "COVERING" if is_live else "WIN"
+            elif current_total > vegas_total:
+                result["cover_status"] = "NOT COVERING" if is_live else "LOSS"
+            else:
+                result["cover_status"] = "PUSH"
+            result["margin_vs_spread"] = margin_vs_total
+
+    return result
+
+
+async def track_picks_live(date: str | None = None) -> None:
+    """Track betting picks in real-time.
+
+    Args:
+        date: Date in YYYY-MM-DD format (default: today)
+    """
+    if date is None:
+        date = datetime.now().strftime("%Y-%m-%d")
+
+    print(f"\n[INFO] Tracking live picks for {date}...")
+    print("[INFO] Press Ctrl+C to stop tracking\n")
+
+    # Load picks from Vegas lines
+    vegas_path = (
+        Path(__file__).parent.parent.parent / "data" / "vegas_lines.json"
+    )
+
+    if not vegas_path.exists():
+        print("[ERROR] No Vegas lines found. Generate a betting slip first.")
+        return
+
+    with vegas_path.open() as f:
+        vegas_data = json.load(f)
+
+    # Get KenPom analysis for picks
+    api = KenPomAPI()
+
+    try:
+        fanmatch = api.get_fanmatch(date)
+    except Exception as e:
+        print(f"[ERROR] Failed to get KenPom data: {e}")
+        return
+
+    # Build picks list based on edges
+    picks = []
+
+    # Load ratings for luck analysis
+    luck_analyzer = LuckRegressionAnalyzer()
+    ratings_cache: dict[str, dict] = {}
+    try:
+        ratings = api.get_ratings(year=int(date[:4]))
+        for team in ratings.data:
+            team_name = team.get("TeamName", "")
+            if team_name:
+                ratings_cache[team_name] = team
+    except Exception:
+        pass
+
+    for game in fanmatch.data:
+        visitor = game.get("Visitor", "")
+        home = game.get("Home", "")
+
+        visitor_pred = game["VisitorPred"]
+        home_pred = game["HomePred"]
+
+        kenpom_spread = home_pred - visitor_pred
+        kp_spread = -kenpom_spread
+        kenpom_total = visitor_pred + home_pred
+
+        # Find Vegas line
+        norm_away = normalize_team_name(visitor)
+        norm_home = normalize_team_name(home)
+
+        vegas_line = None
+        for g in vegas_data.get("games", []):
+            if (
+                normalize_team_name(g["away_team"]) == norm_away
+                and normalize_team_name(g["home_team"]) == norm_home
+            ):
+                vegas_line = g
+                break
+
+        if not vegas_line:
+            continue
+
+        v_spread = vegas_line.get("spread")
+        v_total = vegas_line.get("total")
+
+        # Calculate luck edge
+        luck_edge = 0.0
+        for team_data in ratings_cache.values():
+            team_name = team_data.get("TeamName", "")
+            if team_name == visitor:
+                visitor_luck = team_data.get("Luck", 0.0)
+            if team_name == home:
+                home_luck = team_data.get("Luck", 0.0)
+
+        if "visitor_luck" in dir() and "home_luck" in dir():
+            try:
+                luck_result = luck_analyzer.analyze_matchup_luck(
+                    team1_name=visitor,
+                    team1_adjEM=ratings_cache.get(visitor, {}).get("AdjEM", 0),
+                    team1_luck=visitor_luck,
+                    team2_name=home,
+                    team2_adjEM=ratings_cache.get(home, {}).get("AdjEM", 0),
+                    team2_luck=home_luck,
+                    games_remaining=15,
+                    neutral_site=False,
+                    home_court_advantage=3.5,
+                )
+                luck_edge = luck_result.luck_edge
+            except Exception:
+                luck_edge = 0.0
+
+        # Check spread edge
+        if v_spread is not None:
+            spread_edge = kp_spread - v_spread
+            composite_edge = spread_edge + luck_edge
+
+            if abs(composite_edge) >= 3:
+                if composite_edge < 0:
+                    if v_spread > 0:
+                        pick_str = f"{home} +{v_spread}"
+                    else:
+                        pick_str = f"{home} {v_spread}"
+                else:
+                    if v_spread > 0:
+                        pick_str = f"{visitor} -{v_spread}"
+                    else:
+                        pick_str = f"{visitor} +{abs(v_spread)}"
+
+                picks.append(
+                    {
+                        "matchup": f"{visitor} @ {home}",
+                        "pick": pick_str,
+                        "bet_type": "SPREAD",
+                        "vegas_spread": v_spread,
+                        "composite_edge": composite_edge,
+                    }
+                )
+
+        # Check total edge
+        if v_total is not None:
+            total_edge = kenpom_total - v_total
+
+            if abs(total_edge) >= 5:
+                if total_edge > 0:
+                    pick_str = f"OVER {v_total}"
+                else:
+                    pick_str = f"UNDER {v_total}"
+
+                picks.append(
+                    {
+                        "matchup": f"{visitor} @ {home}",
+                        "pick": pick_str,
+                        "bet_type": "TOTAL",
+                        "vegas_total": v_total,
+                        "edge": total_edge,
+                    }
+                )
+
+    if not picks:
+        print("[INFO] No value picks to track")
+        return
+
+    print(f"[OK] Tracking {len(picks)} picks\n")
+
+    # Fetch live scores and display status
+    scores = await fetch_live_scores(date)
+
+    if not scores:
+        print("[WARN] No live scores available")
+        return
+
+    # Build lookup by team names (strip ESPN mascots first)
+    scores_by_team: dict[str, dict] = {}
+    for game in scores:
+        # ESPN returns "Georgia Bulldogs" -> strip to "Georgia" -> normalize
+        home_stripped = strip_espn_mascot(game["home_team"])
+        away_stripped = strip_espn_mascot(game["away_team"])
+        home = normalize_team_name(home_stripped)
+        away = normalize_team_name(away_stripped)
+        scores_by_team[home] = game
+        scores_by_team[away] = game
+        # Also add with original stripped name for fallback matching
+        scores_by_team[home_stripped] = game
+        scores_by_team[away_stripped] = game
+
+    # Display tracking table
+    print("=" * 85)
+    print("LIVE PICK TRACKER")
+    print("=" * 85)
+    print(f"{'PICK':<35} {'SCORE':<15} {'STATUS':<10} {'COVER':<15}")
+    print("-" * 85)
+
+    covering = 0
+    not_covering = 0
+    pending = 0
+
+    for pick in picks:
+        matchup = pick["matchup"]
+        parts = matchup.split(" @ ")
+        away_team = normalize_team_name(parts[0]) if len(parts) > 0 else ""
+        home_team = normalize_team_name(parts[1]) if len(parts) > 1 else ""
+
+        # Find game in scores
+        game = scores_by_team.get(home_team) or scores_by_team.get(away_team)
+
+        if not game:
+            print(f"{pick['pick']:<35} {'N/A':<15} {'--':<10} {'NO DATA':<15}")
+            pending += 1
+            continue
+
+        # Calculate cover status
+        status = calculate_cover_status(pick, game)
+
+        score_str = f"{game['away_score']}-{game['home_score']}"
+        game_status = game["status"]
+
+        cover = status["cover_status"]
+        if cover == "COVERING" or cover == "WIN":
+            cover_display = f"[OK] {cover}"
+            covering += 1
+        elif cover == "NOT COVERING" or cover == "LOSS":
+            cover_display = f"[X] {cover}"
+            not_covering += 1
+        elif cover == "PUSH":
+            cover_display = "[--] PUSH"
+            pending += 1
+        else:
+            cover_display = f"[?] {cover}"
+            pending += 1
+
+        # Add margin info if available
+        if status.get("margin_vs_spread") is not None:
+            margin = status["margin_vs_spread"]
+            cover_display += f" ({margin:+.0f})"
+
+        row = f"{pick['pick']:<35} {score_str:<15} "
+        row += f"{game_status:<10} {cover_display:<15}"
+        print(row)
+
+    print("-" * 85)
+    summary = f"\nSUMMARY: Covering: {covering} | "
+    summary += f"Not Covering: {not_covering} | Pending: {pending}"
+    print(summary)
+    print("=" * 85)
+
+
+# ============================================================================
 # MAIN CLI
 # ============================================================================
 
@@ -757,9 +1405,14 @@ def main():
 
     # Slip command
     slip_parser = subparsers.add_parser("slip", help="Generate betting slip")
-    slip_parser.add_argument("--date", "-d", help="Date (YYYY-MM-DD, default: today)")
     slip_parser.add_argument(
-        "--min-edge", type=float, default=3.0, help="Minimum edge (default: 3.0)"
+        "--date", "-d", help="Date (YYYY-MM-DD, default: today)"
+    )
+    slip_parser.add_argument(
+        "--min-edge",
+        type=float,
+        default=3.0,
+        help="Minimum edge (default: 3.0)",
     )
 
     # Open bets command
@@ -769,15 +1422,29 @@ def main():
     figures_parser = subparsers.add_parser(
         "daily-figures", help="Fetch daily P&L figures"
     )
-    figures_parser.add_argument("--date", "-d", help="Date (YYYY-MM-DD, default: today)")
+    figures_parser.add_argument(
+        "--date", "-d", help="Date (YYYY-MM-DD, default: today)"
+    )
 
     # Analyze command
     analyze_parser = subparsers.add_parser("analyze", help="Analyze results")
-    analyze_parser.add_argument("--date", "-d", help="Date (YYYY-MM-DD, default: today)")
+    analyze_parser.add_argument(
+        "--date", "-d", help="Date (YYYY-MM-DD, default: today)"
+    )
 
     # All command
     all_parser = subparsers.add_parser("all", help="Run full workflow")
-    all_parser.add_argument("--date", "-d", help="Date (YYYY-MM-DD, default: today)")
+    all_parser.add_argument(
+        "--date", "-d", help="Date (YYYY-MM-DD, default: today)"
+    )
+
+    # Live tracking command
+    live_parser = subparsers.add_parser(
+        "live", help="Track picks in real-time"
+    )
+    live_parser.add_argument(
+        "--date", "-d", help="Date (YYYY-MM-DD, default: today)"
+    )
 
     args = parser.parse_args()
 
@@ -819,6 +1486,10 @@ def main():
 
         print("\n[4/4] Analyzing results...")
         analyze_results(date=date)
+
+    elif args.command == "live":
+        date = args.date or datetime.now().strftime("%Y-%m-%d")
+        asyncio.run(track_picks_live(date))
 
     print("\n" + "=" * 80)
     return 0
