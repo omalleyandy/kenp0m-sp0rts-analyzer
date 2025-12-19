@@ -24,6 +24,7 @@ from kenp0m_sp0rts_analyzer.experience_chemistry_analysis import (
     ExperienceChemistryAnalyzer,
 )
 from kenp0m_sp0rts_analyzer.four_factors_matchup import FourFactorsMatchup
+from kenp0m_sp0rts_analyzer.luck_regression import LuckRegressionAnalyzer
 from kenp0m_sp0rts_analyzer.point_distribution_analysis import (
     PointDistributionAnalyzer,
 )
@@ -68,7 +69,7 @@ def load_vegas_lines(date_str: str) -> dict:
     if not vegas_file.exists():
         return {}
 
-    with open(vegas_file, "r") as f:
+    with vegas_file.open() as f:
         data = json.load(f)
 
     # Check if the file is for the requested date
@@ -94,13 +95,93 @@ def load_vegas_lines(date_str: str) -> dict:
     return lines
 
 
+def load_injuries() -> dict[str, list[dict]]:
+    """Load injury data from JSON file.
+
+    Returns:
+        Dictionary mapping normalized team names to list of injuries
+    """
+    data_dir = Path(__file__).parent / "data"
+    injury_file = data_dir / "injuries_covers.json"
+
+    if not injury_file.exists():
+        return {}
+
+    with injury_file.open() as f:
+        data = json.load(f)
+
+    # Build lookup by normalized team name
+    injuries_by_team: dict[str, list[dict]] = {}
+
+    for injury in data.get("injuries", []):
+        # Covers format: "Alabama CRIMSON TIDE" -> normalize to "Alabama"
+        raw_team = injury.get("team", "")
+        # Extract first part before all-caps mascot
+        parts = raw_team.split()
+        team_parts = []
+        for part in parts:
+            if part.isupper() and len(part) > 2:
+                break
+            team_parts.append(part)
+        team_name = " ".join(team_parts) if team_parts else raw_team
+
+        # Normalize for KenPom matching
+        normalized = normalize_team_name(team_name)
+
+        if normalized not in injuries_by_team:
+            injuries_by_team[normalized] = []
+
+        injuries_by_team[normalized].append(
+            {
+                "player": injury.get("player", "Unknown"),
+                "position": injury.get("position", "?"),
+                "status": injury.get("status", "Unknown"),
+                "injury_type": injury.get("injury_type", ""),
+            }
+        )
+
+    return injuries_by_team
+
+
+def get_team_luck(api: KenPomAPI, team_name: str, season: int) -> float | None:
+    """Get luck factor for a team from KenPom ratings.
+
+    Args:
+        api: KenPomAPI client
+        team_name: Team name to look up
+        season: Season year
+
+    Returns:
+        Luck factor or None if not found
+    """
+    try:
+        ratings = api.get_ratings(year=season)
+        for team in ratings.data:
+            if team.get("TeamName") == team_name:
+                return team.get("Luck", 0.0)
+        # Try normalized name lookup
+        normalized = normalize_team_name(team_name)
+        for team in ratings.data:
+            if normalize_team_name(team.get("TeamName", "")) == normalized:
+                return team.get("Luck", 0.0)
+    except Exception:
+        pass
+    return None
+
+
 def print_separator():
     """Print a visual separator line."""
     print("\n" + "=" * 80)
 
 
 def analyze_game(
-    api: KenPomAPI, game: dict, season: int, vegas_lines: dict
+    api: KenPomAPI,
+    game: dict,
+    season: int,
+    vegas_lines: dict,
+    injuries: dict[str, list[dict]],
+    luck_analyzer: LuckRegressionAnalyzer,
+    ratings_cache: dict,
 ) -> dict | None:
     """Analyze a single game and return key insights.
 
@@ -109,6 +190,9 @@ def analyze_game(
         game: Game data from fanmatch endpoint
         season: Season year (e.g., 2025)
         vegas_lines: Dictionary of Vegas lines from overtime.ag
+        injuries: Dictionary of injuries by normalized team name
+        luck_analyzer: LuckRegressionAnalyzer instance
+        ratings_cache: Cache of team ratings to avoid repeated API calls
 
     Returns:
         Dictionary with analysis results or None if analysis fails
@@ -229,34 +313,131 @@ def analyze_game(
         elif height_adv < -1.5:
             print(f'  -> {team2} size advantage ({height_adv:+.1f}")')
 
+        # Luck Regression Analysis (evidence-backed)
+        luck_edge = 0.0
+        team1_luck = None
+        team2_luck = None
+        luck_recommendation = None
+
+        # Get luck values from ratings cache
+        for team_data in ratings_cache.values():
+            if team_data.get("TeamName") == team1:
+                team1_luck = team_data.get("Luck", 0.0)
+            if team_data.get("TeamName") == team2:
+                team2_luck = team_data.get("Luck", 0.0)
+
+        # Also try normalized names
+        if team1_luck is None or team2_luck is None:
+            norm1 = normalize_team_name(team1)
+            norm2 = normalize_team_name(team2)
+            for team_data in ratings_cache.values():
+                raw_name = team_data.get("TeamName", "")
+                normalized_name = normalize_team_name(raw_name)
+                if normalized_name == norm1 and team1_luck is None:
+                    team1_luck = team_data.get("Luck", 0.0)
+                if normalized_name == norm2 and team2_luck is None:
+                    team2_luck = team_data.get("Luck", 0.0)
+
+        if team1_luck is not None and team2_luck is not None:
+            # Get AdjEM for luck analysis
+            team1_adjEM = basic.team1_adj_em
+            team2_adjEM = basic.team2_adj_em
+
+            luck_result = luck_analyzer.analyze_matchup_luck(
+                team1_name=team1,
+                team1_adjEM=team1_adjEM,
+                team1_luck=team1_luck,
+                team2_name=team2,
+                team2_adjEM=team2_adjEM,
+                team2_luck=team2_luck,
+                games_remaining=15,  # Mid-season estimate
+                neutral_site=False,
+                home_court_advantage=3.5,
+            )
+            luck_edge = luck_result.luck_edge
+            luck_recommendation = luck_result.betting_recommendation
+
+            print("\n  [LUCK REGRESSION] (Evidence-Backed: 10,000+ games)")
+            print(f"     {team1} Luck: {team1_luck:+.3f}", end="")
+            if team1_luck > 0.08:
+                print(" (LUCKY - fade)")
+            elif team1_luck < -0.08:
+                print(" (UNLUCKY - back)")
+            else:
+                print(" (neutral)")
+
+            print(f"     {team2} Luck: {team2_luck:+.3f}", end="")
+            if team2_luck > 0.08:
+                print(" (LUCKY - fade)")
+            elif team2_luck < -0.08:
+                print(" (UNLUCKY - back)")
+            else:
+                print(" (neutral)")
+
+            print(f"     Luck Edge: {luck_edge:+.1f} pts")
+            if abs(luck_edge) >= 1.5:
+                print(f"     -> {luck_recommendation}")
+
+        # Injury Report (Display Only - No Adjustment)
+        team1_injuries = injuries.get(normalize_team_name(team1), [])
+        team2_injuries = injuries.get(normalize_team_name(team2), [])
+
+        if team1_injuries or team2_injuries:
+            print("\n  [INJURY REPORT] (Display Only - No Adjustment)")
+            if team1_injuries:
+                print(f"     {team1}:")
+                for inj in team1_injuries[:3]:  # Show max 3
+                    icon = "[OUT]" if inj["status"] == "Out" else "[Q]"
+                    pos = inj["position"]
+                    inj_type = inj["injury_type"]
+                    print(
+                        f"       {icon} {inj['player']} ({pos}) - {inj_type}"
+                    )
+            if team2_injuries:
+                print(f"     {team2}:")
+                for inj in team2_injuries[:3]:  # Show max 3
+                    icon = "[OUT]" if inj["status"] == "Out" else "[Q]"
+                    pos = inj["position"]
+                    inj_type = inj["injury_type"]
+                    print(
+                        f"       {icon} {inj['player']} ({pos}) - {inj_type}"
+                    )
+
         # Value Analysis vs Vegas
         spread_edge = None
         total_edge = None
         spread_pick = None
         total_pick = None
+        composite_edge = None
 
         if vegas_spread is not None:
             # KenPom spread (negative = home favored)
             kp_spread = -kenpom_spread
             spread_edge = kp_spread - vegas_spread
 
+            # Composite edge = KenPom edge + luck regression edge
+            composite_edge = spread_edge + luck_edge
+
             print("\n  [SPREAD ANALYSIS]")
             print(f"     KenPom: {team2} {kp_spread:+.1f}")
             print(f"     Vegas:  {team2} {vegas_spread:+.1f}")
-            print(f"     Edge:   {spread_edge:+.1f} points")
+            print(f"     KenPom Edge:    {spread_edge:+.1f} pts")
+            print(f"     Luck Edge:      {luck_edge:+.1f} pts")
+            print(f"     COMPOSITE EDGE: {composite_edge:+.1f} pts")
 
-            if abs(spread_edge) >= 3:
-                if spread_edge < 0:
-                    # Vegas gives home team MORE points than KenPom
+            # Use COMPOSITE edge for value determination (KenPom + Luck)
+            if abs(composite_edge) >= 3:
+                if composite_edge < 0:
+                    # Composite analysis favors HOME team
                     # VALUE: Bet HOME team (they cover with extra points)
                     if vegas_spread > 0:
                         spread_pick = f"{team2} +{vegas_spread}"
                     else:
                         spread_pick = f"{team2} {vegas_spread}"
                     print(f"     [VALUE] {spread_pick}")
-                    print("        (Home getting extra points from Vegas)")
+                    print("        (Home favored by composite analysis)")
                 else:
-                    # KenPom gives home team MORE credit than Vegas
+                    # Composite analysis favors AWAY team
                     # VALUE: Bet AWAY team (home is overvalued)
                     if vegas_spread > 0:
                         # Home is underdog, away is favorite
@@ -265,8 +446,8 @@ def analyze_game(
                         # Home is favorite, away is underdog
                         spread_pick = f"{team1} +{abs(vegas_spread)}"
                     print(f"     [VALUE] {spread_pick}")
-                    print("        (Away team undervalued by Vegas)")
-            elif abs(spread_edge) < 1:
+                    print("        (Away favored by composite analysis)")
+            elif abs(composite_edge) < 1:
                 print("     -- NO EDGE - Lines agree")
             else:
                 print("     [WARN] Small edge - proceed with caution")
@@ -297,6 +478,10 @@ def analyze_game(
             "kenpom_spread": -kenpom_spread,
             "vegas_spread": vegas_spread,
             "spread_edge": spread_edge,
+            "composite_edge": composite_edge,
+            "luck_edge": luck_edge,
+            "team1_luck": team1_luck,
+            "team2_luck": team2_luck,
             "spread_pick": spread_pick,
             "kenpom_total": kenpom_total,
             "vegas_total": vegas_total,
@@ -387,6 +572,30 @@ def main():
     else:
         print("[WARN] No Vegas lines loaded - update data/vegas_lines.json")
 
+    # Load injury data
+    injuries = load_injuries()
+    if injuries:
+        team_count = len(injuries)
+        print(f"[OK] Loaded injuries for {team_count} teams")
+    else:
+        print("[INFO] No injury data available")
+
+    # Initialize luck regression analyzer
+    luck_analyzer = LuckRegressionAnalyzer()
+    print("[OK] Luck regression analyzer initialized")
+
+    # Load ratings cache for luck values
+    ratings_cache: dict[str, dict] = {}
+    try:
+        ratings_response = api.get_ratings(year=season)
+        for team in ratings_response.data:
+            team_name = team.get("TeamName", "")
+            if team_name:
+                ratings_cache[team_name] = team
+        print(f"[OK] Cached ratings for {len(ratings_cache)} teams")
+    except Exception as e:
+        print(f"[WARN] Failed to load ratings cache: {e}")
+
     # Fetch games from KenPom fanmatch
     print(f"[OK] Fetching games for {date_api}...")
 
@@ -405,8 +614,7 @@ def main():
     filtered_games = games
     if args.close_only:
         filtered_games = [
-            g for g in filtered_games
-            if 35 <= g.get("HomeWP", 50) <= 65
+            g for g in filtered_games if 35 <= g.get("HomeWP", 50) <= 65
         ]
         print("[OK] Filtered to close games only")
 
@@ -422,7 +630,15 @@ def main():
 
     for i, game in enumerate(filtered_games, 1):
         print(f"\n[{i}/{len(filtered_games)}]", end="")
-        result = analyze_game(api, game, season, vegas_lines)
+        result = analyze_game(
+            api,
+            game,
+            season,
+            vegas_lines,
+            injuries,
+            luck_analyzer,
+            ratings_cache,
+        )
         if result:
             results.append(result)
         print_separator()
@@ -436,10 +652,10 @@ def main():
         print("\nNo games were successfully analyzed.")
         return
 
-    # All games table
-    header = f"{'MATCHUP':<33} {'KP':>6} {'VEG':>6} {'EDGE':>5} {'TOT':>4}"
+    # All games table (shows COMPOSITE edge = KenPom + Luck)
+    header = f"{'MATCHUP':<33} {'KP':>6} {'VEG':>6} {'COMP':>6} {'TOT':>4}"
     print(f"\n{header}")
-    print("-" * 56)
+    print("-" * 58)
 
     for r in results:
         matchup = f"{r['team1'][:15]} @ {r['team2'][:15]}"
@@ -448,26 +664,34 @@ def main():
             vegas_spread = f"{r['vegas_spread']:+.1f}"
         else:
             vegas_spread = "N/A"
-        if r["spread_edge"] is not None:
+        # Show COMPOSITE edge (KenPom + Luck)
+        if r["composite_edge"] is not None:
+            edge = f"{r['composite_edge']:+.1f}"
+        elif r["spread_edge"] is not None:
             edge = f"{r['spread_edge']:+.1f}"
         else:
             edge = "N/A"
         total = f"{r['kenpom_total']:.0f}"
         fmt = f"{matchup:<33} {kp_spread:>6} {vegas_spread:>6}"
-        fmt += f" {edge:>5} {total:>4}"
+        fmt += f" {edge:>6} {total:>4}"
         print(fmt)
 
-    # Value picks (spread)
+    # Value picks (spread) - using COMPOSITE edge
     spread_value = [r for r in results if r.get("spread_pick")]
     if spread_value:
-        print(f"\n[PICK] SPREAD VALUE PICKS (Edge >= {args.min_edge} pts):")
-        print("-" * 60)
+        print(
+            f"\n[PICK] SPREAD VALUE PICKS (Composite >= {args.min_edge} pts):"
+        )
+        print("-" * 65)
         for r in spread_value:
             print(f"   {r['team1']} @ {r['team2']}")
             print(f"      PICK: {r['spread_pick']}")
-            edge = r['spread_edge']
-            wp = r['home_win_prob']
-            print(f"      Edge: {edge:+.1f} pts | Win Prob: {wp}%")
+            kp_edge = r.get("spread_edge") or 0
+            luck_e = r.get("luck_edge") or 0
+            comp_e = r.get("composite_edge") or 0
+            wp = r["home_win_prob"]
+            print(f"      KenPom: {kp_edge:+.1f} | Luck: {luck_e:+.1f}")
+            print(f"      COMPOSITE: {comp_e:+.1f} pts | WP: {wp}%")
             print()
 
     # Value picks (totals)
@@ -478,9 +702,9 @@ def main():
         for r in total_value:
             print(f"   {r['team1']} @ {r['team2']}")
             print(f"      PICK: {r['total_pick']}")
-            kp_tot = r['kenpom_total']
-            v_tot = r['vegas_total']
-            t_edge = r['total_edge']
+            kp_tot = r["kenpom_total"]
+            v_tot = r["vegas_total"]
+            t_edge = r["total_edge"]
             print(f"      KP: {kp_tot:.1f} | V: {v_tot} | E: {t_edge:+.1f}")
             print()
 
@@ -489,7 +713,7 @@ def main():
     if close_games:
         print(f"\n[WARN] CLOSE GAMES ({len(close_games)} games, 35-65% WP):")
         for r in close_games:
-            wp = r['home_win_prob']
+            wp = r["home_win_prob"]
             print(f"   {r['team1']} @ {r['team2']} ({wp}% home)")
 
     # Stats
