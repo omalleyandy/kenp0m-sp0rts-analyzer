@@ -10,6 +10,13 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+try:
+    import xgboost as xgb
+
+    XGBOOST_AVAILABLE = True
+except ImportError:
+    XGBOOST_AVAILABLE = False
+
 
 class PredictionResult(BaseModel):
     """Game prediction with confidence intervals.
@@ -177,6 +184,193 @@ class FeatureEngineer:
             features["tempo_control_factor"] = 0.0
 
         return features
+
+
+class XGBoostFeatureEngineer(FeatureEngineer):
+    """Enhanced feature engineering for XGBoost with Phase 2 features.
+
+    Adds three critical feature categories for betting edge detection:
+    1. Luck regression - Identify teams due for regression to mean
+    2. Point distribution - Detect high-variance 3PT-dependent teams
+    3. Momentum tracking - Track team trajectories (hot/cold streaks)
+
+    Example:
+        >>> engineer = XGBoostFeatureEngineer()
+        >>> features = engineer.create_enhanced_features(
+        ...     team1_stats, team2_stats,
+        ...     team1_history=[...],  # Last 4 weeks of ratings
+        ...     point_dist_team1={...},  # Point distribution stats
+        ...     point_dist_team2={...}
+        ... )
+        >>> print(features['luck_regression_team1'])  # Expected regression
+        >>> print(features['three_point_dependency_avg'])  # Variance indicator
+    """
+
+    # Extended feature list with Phase 2 enhancements
+    ENHANCED_FEATURE_NAMES = [
+        # Base features (14)
+        *FeatureEngineer.FEATURE_NAMES,
+        # Luck regression features (3)
+        "luck_team1",
+        "luck_team2",
+        "luck_diff",
+        "luck_regression_expected",
+        # Point distribution features (6)
+        "three_point_pct_team1",
+        "three_point_pct_team2",
+        "three_point_dependency_avg",
+        "scoring_variance_score",
+        "ft_reliance_diff",
+        "two_point_reliance_diff",
+        # Momentum features (3)
+        "momentum_score_team1",
+        "momentum_score_team2",
+        "momentum_diff",
+    ]
+
+    @staticmethod
+    def create_enhanced_features(
+        team1_stats: dict[str, Any],
+        team2_stats: dict[str, Any],
+        neutral_site: bool = True,
+        home_team1: bool = False,
+        team1_history: list[dict] | None = None,
+        team2_history: list[dict] | None = None,
+        point_dist_team1: dict | None = None,
+        point_dist_team2: dict | None = None,
+    ) -> dict[str, float]:
+        """Create enhanced feature vector with Phase 2 features.
+
+        Args:
+            team1_stats: Team 1 KenPom statistics (must include Luck field)
+            team2_stats: Team 2 KenPom statistics
+            neutral_site: Whether game is at neutral site
+            home_team1: If not neutral, whether team 1 is home team
+            team1_history: Historical ratings for momentum (list of dicts with AdjEM)
+            team2_history: Historical ratings for momentum
+            point_dist_team1: Point distribution stats (FT_Pct, TwoP_Pct, ThreeP_Pct)
+            point_dist_team2: Point distribution stats
+
+        Returns:
+            Dictionary with 26 engineered features (14 base + 12 enhanced)
+        """
+        # Start with base features
+        features = FeatureEngineer.create_features(
+            team1_stats, team2_stats, neutral_site, home_team1
+        )
+
+        # --- TIER 0: Luck Regression Features ---
+        luck1 = float(team1_stats.get("Luck", 0))
+        luck2 = float(team2_stats.get("Luck", 0))
+
+        features["luck_team1"] = luck1
+        features["luck_team2"] = luck2
+        features["luck_diff"] = luck1 - luck2
+
+        # Expected regression: Lucky teams (Luck > 0.03) regress downward
+        # Unlucky teams (Luck < -0.03) regress upward
+        # Regression factor: -0.5 * Luck (50% regression to mean)
+        if abs(luck1 - luck2) > 0.05:  # Significant luck differential
+            features["luck_regression_expected"] = -(luck1 - luck2) * 0.5
+        else:
+            features["luck_regression_expected"] = 0.0
+
+        # --- TIER 0: Point Distribution Features ---
+        if point_dist_team1 and point_dist_team2:
+            # Extract point distribution percentages
+            three_pct1 = float(point_dist_team1.get("ThreeP_Pct", 33.0))
+            three_pct2 = float(point_dist_team2.get("ThreeP_Pct", 33.0))
+            two_pct1 = float(point_dist_team1.get("TwoP_Pct", 50.0))
+            two_pct2 = float(point_dist_team2.get("TwoP_Pct", 50.0))
+            ft_pct1 = float(point_dist_team1.get("FT_Pct", 17.0))
+            ft_pct2 = float(point_dist_team2.get("FT_Pct", 17.0))
+
+            features["three_point_pct_team1"] = three_pct1
+            features["three_point_pct_team2"] = three_pct2
+
+            # Average 3PT dependency (variance indicator)
+            # High 3PT% = high variance = good for underdogs
+            three_pt_avg = (three_pct1 + three_pct2) / 2
+            features["three_point_dependency_avg"] = three_pt_avg
+
+            # Scoring variance score (0.0 = low variance, 1.0 = high variance)
+            # Games with >35% 3PT scoring have high variance
+            if three_pt_avg > 35:
+                features["scoring_variance_score"] = 1.0
+            elif three_pt_avg > 33:
+                features["scoring_variance_score"] = 0.5
+            else:
+                features["scoring_variance_score"] = 0.0
+
+            # FT and 2PT reliance differences
+            features["ft_reliance_diff"] = ft_pct1 - ft_pct2
+            features["two_point_reliance_diff"] = two_pct1 - two_pct2
+
+        else:
+            # Default values if point distribution not available
+            features["three_point_pct_team1"] = 33.0
+            features["three_point_pct_team2"] = 33.0
+            features["three_point_dependency_avg"] = 33.0
+            features["scoring_variance_score"] = 0.5
+            features["ft_reliance_diff"] = 0.0
+            features["two_point_reliance_diff"] = 0.0
+
+        # --- TIER 1: Momentum Features ---
+        if team1_history and len(team1_history) >= 2:
+            features["momentum_score_team1"] = XGBoostFeatureEngineer._calculate_momentum(
+                team1_history
+            )
+        else:
+            features["momentum_score_team1"] = 0.0
+
+        if team2_history and len(team2_history) >= 2:
+            features["momentum_score_team2"] = XGBoostFeatureEngineer._calculate_momentum(
+                team2_history
+            )
+        else:
+            features["momentum_score_team2"] = 0.0
+
+        features["momentum_diff"] = (
+            features["momentum_score_team1"] - features["momentum_score_team2"]
+        )
+
+        return features
+
+    @staticmethod
+    def _calculate_momentum(history: list[dict]) -> float:
+        """Calculate momentum score from historical ratings.
+
+        Momentum is calculated as the slope of AdjEM over recent games.
+        Positive = improving (surging), Negative = declining (slumping)
+
+        Args:
+            history: List of historical ratings (newest to oldest)
+                     Each dict must have 'AdjEM' key
+                     Example: [
+                         {'date': '2025-01-15', 'AdjEM': 20.5},
+                         {'date': '2025-01-08', 'AdjEM': 19.2},
+                         ...
+                     ]
+
+        Returns:
+            Momentum score (points per week):
+                > +1.0 = surging (back this team)
+                > +0.5 = improving
+                -0.5 to +0.5 = stable
+                < -0.5 = declining
+                < -1.0 = slumping (fade this team)
+        """
+        if len(history) < 2:
+            return 0.0
+
+        # Extract AdjEM values (newest to oldest)
+        em_values = [float(h.get("AdjEM", 0)) for h in history]
+
+        # Calculate simple slope: (newest - oldest) / num_periods
+        # This gives points per week if history is weekly snapshots
+        slope = (em_values[0] - em_values[-1]) / (len(em_values) - 1)
+
+        return slope
 
 
 class GamePredictor:
@@ -425,6 +619,303 @@ class GamePredictor:
         return self.predict_with_confidence(
             team1_adjusted, team2_adjusted, neutral_site, home_team1
         )
+
+
+class XGBoostGamePredictor:
+    """XGBoost-based game predictor (drop-in replacement for GamePredictor).
+
+    Uses XGBoost for better performance, regularization, and feature importance.
+    Maintains same interface as GamePredictor for backward compatibility.
+
+    Benefits over sklearn GradientBoosting:
+    - Better regularization (L1/L2) to prevent overfitting
+    - 10-20% faster training with parallel tree construction
+    - Built-in feature importance (weight, gain, cover)
+    - Early stopping support
+    - Native handling of missing values
+
+    Example:
+        >>> predictor = XGBoostGamePredictor()
+        >>> predictor.fit(games_df, margins, totals)
+        >>> result = predictor.predict_with_confidence(team1_stats, team2_stats)
+        >>> print(f"Margin: {result.predicted_margin} ({result.confidence_interval})")
+        >>> importance = predictor.get_feature_importance(importance_type='gain')
+    """
+
+    def __init__(self) -> None:
+        """Initialize XGBoost models with optimized hyperparameters."""
+        if not XGBOOST_AVAILABLE:
+            raise ImportError(
+                "XGBoost is not installed. Install with: uv add xgboost"
+            )
+
+        # Margin prediction (point estimate)
+        self.margin_model = xgb.XGBRegressor(
+            n_estimators=100,
+            max_depth=3,
+            learning_rate=0.1,
+            reg_alpha=0.1,  # L1 regularization (feature selection)
+            reg_lambda=1.0,  # L2 regularization (prevent overfitting)
+            gamma=0.1,  # Minimum loss reduction for split
+            subsample=0.8,  # Row sampling (80% per tree)
+            colsample_bytree=0.8,  # Column sampling (80% features per tree)
+            random_state=42,
+            n_jobs=-1,  # Use all CPU cores
+        )
+
+        # Quantile regression models (confidence intervals)
+        quantile_params = {
+            "n_estimators": 100,
+            "max_depth": 3,
+            "learning_rate": 0.1,
+            "reg_alpha": 0.1,
+            "reg_lambda": 1.0,
+            "random_state": 42,
+            "n_jobs": -1,
+        }
+
+        self.margin_upper = xgb.XGBRegressor(
+            objective="reg:quantileerror",
+            quantile_alpha=0.75,
+            **quantile_params,
+        )
+
+        self.margin_lower = xgb.XGBRegressor(
+            objective="reg:quantileerror",
+            quantile_alpha=0.25,
+            **quantile_params,
+        )
+
+        # Total prediction
+        self.total_model = xgb.XGBRegressor(**quantile_params)
+
+        self.feature_engineer = FeatureEngineer()
+        self.is_fitted = False
+
+    def fit(
+        self,
+        games_df: pd.DataFrame,
+        margins: pd.Series,
+        totals: pd.Series,
+        eval_set: tuple | None = None,
+        early_stopping_rounds: int = 20,
+        verbose: bool = False,
+    ) -> dict[str, float]:
+        """Train XGBoost models on historical game data.
+
+        Args:
+            games_df: DataFrame with feature columns.
+            margins: Series of actual margins (team1_score - team2_score).
+            totals: Series of actual totals (team1_score + team2_score).
+            eval_set: Optional (X_val, y_margin_val, y_total_val) for early stopping.
+            early_stopping_rounds: Stop if no improvement for N rounds.
+            verbose: Print training progress.
+
+        Returns:
+            Dictionary with best scores for each model.
+
+        Raises:
+            ValueError: If feature columns are missing from games_df.
+        """
+        # Validate feature columns
+        missing_features = set(FeatureEngineer.FEATURE_NAMES) - set(games_df.columns)
+        if missing_features:
+            raise ValueError(
+                f"Missing required feature columns: {missing_features}. "
+                f"Expected: {FeatureEngineer.FEATURE_NAMES}"
+            )
+
+        # Train models (simple approach for Phase 1)
+        # Note: Early stopping will be added in Phase 3 during hyperparameter optimization
+        self.margin_model.fit(games_df, margins)
+        self.margin_upper.fit(games_df, margins)
+        self.margin_lower.fit(games_df, margins)
+        self.total_model.fit(games_df, totals)
+
+        self.is_fitted = True
+
+        # Return empty results dict (early stopping metrics will be added in Phase 3)
+        return {}
+
+    def predict_with_confidence(
+        self,
+        team1_stats: dict[str, Any],
+        team2_stats: dict[str, Any],
+        neutral_site: bool = True,
+        home_team1: bool = False,
+    ) -> PredictionResult:
+        """Predict game outcome with confidence intervals.
+
+        Args:
+            team1_stats: Team 1 KenPom statistics.
+            team2_stats: Team 2 KenPom statistics.
+            neutral_site: Whether game is at neutral site.
+            home_team1: If not neutral, whether team 1 is home team.
+
+        Returns:
+            PredictionResult with margin, total, scores, and confidence interval.
+
+        Raises:
+            ValueError: If model has not been fitted yet.
+        """
+        if not self.is_fitted:
+            raise ValueError(
+                "Model must be fitted before prediction. Call fit() first."
+            )
+
+        # Create features
+        features = self.feature_engineer.create_features(
+            team1_stats, team2_stats, neutral_site, home_team1
+        )
+        feature_array = pd.DataFrame([features])
+
+        # Predict margin and bounds
+        predicted_margin = float(self.margin_model.predict(feature_array)[0])
+        upper_margin = float(self.margin_upper.predict(feature_array)[0])
+        lower_margin = float(self.margin_lower.predict(feature_array)[0])
+
+        # Ensure confidence interval is properly ordered (handle quantile crossing)
+        if lower_margin > upper_margin:
+            lower_margin, upper_margin = upper_margin, lower_margin
+
+        # Apply tempo-based confidence adjustment
+        # Slow games have higher variance (fewer possessions = more randomness)
+        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]) and all(
+            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]
+        ):
+            from .tempo_analysis import TempoMatchupAnalyzer
+
+            tempo_analyzer = TempoMatchupAnalyzer()
+            tempo_analysis = tempo_analyzer.analyze_pace_matchup(
+                team1_stats, team2_stats
+            )
+
+            # Adjust confidence interval width based on tempo
+            base_interval_width = upper_margin - lower_margin
+            adjusted_width = base_interval_width * tempo_analysis.confidence_adjustment
+
+            # Recalculate bounds
+            lower_margin = predicted_margin - (adjusted_width / 2)
+            upper_margin = predicted_margin + (adjusted_width / 2)
+
+        # Predict total
+        predicted_total = float(self.total_model.predict(feature_array)[0])
+
+        # Calculate team scores
+        team1_score = (predicted_total + predicted_margin) / 2
+        team2_score = (predicted_total - predicted_margin) / 2
+
+        # Estimate win probability (assuming normal distribution)
+        # IQR (interquartile range) to standard deviation conversion: σ ≈ IQR / 1.35
+        margin_std = max((upper_margin - lower_margin) / 1.35, 1.0)
+        z_score = predicted_margin / margin_std
+        # Sigmoid approximation: Φ(z) ≈ 0.5 * (1 + tanh(z/2))
+        win_prob = 0.5 * (1.0 + float(np.tanh(z_score / 2)))
+
+        return PredictionResult(
+            predicted_margin=round(predicted_margin, 1),
+            predicted_total=round(predicted_total, 1),
+            confidence_interval=(round(lower_margin, 1), round(upper_margin, 1)),
+            team1_score=round(team1_score, 1),
+            team2_score=round(team2_score, 1),
+            team1_win_prob=round(win_prob, 3),
+            confidence_level=0.5,
+        )
+
+    def predict_with_injuries(
+        self,
+        team1_stats: dict[str, Any],
+        team2_stats: dict[str, Any],
+        team1_injuries: list[Any] | None = None,
+        team2_injuries: list[Any] | None = None,
+        neutral_site: bool = True,
+        home_team1: bool = False,
+    ) -> PredictionResult:
+        """Predict game outcome with injury adjustments.
+
+        This method adjusts team ratings for injured players before making
+        predictions. Maintains same interface as GamePredictor.
+
+        Args:
+            team1_stats: Team 1 KenPom statistics
+            team2_stats: Team 2 KenPom statistics
+            team1_injuries: List of InjuryImpact objects for team 1
+            team2_injuries: List of InjuryImpact objects for team 2
+            neutral_site: Whether game is at neutral site
+            home_team1: If not neutral, whether team 1 is home team
+
+        Returns:
+            PredictionResult with injury-adjusted predictions
+        """
+        # Copy stats to avoid modifying originals
+        team1_adjusted = team1_stats.copy()
+        team2_adjusted = team2_stats.copy()
+
+        # Apply injury adjustments to team 1
+        if team1_injuries:
+            for injury in team1_injuries:
+                team1_adjusted["AdjEM"] = injury.adjusted_adj_em
+                team1_adjusted["AdjOE"] = injury.adjusted_adj_oe
+                team1_adjusted["AdjDE"] = injury.adjusted_adj_de
+
+        # Apply injury adjustments to team 2
+        if team2_injuries:
+            for injury in team2_injuries:
+                team2_adjusted["AdjEM"] = injury.adjusted_adj_em
+                team2_adjusted["AdjOE"] = injury.adjusted_adj_oe
+                team2_adjusted["AdjDE"] = injury.adjusted_adj_de
+
+        # Make prediction with adjusted stats
+        return self.predict_with_confidence(
+            team1_adjusted, team2_adjusted, neutral_site, home_team1
+        )
+
+    def get_feature_importance(
+        self, importance_type: str = "gain", top_n: int = 15
+    ) -> pd.DataFrame:
+        """Get feature importance from trained model.
+
+        XGBoost provides three types of feature importance:
+        - 'weight': Number of times a feature is used for splits
+        - 'gain': Average gain (loss reduction) when using this feature
+        - 'cover': Average number of samples affected by splits on this feature
+
+        Args:
+            importance_type: Type of importance ('weight', 'gain', or 'cover')
+            top_n: Number of top features to return
+
+        Returns:
+            DataFrame with feature names and importance scores, sorted by importance
+
+        Raises:
+            ValueError: If model has not been fitted yet or invalid importance_type
+
+        Example:
+            >>> predictor.fit(games_df, margins, totals)
+            >>> importance = predictor.get_feature_importance(importance_type='gain')
+            >>> print(importance.head(10))
+        """
+        if not self.is_fitted:
+            raise ValueError("Model must be fitted before getting importance")
+
+        if importance_type not in ["weight", "gain", "cover"]:
+            raise ValueError(
+                f"Invalid importance_type: {importance_type}. "
+                "Must be 'weight', 'gain', or 'cover'"
+            )
+
+        # Get importance dictionary from XGBoost model
+        importance = self.margin_model.get_booster().get_score(
+            importance_type=importance_type
+        )
+
+        # Convert to DataFrame
+        df = pd.DataFrame(
+            [{"feature": k, "importance": v} for k, v in importance.items()]
+        )
+
+        # Sort and return top N
+        return df.sort_values("importance", ascending=False).head(top_n)
 
 
 class BacktestingFramework:
