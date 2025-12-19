@@ -234,16 +234,16 @@ class KenPomService:
             # Validate responses
             sanitized = self.validator.sanitize_response(data)
 
-            # Store in database
+            # Update teams table FIRST (ratings_snapshots has FK to teams)
+            self.repository.upsert_teams(sanitized)
+
+            # Store ratings in database
             snapshot_date = snapshot_date or date.today()
             count = self.repository.save_ratings_snapshot(
                 snapshot_date=snapshot_date,
                 season=year,
                 ratings=sanitized,
             )
-
-            # Update teams table
-            self.repository.upsert_teams(sanitized)
 
             # Record sync
             self.repository.db.record_sync(
@@ -365,7 +365,7 @@ class KenPomService:
                 today = date.today()
                 year = today.year if today.month >= 11 else today.year
 
-            response = self.api.get_pointdist(year=year)
+            response = self.api.get_point_distribution(year=year)
             data = list(response.data)
 
             snapshot_date = snapshot_date or date.today()

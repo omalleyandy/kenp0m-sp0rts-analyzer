@@ -418,6 +418,13 @@ def save_model(
     margin_path = models_dir / f"margin_model_{season}_{model_type}.json"
     predictor.margin_model.get_booster().save_model(str(margin_path))
 
+    # Save quantile models for confidence intervals
+    margin_upper_path = models_dir / f"margin_upper_{season}_{model_type}.json"
+    predictor.margin_upper.get_booster().save_model(str(margin_upper_path))
+
+    margin_lower_path = models_dir / f"margin_lower_{season}_{model_type}.json"
+    predictor.margin_lower.get_booster().save_model(str(margin_lower_path))
+
     # Save total model
     total_path = models_dir / f"total_model_{season}_{model_type}.json"
     predictor.total_model.get_booster().save_model(str(total_path))
@@ -432,6 +439,10 @@ def save_model(
             if enhanced
             else len(FeatureEngineer.FEATURE_NAMES)
         ),
+        "quantile_models": {
+            "upper_quantile": 0.75,
+            "lower_quantile": 0.25,
+        },
     }
 
     metadata_path = models_dir / f"metadata_{season}_{model_type}.json"
@@ -440,6 +451,8 @@ def save_model(
 
     print(f"\n  Model saved to {models_dir}/")
     print(f"    - {margin_path.name}")
+    print(f"    - {margin_upper_path.name}")
+    print(f"    - {margin_lower_path.name}")
     print(f"    - {total_path.name}")
     print(f"    - {metadata_path.name}")
 

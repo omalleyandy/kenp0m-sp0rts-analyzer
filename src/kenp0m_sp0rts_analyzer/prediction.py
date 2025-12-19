@@ -938,10 +938,28 @@ class XGBoostGamePredictor:
         if not total_path.exists():
             raise FileNotFoundError(f"Total model not found: {total_path}")
 
-        # Load models into booster objects
+        # Infer quantile model paths
+        margin_upper_path = margin_path.parent / margin_path.name.replace(
+            "margin_model", "margin_upper"
+        )
+        margin_lower_path = margin_path.parent / margin_path.name.replace(
+            "margin_model", "margin_lower"
+        )
+
+        # Validate quantile model files exist
+        if not margin_upper_path.exists():
+            raise FileNotFoundError(
+                f"Upper quantile model not found: {margin_upper_path}"
+            )
+        if not margin_lower_path.exists():
+            raise FileNotFoundError(
+                f"Lower quantile model not found: {margin_lower_path}"
+            )
+
+        # Load models into booster objects (each from separate file)
         self.margin_model.get_booster().load_model(str(margin_path))
-        self.margin_upper.get_booster().load_model(str(margin_path))  # Use same model
-        self.margin_lower.get_booster().load_model(str(margin_path))  # Use same model
+        self.margin_upper.get_booster().load_model(str(margin_upper_path))
+        self.margin_lower.get_booster().load_model(str(margin_lower_path))
         self.total_model.get_booster().load_model(str(total_path))
 
         self.is_fitted = True

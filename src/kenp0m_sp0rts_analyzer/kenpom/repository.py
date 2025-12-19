@@ -58,6 +58,14 @@ class KenPomRepository:
         count = 0
         with self.db.transaction() as conn:
             for team in teams:
+                # Generate team_id from RankAdjEM if not provided
+                # API doesn't return TeamID, so we use rank as stable identifier
+                team_id = team.get("team_id") or team.get("TeamID") or team.get("RankAdjEM")
+
+                if team_id is None:
+                    logger.warning(f"Skipping team without ID: {team.get('TeamName')}")
+                    continue
+
                 conn.execute(
                     """
                     INSERT INTO teams (team_id, team_name, conference, coach, arena)
@@ -70,7 +78,7 @@ class KenPomRepository:
                         updated_at = CURRENT_TIMESTAMP
                     """,
                     (
-                        team.get("team_id") or team.get("TeamID"),
+                        team_id,
                         team.get("team_name") or team.get("TeamName"),
                         team.get("conference") or team.get("ConfShort"),
                         team.get("coach") or team.get("Coach"),
@@ -178,6 +186,17 @@ class KenPomRepository:
                 # Map both API and internal field names
                 team_id = rating.get("team_id") or rating.get("TeamID")
                 team_name = rating.get("team_name") or rating.get("TeamName")
+
+                # If team_id not in response, look it up by name
+                if not team_id and team_name:
+                    team = self.get_team_by_name(team_name)
+                    if team:
+                        team_id = team.team_id
+                    else:
+                        logger.warning(
+                            f"Team '{team_name}' not found in database. Skipping."
+                        )
+                        continue
 
                 conn.execute(
                     """
@@ -396,6 +415,12 @@ class KenPomRepository:
             for record in data:
                 team_id = record.get("team_id") or record.get("TeamID")
 
+                # If no team_id, look up by team name
+                if not team_id and record.get("TeamName"):
+                    team = self.get_team_by_name(record["TeamName"])
+                    if team:
+                        team_id = team.team_id
+
                 conn.execute(
                     """
                     INSERT INTO four_factors (
@@ -418,22 +443,22 @@ class KenPomRepository:
                     (
                         snapshot_date,
                         team_id,
-                        record.get("efg_pct_off") or record.get("eFG_Off"),
-                        record.get("to_pct_off") or record.get("TO_Off"),
-                        record.get("or_pct_off") or record.get("OR_Off"),
-                        record.get("ft_rate_off") or record.get("FTR_Off"),
-                        record.get("efg_pct_def") or record.get("eFG_Def"),
-                        record.get("to_pct_def") or record.get("TO_Def"),
-                        record.get("or_pct_def") or record.get("OR_Def"),
-                        record.get("ft_rate_def") or record.get("FTR_Def"),
-                        record.get("rank_efg_off"),
-                        record.get("rank_efg_def"),
-                        record.get("rank_to_off"),
-                        record.get("rank_to_def"),
-                        record.get("rank_or_off"),
-                        record.get("rank_or_def"),
-                        record.get("rank_ft_rate_off"),
-                        record.get("rank_ft_rate_def"),
+                        record.get("efg_pct_off") or record.get("eFG_Pct"),
+                        record.get("to_pct_off") or record.get("TO_Pct"),
+                        record.get("or_pct_off") or record.get("OR_Pct"),
+                        record.get("ft_rate_off") or record.get("FT_Rate"),
+                        record.get("efg_pct_def") or record.get("DeFG_Pct"),
+                        record.get("to_pct_def") or record.get("DTO_Pct"),
+                        record.get("or_pct_def") or record.get("DOR_Pct"),
+                        record.get("ft_rate_def") or record.get("DFT_Rate"),
+                        record.get("rank_efg_off") or record.get("RankeFG_Pct"),
+                        record.get("rank_efg_def") or record.get("RankDeFG_Pct"),
+                        record.get("rank_to_off") or record.get("RankTO_Pct"),
+                        record.get("rank_to_def") or record.get("RankDTO_Pct"),
+                        record.get("rank_or_off") or record.get("RankOR_Pct"),
+                        record.get("rank_or_def") or record.get("RankDOR_Pct"),
+                        record.get("rank_ft_rate_off") or record.get("RankFT_Rate"),
+                        record.get("rank_ft_rate_def") or record.get("RankDFT_Rate"),
                     ),
                 )
                 count += 1
@@ -498,6 +523,12 @@ class KenPomRepository:
             for record in data:
                 team_id = record.get("team_id") or record.get("TeamID")
 
+                # If no team_id, look up by team name
+                if not team_id and record.get("TeamName"):
+                    team = self.get_team_by_name(record["TeamName"])
+                    if team:
+                        team_id = team.team_id
+
                 conn.execute(
                     """
                     INSERT INTO point_distribution (
@@ -517,15 +548,15 @@ class KenPomRepository:
                     (
                         snapshot_date,
                         team_id,
-                        record.get("ft_pct") or record.get("FT_Pct"),
-                        record.get("two_pct") or record.get("TwoP_Pct"),
-                        record.get("three_pct") or record.get("ThreeP_Pct"),
-                        record.get("ft_pct_def") or record.get("FT_Pct_Def", 0),
-                        record.get("two_pct_def") or record.get("TwoP_Pct_Def", 0),
-                        record.get("three_pct_def") or record.get("ThreeP_Pct_Def", 0),
-                        record.get("rank_three_pct"),
-                        record.get("rank_two_pct"),
-                        record.get("rank_ft_pct"),
+                        record.get("ft_pct") or record.get("OffFt"),
+                        record.get("two_pct") or record.get("OffFg2"),
+                        record.get("three_pct") or record.get("OffFg3"),
+                        record.get("ft_pct_def") or record.get("DefFt"),
+                        record.get("two_pct_def") or record.get("DefFg2"),
+                        record.get("three_pct_def") or record.get("DefFg3"),
+                        record.get("rank_three_pct") or record.get("RankOffFg3"),
+                        record.get("rank_two_pct") or record.get("RankOffFg2"),
+                        record.get("rank_ft_pct") or record.get("RankOffFt"),
                     ),
                 )
                 count += 1
