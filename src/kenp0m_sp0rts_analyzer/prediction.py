@@ -170,18 +170,9 @@ class FeatureEngineer:
         features["apl_off_mismatch_team1"] = team1_apl_off - team2_apl_def
         features["apl_off_mismatch_team2"] = team2_apl_off - team1_apl_def
 
-        # Tempo control factor using tempo_analysis module
-        # Only calculate if APL data is available
-        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjEM"]) and all(
-            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjEM"]
-        ):
-            from .tempo_analysis import TempoMatchupAnalyzer
-
-            analyzer = TempoMatchupAnalyzer()
-            control = analyzer.calculate_tempo_control(team1_stats, team2_stats)
-            features["tempo_control_factor"] = control
-        else:
-            features["tempo_control_factor"] = 0.0
+        # Tempo control factor (simplified - advanced tempo analysis removed)
+        # TODO: Restore tempo_analysis module for advanced tempo control features
+        features["tempo_control_factor"] = 0.0
 
         return features
 
@@ -502,27 +493,9 @@ class GamePredictor:
         if lower_margin > upper_margin:
             lower_margin, upper_margin = upper_margin, lower_margin
 
-        # Apply tempo-based confidence adjustment
-        # Slow games have higher variance (fewer possessions = more randomness)
-        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]) and all(
-            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]
-        ):
-            from .tempo_analysis import TempoMatchupAnalyzer
-
-            tempo_analyzer = TempoMatchupAnalyzer()
-            tempo_analysis = tempo_analyzer.analyze_pace_matchup(
-                team1_stats, team2_stats
-            )
-
-            # Adjust confidence interval width based on tempo
-            # confidence_adjustment > 1 means wider CI (slower game)
-            # confidence_adjustment < 1 means narrower CI (faster game)
-            base_interval_width = upper_margin - lower_margin
-            adjusted_width = base_interval_width * tempo_analysis.confidence_adjustment
-
-            # Recalculate bounds
-            lower_margin = predicted_margin - (adjusted_width / 2)
-            upper_margin = predicted_margin + (adjusted_width / 2)
+        # Note: Advanced tempo-based confidence adjustment removed
+        # (requires tempo_analysis module restoration)
+        # TODO: Add back tempo confidence adjustment when tempo_analysis is restored
 
         # Predict total
         predicted_total = float(self.total_model.predict(feature_array)[0])
@@ -805,25 +778,9 @@ class XGBoostGamePredictor:
         if lower_margin > upper_margin:
             lower_margin, upper_margin = upper_margin, lower_margin
 
-        # Apply tempo-based confidence adjustment
-        # Slow games have higher variance (fewer possessions = more randomness)
-        if all(k in team1_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]) and all(
-            k in team2_stats for k in ["APL_Off", "APL_Def", "AdjTempo"]
-        ):
-            from .tempo_analysis import TempoMatchupAnalyzer
-
-            tempo_analyzer = TempoMatchupAnalyzer()
-            tempo_analysis = tempo_analyzer.analyze_pace_matchup(
-                team1_stats, team2_stats
-            )
-
-            # Adjust confidence interval width based on tempo
-            base_interval_width = upper_margin - lower_margin
-            adjusted_width = base_interval_width * tempo_analysis.confidence_adjustment
-
-            # Recalculate bounds
-            lower_margin = predicted_margin - (adjusted_width / 2)
-            upper_margin = predicted_margin + (adjusted_width / 2)
+        # Note: Advanced tempo-based confidence adjustment removed
+        # (requires tempo_analysis module restoration)
+        # TODO: Add back tempo confidence adjustment when tempo_analysis is restored
 
         # Predict total
         predicted_total = float(self.total_model.predict(feature_array)[0])

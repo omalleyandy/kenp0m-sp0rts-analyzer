@@ -748,294 +748,42 @@ async def _handle_get_game_predictions(arguments: dict[str, Any]) -> str:
 
 async def _handle_analyze_tempo_matchup(arguments: dict[str, Any]) -> str:
     """Analyze tempo and pace matchup between two teams."""
-    team1 = arguments.get("team1")
-    team2 = arguments.get("team2")
-
-    if not team1 or not team2:
-        return "Error: Both 'team1' and 'team2' parameters are required"
-
-    season = arguments.get("season", get_current_season())
-
-    api = _get_api_client()
-    if api:
-        try:
-            from .tempo_analysis import TempoMatchupAnalyzer
-
-            analyzer = TempoMatchupAnalyzer(api)
-
-            # Get team stats
-            team1_stats = api.get_team_by_name(team1, season)
-            team2_stats = api.get_team_by_name(team2, season)
-
-            if not team1_stats:
-                return f"Error: Team '{team1}' not found"
-            if not team2_stats:
-                return f"Error: Team '{team2}' not found"
-
-            # Analyze tempo matchup
-            analysis = analyzer.analyze_pace_matchup(team1_stats, team2_stats)
-
-            # Format comprehensive report
-            report = [
-                f"# Tempo/Pace Matchup: {team1} vs {team2}",
-                "=" * 70,
-                "",
-                "## Team Profiles",
-                "",
-                f"### {analysis.team1_profile.team_name}",
-                f"- Adjusted Tempo: {analysis.team1_profile.adj_tempo} (Rank: {analysis.team1_profile.rank_tempo})",
-                f"- Pace Style: {analysis.team1_profile.pace_style}",
-                f"- Offensive Style: {analysis.team1_profile.off_style} (APL: {analysis.team1_profile.apl_off}s)",
-                f"- Defensive Style: {analysis.team1_profile.def_style} (APL: {analysis.team1_profile.apl_def}s)",
-                "",
-                f"### {analysis.team2_profile.team_name}",
-                f"- Adjusted Tempo: {analysis.team2_profile.adj_tempo} (Rank: {analysis.team2_profile.rank_tempo})",
-                f"- Pace Style: {analysis.team2_profile.pace_style}",
-                f"- Offensive Style: {analysis.team2_profile.off_style} (APL: {analysis.team2_profile.apl_off}s)",
-                f"- Defensive Style: {analysis.team2_profile.def_style} (APL: {analysis.team2_profile.apl_def}s)",
-                "",
-                "## Matchup Analysis",
-                "",
-                f"- **Tempo Differential**: {analysis.tempo_differential:+.1f} possessions ({team1} {'faster' if analysis.tempo_differential > 0 else 'slower'})",
-                f"- **Expected Game Pace**: {analysis.expected_possessions} possessions",
-                f"- **Style Mismatch Score**: {analysis.style_mismatch_score}/10",
-                f"- **Pace Control**: {analysis.pace_advantage}",
-                f"- **Tempo Control Factor**: {analysis.tempo_control_factor:+.2f}",
-                "",
-                "## APL Matchup Insights",
-                "",
-                f"### {team1} Offensive Disruption: {analysis.offensive_disruption_team1}",
-                f"  - {team1} offense ({analysis.team1_profile.apl_off}s) vs {team2} defense ({analysis.team2_profile.apl_def}s)",
-                f"  - Mismatch: {analysis.apl_off_mismatch_team1:+.1f} seconds",
-                "",
-                f"### {team2} Offensive Disruption: {analysis.offensive_disruption_team2}",
-                f"  - {team2} offense ({analysis.team2_profile.apl_off}s) vs {team1} defense ({analysis.team1_profile.apl_def}s)",
-                f"  - Mismatch: {analysis.apl_off_mismatch_team2:+.1f} seconds",
-                "",
-                "## Impact Estimates",
-                "",
-                f"- **Tempo Impact on Margin**: {analysis.tempo_impact_on_margin:+.2f} points",
-                f"- **Confidence Adjustment**: {analysis.confidence_adjustment:.3f}x variance",
-                f"- **Optimal Pace ({team1})**: {analysis.optimal_pace_team1} possessions",
-                f"- **Optimal Pace ({team2})**: {analysis.optimal_pace_team2} possessions",
-                "",
-                "## Pace Scenario Analysis",
-                "",
-                f"- **Fast Pace Favors**: {analysis.fast_pace_favors}",
-                f"- **Slow Pace Favors**: {analysis.slow_pace_favors}",
-            ]
-
-            return "\n".join(report)
-        except Exception as e:
-            logger.warning(f"Tempo analysis failed: {e}")
-            return f"Error analyzing tempo matchup: {e}"
-
-    return "Error: Tempo analysis requires API authentication (KENPOM_API_KEY)."
+    # TODO: Restore tempo_analysis module for advanced tempo matchup analysis
+    return (
+        "Feature temporarily unavailable: Tempo matchup analysis requires the "
+        "tempo_analysis module which was removed during refactoring. "
+        "This feature will be restored in a future update."
+    )
 
 
 async def _handle_get_player_depth_chart(arguments: dict[str, Any]) -> str:
     """Get team depth chart with player valuations."""
-    team = arguments.get("team")
-    if not team:
-        return "Error: 'team' parameter is required"
-
-    season = arguments.get("season", get_current_season())
-
-    # Need both API for team stats and scraper for player stats
-    api = _get_api_client()
-    client = _get_scraper_client()
-
-    if not api or not client:
-        return "Error: Player depth chart requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
-
-    try:
-        from .player_impact import PlayerImpactModel
-
-        # Get team stats from API
-        team_data = api.get_team_by_name(team, season)
-        if not team_data:
-            return f"Error: Team '{team}' not found"
-
-        # Get player stats from scraper
-        player_stats_df = client.get_playerstats(season=season)
-
-        # Create depth chart
-        model = PlayerImpactModel()
-        depth_chart = model.get_team_depth_chart(team, player_stats_df, team_data)
-
-        if depth_chart.empty:
-            return f"Error: No players found for {team}"
-
-        # Format as text
-        report = [
-            f"# {team} Depth Chart ({season} Season)",
-            "=" * 70,
-            "",
-            f"Players ranked by estimated value (AdjEM points contributed):",
-            "",
-        ]
-
-        for idx, row in depth_chart.iterrows():
-            report.append(
-                f"{idx + 1}. {row['Player']} ({row['yr']}, {row['ht']})"
-            )
-            report.append(f"   Poss%: {row['Poss%']:.1f}% | ORtg: {row['ORtg']:.1f}")
-            report.append(
-                f"   Value: {row['EstimatedValue']:+.2f} AdjEM pts | VOR: {row['VOR']:+.2f}"
-            )
-            report.append("")
-
-        return "\n".join(report)
-
-    except Exception as e:
-        logger.warning(f"Depth chart generation failed: {e}")
-        return f"Error generating depth chart: {e}"
+    # TODO: Restore player_impact module for player depth chart analysis
+    return (
+        "Feature temporarily unavailable: Player depth chart requires the "
+        "player_impact module which was removed during refactoring. "
+        "This feature will be restored in a future update."
+    )
 
 
 async def _handle_calculate_player_value(arguments: dict[str, Any]) -> str:
     """Calculate individual player's value."""
-    player = arguments.get("player")
-    team = arguments.get("team")
-
-    if not player or not team:
-        return "Error: Both 'player' and 'team' parameters are required"
-
-    season = arguments.get("season", get_current_season())
-
-    # Need both API and scraper
-    api = _get_api_client()
-    client = _get_scraper_client()
-
-    if not api or not client:
-        return "Error: Player value calculation requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
-
-    try:
-        from .player_impact import PlayerImpactModel
-
-        # Get team stats
-        team_data = api.get_team_by_name(team, season)
-        if not team_data:
-            return f"Error: Team '{team}' not found"
-
-        # Get player stats
-        player_stats_df = client.get_playerstats(season=season)
-        player_row = player_stats_df[
-            (player_stats_df["Team"] == team) & (player_stats_df["Player"] == player)
-        ]
-
-        if player_row.empty:
-            return f"Error: Player '{player}' not found on {team}"
-
-        # Calculate value
-        model = PlayerImpactModel()
-        value = model.calculate_player_value(
-            player_row.iloc[0].to_dict(), team_data
-        )
-
-        # Format report
-        report = [
-            f"# Player Value: {value.player_name}",
-            f"**Team**: {value.team} ({season})",
-            "=" * 70,
-            "",
-            "## Usage Metrics",
-            f"- Possession %: {value.possession_pct:.1f}%",
-            f"- Estimated Minutes %: {value.minutes_pct:.1f}%",
-            "",
-            "## Efficiency Metrics",
-            f"- Offensive Rating: {value.offensive_rating:.1f}",
-            f"- Effective FG%: {value.effective_fg_pct:.1f}%",
-            f"- True Shooting%: {value.true_shooting_pct:.1f}%",
-            "",
-            "## Estimated Value",
-            f"- **Total Value**: {value.estimated_value:+.2f} AdjEM points",
-            f"- Offensive Contribution: {value.offensive_contribution:+.2f} points",
-            f"- Defensive Contribution: {value.defensive_contribution:+.2f} points",
-            f"- Replacement Level: {value.replacement_level:+.2f} points",
-            f"- **Value Over Replacement**: {value.value_over_replacement:+.2f} points",
-        ]
-
-        return "\n".join(report)
-
-    except Exception as e:
-        logger.warning(f"Player value calculation failed: {e}")
-        return f"Error calculating player value: {e}"
+    # TODO: Restore player_impact module for player value calculations
+    return (
+        "Feature temporarily unavailable: Player value calculation requires the "
+        "player_impact module which was removed during refactoring. "
+        "This feature will be restored in a future update."
+    )
 
 
 async def _handle_estimate_injury_impact(arguments: dict[str, Any]) -> str:
     """Estimate impact of player injury."""
-    player = arguments.get("player")
-    team = arguments.get("team")
-
-    if not player or not team:
-        return "Error: Both 'player' and 'team' parameters are required"
-
-    injury_severity = arguments.get("injury_severity", "out")
-    season = arguments.get("season", get_current_season())
-
-    # Need both API and scraper
-    api = _get_api_client()
-    client = _get_scraper_client()
-
-    if not api or not client:
-        return "Error: Injury impact estimation requires both API key (KENPOM_API_KEY) and scraper credentials (KENPOM_EMAIL/KENPOM_PASSWORD)."
-
-    try:
-        from .player_impact import PlayerImpactModel
-
-        # Get team stats
-        team_data = api.get_team_by_name(team, season)
-        if not team_data:
-            return f"Error: Team '{team}' not found"
-
-        # Get player stats
-        player_stats_df = client.get_playerstats(season=season)
-        player_row = player_stats_df[
-            (player_stats_df["Team"] == team) & (player_stats_df["Player"] == player)
-        ]
-
-        if player_row.empty:
-            return f"Error: Player '{player}' not found on {team}"
-
-        # Calculate value and injury impact
-        model = PlayerImpactModel()
-        value = model.calculate_player_value(
-            player_row.iloc[0].to_dict(), team_data
-        )
-        injury = model.estimate_injury_impact(value, team_data, injury_severity)
-
-        # Format report
-        severity_label = injury_severity.upper()
-        report = [
-            f"# Injury Impact: {value.player_name} ({severity_label})",
-            f"**Team**: {value.team} ({season})",
-            "=" * 70,
-            "",
-            "## Player Value",
-            f"- Estimated Value: {value.estimated_value:+.2f} AdjEM points",
-            f"- Value Over Replacement: {value.value_over_replacement:+.2f} points",
-            "",
-            "## Injury Impact",
-            f"- **Severity**: {injury.severity}",
-            f"- **Estimated Loss**: {injury.estimated_adj_em_loss:.2f} AdjEM points",
-            f"- **Confidence Interval**: [{injury.confidence_interval[0]:.1f}, {injury.confidence_interval[1]:.1f}]",
-            "",
-            "## Adjusted Team Ratings",
-            f"- Baseline AdjEM: {injury.team_adj_em_baseline:.2f}",
-            f"- **Adjusted AdjEM**: {injury.adjusted_adj_em:.2f} ({injury.adjusted_adj_em - injury.team_adj_em_baseline:+.2f})",
-            f"- Adjusted AdjOE: {injury.adjusted_adj_oe:.2f}",
-            f"- Adjusted AdjDE: {injury.adjusted_adj_de:.2f}",
-            "",
-            f"**Note**: '{injury_severity}' severity means {{'out': '100%', 'doubtful': '75%', 'questionable': '50%'}}[injury_severity] of value lost to replacement.",
-        ]
-
-        return "\n".join(report)
-
-    except ValueError as e:
-        return f"Error: {e}"
-    except Exception as e:
-        logger.warning(f"Injury impact estimation failed: {e}")
-        return f"Error estimating injury impact: {e}"
+    # TODO: Restore player_impact module for injury impact estimation
+    return (
+        "Feature temporarily unavailable: Injury impact estimation requires the "
+        "player_impact module which was removed during refactoring. "
+        "This feature will be restored in a future update."
+    )
 
 
 # ==================== Server Entry Point ====================

@@ -29,7 +29,7 @@ from .kenpom import (
 
 # XGBoost prediction
 from .prediction import (
-    XGBoostPredictor,
+    XGBoostGamePredictor,
     XGBoostFeatureEngineer,
     PredictionResult,
 )
@@ -75,7 +75,7 @@ from .tournament_simulator import (
 from .report_generator import MatchupReportGenerator, MatchupReport
 
 # Luck regression
-from .luck_regression import LuckRegressor
+from .luck_regression import LuckRegressionAnalyzer
 
 # Legacy client
 from .client import KenPomClient
@@ -113,7 +113,7 @@ __all__ = [
     "KenPomError",
     "TeamNotFoundError",
     # XGBoost
-    "XGBoostPredictor",
+    "XGBoostGamePredictor",
     "XGBoostFeatureEngineer",
     "PredictionResult",
     # API
@@ -144,7 +144,7 @@ __all__ = [
     "MatchupReportGenerator",
     "MatchupReport",
     # Luck
-    "LuckRegressor",
+    "LuckRegressionAnalyzer",
     # Legacy
     "KenPomClient",
     # Models

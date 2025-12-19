@@ -146,13 +146,7 @@ The system focuses on **Closing Line Value (CLV)** as the gold standard for long
 
 See `docs/` for detailed documentation:
 
-- `KENPOM_API.md` - API client documentation
-- `KENPOM_MODULE_ARCHITECTURE.md` - System architecture
-- `KENPOM_ANALYTICS_GUIDE.md` - Analytics methodology
-- `EDGE_VALIDATION_GUARDRAILS.md` - Edge validation rules
-- `MATCHUP_ANALYSIS_FRAMEWORK.md` - Matchup analysis
-- `SETUP_GUIDE.md` - Installation guide
-- `QUICK_START_PREDICTIONS.md` - Prediction quickstart
+- `KENPOM_MODULE_ARCHITECTURE.md` - System architecture and design
 
 ## Configuration
 

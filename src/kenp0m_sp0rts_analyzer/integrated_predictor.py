@@ -37,7 +37,7 @@ from .kenpom import (
     AccuracyReport,
 )
 from .prediction import (
-    XGBoostPredictor,
+    XGBoostGamePredictor,
     XGBoostFeatureEngineer,
     PredictionResult,
 )
@@ -160,7 +160,7 @@ class IntegratedPredictor:
         self.use_enhanced_features = use_enhanced_features
 
         # Initialize XGBoost predictor
-        self.predictor = XGBoostPredictor()
+        self.predictor = XGBoostGamePredictor(use_enhanced_features=use_enhanced_features)
         self.feature_engineer = XGBoostFeatureEngineer()
 
         # Load model if path provided
