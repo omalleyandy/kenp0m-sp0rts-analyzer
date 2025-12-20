@@ -104,7 +104,7 @@ Database Schema
 ---------------
 Tables:
 - teams: Team information (id, name, conference, coach)
-- ratings_snapshots: Daily rating snapshots with UNIQUE(date, team_id)
+- ratings: Daily rating snapshots with UNIQUE(date, team_id)
 - four_factors: Dean Oliver's Four Factors data
 - point_distribution: Point source distribution (FT, 2P, 3P)
 - height_experience: Height and experience metrics
@@ -129,11 +129,21 @@ from .api import KenPomService
 # Data collection components
 from .archive_loader import ArchiveLoader
 from .batch_scheduler import BatchScheduler, DailyWorkflowResult, ScheduledTask
-from .realtime_monitor import ChangeEvent, ChangeType, RealtimeMonitor
 
 # Database layer
 from .database import DatabaseManager
-from .repository import KenPomRepository
+
+# Exceptions
+from .exceptions import (
+    ArchiveNotAvailableError,
+    ConfigurationError,
+    DatabaseError,
+    DataValidationError,
+    KenPomError,
+    RateLimitError,
+    SyncError,
+    TeamNotFoundError,
+)
 
 # Data models
 from .models import (
@@ -152,21 +162,11 @@ from .models import (
     Team,
     TeamRating,
 )
+from .realtime_monitor import ChangeEvent, ChangeType, RealtimeMonitor
+from .repository import KenPomRepository
 
 # Validation
-from .validators import DataValidator, ValidationResult, Anomaly
-
-# Exceptions
-from .exceptions import (
-    ArchiveNotAvailableError,
-    ConfigurationError,
-    DatabaseError,
-    DataValidationError,
-    KenPomError,
-    RateLimitError,
-    SyncError,
-    TeamNotFoundError,
-)
+from .validators import Anomaly, DataValidator, ValidationResult
 
 __version__ = "1.0.0"
 __author__ = "kenp0m-sp0rts-analyzer"

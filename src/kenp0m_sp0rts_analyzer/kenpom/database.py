@@ -7,10 +7,10 @@ migrations, and backup operations.
 import logging
 import shutil
 import sqlite3
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Generator
 
 from .exceptions import DatabaseError
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS teams (
 );
 
 -- Daily ratings snapshots
-CREATE TABLE IF NOT EXISTS ratings_snapshots (
+CREATE TABLE IF NOT EXISTS ratings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     snapshot_date DATE NOT NULL,
     season INTEGER NOT NULL,
@@ -276,9 +276,9 @@ CREATE TABLE IF NOT EXISTS sync_history (
 );
 
 -- Performance indexes
-CREATE INDEX IF NOT EXISTS idx_ratings_date ON ratings_snapshots(snapshot_date);
-CREATE INDEX IF NOT EXISTS idx_ratings_team ON ratings_snapshots(team_id);
-CREATE INDEX IF NOT EXISTS idx_ratings_season ON ratings_snapshots(season);
+CREATE INDEX IF NOT EXISTS idx_ratings_date ON ratings(snapshot_date);
+CREATE INDEX IF NOT EXISTS idx_ratings_team ON ratings(team_id);
+CREATE INDEX IF NOT EXISTS idx_ratings_season ON ratings(season);
 CREATE INDEX IF NOT EXISTS idx_ff_date ON four_factors(snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_ff_team ON four_factors(team_id);
 CREATE INDEX IF NOT EXISTS idx_pd_date ON point_distribution(snapshot_date);
@@ -437,7 +437,7 @@ class DatabaseManager:
 
         tables = [
             "teams",
-            "ratings_snapshots",
+            "ratings",
             "four_factors",
             "point_distribution",
             "height_experience",
@@ -458,7 +458,7 @@ class DatabaseManager:
                 """
                 SELECT MIN(snapshot_date) as min_date, 
                        MAX(snapshot_date) as max_date
-                FROM ratings_snapshots
+                FROM ratings
                 """
             )
             row = cursor.fetchone()
@@ -552,7 +552,7 @@ class DatabaseManager:
         """
         valid_tables = [
             "teams",
-            "ratings_snapshots",
+            "ratings",
             "four_factors",
             "point_distribution",
             "height_experience",
@@ -585,7 +585,7 @@ class DatabaseManager:
                 "height_experience",
                 "point_distribution",
                 "four_factors",
-                "ratings_snapshots",
+                "ratings",
                 "sync_history",
                 "teams",
             ]

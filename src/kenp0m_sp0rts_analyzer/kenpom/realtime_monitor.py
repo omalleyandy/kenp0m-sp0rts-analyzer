@@ -10,14 +10,13 @@ Use cases:
 """
 
 import logging
-import time
 import threading
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
-from .database import DatabaseManager
 from .exceptions import KenPomError
 from .models import RatingChange, TeamRating
 from .repository import KenPomRepository

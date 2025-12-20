@@ -9,8 +9,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Any
 
-from .exceptions import DataValidationError
-
 logger = logging.getLogger(__name__)
 
 
@@ -480,7 +478,7 @@ class DataValidator:
         Returns:
             Tuple of (is_fresh, message).
         """
-        from datetime import datetime, timedelta
+        from datetime import datetime
 
         if last_sync is None:
             return False, "No sync history found"

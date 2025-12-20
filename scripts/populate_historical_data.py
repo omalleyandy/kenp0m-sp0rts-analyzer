@@ -260,7 +260,7 @@ class HistoricalDataLoader:
         return total
 
     def populate_ratings(self, seasons: list[int]) -> int:
-        """Populate ratings_snapshots table for specified seasons.
+        """Populate ratings table for specified seasons.
 
         Note: This fetches current/end-of-season ratings. For daily snapshots,
         use the archive endpoint or batch_scheduler.
@@ -312,7 +312,7 @@ class HistoricalDataLoader:
 
                         conn.execute(
                             """
-                            INSERT INTO ratings_snapshots (
+                            INSERT INTO ratings (
                                 snapshot_date, season, team_id,
                                 team_name, conference,
                                 adj_em, adj_oe, adj_de, adj_tempo,

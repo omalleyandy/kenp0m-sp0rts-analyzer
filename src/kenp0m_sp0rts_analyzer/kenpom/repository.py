@@ -210,7 +210,7 @@ class KenPomRepository:
 
                 conn.execute(
                     """
-                    INSERT INTO ratings_snapshots (
+                    INSERT INTO ratings (
                         snapshot_date, season, team_id, team_name, conference,
                         adj_em, adj_oe, adj_de, adj_tempo,
                         luck, sos, soso, sosd, ncsos, pythag,
@@ -273,9 +273,9 @@ class KenPomRepository:
         with self.db.connection() as conn:
             cursor = conn.execute(
                 """
-                SELECT * FROM ratings_snapshots r
+                SELECT * FROM ratings r
                 WHERE snapshot_date = (
-                    SELECT MAX(snapshot_date) FROM ratings_snapshots
+                    SELECT MAX(snapshot_date) FROM ratings
                 )
                 ORDER BY rank_adj_em
                 """
@@ -294,7 +294,7 @@ class KenPomRepository:
         with self.db.connection() as conn:
             cursor = conn.execute(
                 """
-                SELECT * FROM ratings_snapshots
+                SELECT * FROM ratings
                 WHERE snapshot_date = ?
                 ORDER BY rank_adj_em
                 """,
@@ -320,7 +320,7 @@ class KenPomRepository:
             if snapshot_date:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots
+                    SELECT * FROM ratings
                     WHERE team_id = ? AND snapshot_date = ?
                     """,
                     (team_id, snapshot_date),
@@ -328,7 +328,7 @@ class KenPomRepository:
             else:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots
+                    SELECT * FROM ratings
                     WHERE team_id = ?
                     ORDER BY snapshot_date DESC
                     LIMIT 1
@@ -358,7 +358,7 @@ class KenPomRepository:
             if season:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots
+                    SELECT * FROM ratings
                     WHERE team_id = ? AND season = ?
                     ORDER BY snapshot_date DESC
                     """,
@@ -368,7 +368,7 @@ class KenPomRepository:
                 cutoff = date.today() - timedelta(days=days)
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots
+                    SELECT * FROM ratings
                     WHERE team_id = ? AND snapshot_date >= ?
                     ORDER BY snapshot_date DESC
                     """,
@@ -389,7 +389,7 @@ class KenPomRepository:
             if season:
                 cursor = conn.execute(
                     """
-                    SELECT DISTINCT snapshot_date FROM ratings_snapshots
+                    SELECT DISTINCT snapshot_date FROM ratings
                     WHERE season = ?
                     ORDER BY snapshot_date
                     """,
@@ -398,7 +398,7 @@ class KenPomRepository:
             else:
                 cursor = conn.execute(
                     """
-                    SELECT DISTINCT snapshot_date FROM ratings_snapshots
+                    SELECT DISTINCT snapshot_date FROM ratings
                     ORDER BY snapshot_date
                     """
                 )
@@ -1188,7 +1188,7 @@ class KenPomRepository:
             if snapshot_date:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots
+                    SELECT * FROM ratings
                     WHERE conference = ? AND snapshot_date = ?
                     ORDER BY rank_adj_em
                     """,
@@ -1197,10 +1197,10 @@ class KenPomRepository:
             else:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM ratings_snapshots r
+                    SELECT * FROM ratings r
                     WHERE conference = ?
                     AND snapshot_date = (
-                        SELECT MAX(snapshot_date) FROM ratings_snapshots
+                        SELECT MAX(snapshot_date) FROM ratings
                     )
                     ORDER BY rank_adj_em
                     """,

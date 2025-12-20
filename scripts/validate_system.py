@@ -26,9 +26,9 @@ from kenp0m_sp0rts_analyzer.kenpom import KenPomService
 
 def print_section(title: str) -> None:
     """Print section header."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"{title}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
 
 # -----------------------------------------------------------------------------
@@ -45,7 +45,9 @@ def validate_fanmatch_sync(service: KenPomService) -> bool:
         result = service.sync_fanmatch()
 
         if result.success and result.records_synced > 0:
-            print(f"[OK] FanMatch sync successful: {result.records_synced} predictions")
+            print(
+                f"[OK] FanMatch sync successful: {result.records_synced} predictions"
+            )
             return True
         elif result.success and result.records_synced == 0:
             print("[!] FanMatch sync succeeded but no predictions retrieved")
@@ -61,11 +63,15 @@ def validate_fanmatch_sync(service: KenPomService) -> bool:
 
         try:
             with service.repository.db.connection() as conn:
-                cursor = conn.execute("SELECT COUNT(*) FROM fanmatch_predictions")
+                cursor = conn.execute(
+                    "SELECT COUNT(*) FROM fanmatch_predictions"
+                )
                 count = cursor.fetchone()[0]
                 print(f"  Database table exists with {count} existing records")
                 if count > 0:
-                    print("[OK] FanMatch table functional (using existing data)")
+                    print(
+                        "[OK] FanMatch table functional (using existing data)"
+                    )
                     return True
                 else:
                     print("[!] FanMatch table empty (needs API sync)")
@@ -84,7 +90,9 @@ def validate_misc_stats_sync(service: KenPomService) -> bool:
         result = service.sync_misc_stats()
 
         if result.success and result.records_synced >= 300:
-            print(f"[OK] Misc Stats sync successful: {result.records_synced} teams")
+            print(
+                f"[OK] Misc Stats sync successful: {result.records_synced} teams"
+            )
             return True
         elif result.success and result.records_synced > 0:
             print(
@@ -106,10 +114,14 @@ def validate_misc_stats_sync(service: KenPomService) -> bool:
                 count = cursor.fetchone()[0]
                 print(f"  Database table exists with {count} existing records")
                 if count >= 300:
-                    print("[OK] Misc Stats table functional (using existing data)")
+                    print(
+                        "[OK] Misc Stats table functional (using existing data)"
+                    )
                     return True
                 else:
-                    print(f"[!] Misc Stats has {count} records (target: >=300)")
+                    print(
+                        f"[!] Misc Stats has {count} records (target: >=300)"
+                    )
                     return False
         except Exception as db_error:
             print(f"[X] Database error: {db_error}")
@@ -123,15 +135,15 @@ def validate_query_performance(service: KenPomService) -> bool:
     queries = [
         (
             "Latest ratings",
-            "SELECT * FROM ratings_snapshots ORDER BY snapshot_date DESC LIMIT 100",
+            "SELECT * FROM ratings ORDER BY snapshot_date DESC LIMIT 100",
         ),
         ("Team lookup", "SELECT * FROM teams WHERE team_name LIKE '%Duke%'"),
         (
             "Four factors join",
             """
-            SELECT r.*, f.* FROM ratings_snapshots r
+            SELECT r.*, f.* FROM ratings r
             JOIN four_factors f ON r.team_id = f.team_id
-            WHERE r.snapshot_date = (SELECT MAX(snapshot_date) FROM ratings_snapshots)
+            WHERE r.snapshot_date = (SELECT MAX(snapshot_date) FROM ratings)
             LIMIT 50
         """,
         ),
@@ -172,7 +184,9 @@ def validate_query_performance(service: KenPomService) -> bool:
     print("\nPerformance Summary:")
     print(f"  Queries tested: {len(results)}")
     print(f"  Passed (<100ms): {sum(1 for _, _, passed in results if passed)}")
-    print(f"  Failed (>=100ms): {sum(1 for _, _, passed in results if not passed)}")
+    print(
+        f"  Failed (>=100ms): {sum(1 for _, _, passed in results if not passed)}"
+    )
 
     return all_passed
 
@@ -288,7 +302,9 @@ def validate_ensemble_functionality(predictor: IntegratedPredictor) -> bool:
         if margin_diff > 0:
             print("  (Ensemble and XGBoost produced different predictions)")
         else:
-            print("  [!] Predictions identical (FanMatch may not be available)")
+            print(
+                "  [!] Predictions identical (FanMatch may not be available)"
+            )
 
         return True
 
@@ -380,7 +396,9 @@ def validate_end_to_end_pipeline(predictor: IntegratedPredictor) -> bool:
             )
 
             if result.edge_vs_spread is not None:
-                print(f"  [OK] Spread Edge: {result.edge_vs_spread:+.1f} points")
+                print(
+                    f"  [OK] Spread Edge: {result.edge_vs_spread:+.1f} points"
+                )
             if result.edge_vs_total is not None:
                 print(f"  [OK] Total Edge: {result.edge_vs_total:+.1f} points")
 
@@ -480,15 +498,19 @@ def run_model_checks() -> dict[str, bool]:
 def main() -> int:
     """Run system validation."""
     parser = argparse.ArgumentParser(description="System Validation Script")
-    parser.add_argument("--db", action="store_true", help="Database checks only")
-    parser.add_argument("--model", action="store_true", help="Model checks only")
+    parser.add_argument(
+        "--db", action="store_true", help="Database checks only"
+    )
+    parser.add_argument(
+        "--model", action="store_true", help="Model checks only"
+    )
     args = parser.parse_args()
 
     print("\n" + "=" * 70)
     print("SYSTEM VALIDATION")
     print("=" * 70)
     print(f"\nTimestamp: {datetime.now()}")
-    print(f"Database: data/kenpom.db")
+    print("Database: data/kenpom.db")
 
     results: dict[str, bool] = {}
 
@@ -520,7 +542,9 @@ def main() -> int:
     else:
         print(f"\n[!] {total - passed_count} checkpoint(s) failed")
         print("\nNext Steps:")
-        print("  1. Populate database: python scripts/populate_historical_data.py")
+        print(
+            "  1. Populate database: python scripts/populate_historical_data.py"
+        )
         print("  2. Ensure KENPOM_API_KEY is configured in .env")
         print("  3. Re-run validation after data sync")
         return 1

@@ -12,7 +12,6 @@ This script:
 import argparse
 import logging
 import sqlite3
-from datetime import datetime
 from pathlib import Path
 
 import pandas as pd

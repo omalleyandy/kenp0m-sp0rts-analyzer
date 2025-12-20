@@ -232,7 +232,7 @@ class KenPomService:
             # Validate responses
             sanitized = self.validator.sanitize_response(data)
 
-            # Update teams table FIRST (ratings_snapshots has FK to teams)
+            # Update teams table FIRST (ratings has FK to teams)
             self.repository.upsert_teams(sanitized)
 
             # Store ratings in database
@@ -552,10 +552,10 @@ class KenPomService:
             # Validate responses
             sanitized = self.validator.sanitize_response(data)
 
-            # Update teams table FIRST (ratings_snapshots has FK to teams)
+            # Update teams table FIRST (ratings has FK to teams)
             self.repository.upsert_teams(sanitized)
 
-            # Store ratings in database (reuse existing ratings_snapshots table)
+            # Store ratings in database (reuse existing ratings table)
             count = self.repository.save_ratings_snapshot(
                 snapshot_date=archive_date,
                 season=season,

@@ -5,7 +5,6 @@ for all KenPom data structures used throughout the system.
 """
 
 from datetime import date, datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -15,11 +14,11 @@ class Team(BaseModel):
 
     team_id: int
     team_name: str
-    conference: Optional[str] = None
-    coach: Optional[str] = None
-    arena: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    conference: str | None = None
+    coach: str | None = None
+    arena: str | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
 
     class Config:
         from_attributes = True
@@ -51,21 +50,21 @@ class TeamRating(BaseModel):
     pythag: float = Field(default=0.5, ge=0, le=1, description="Pythagorean expectation")
 
     # Rankings
-    rank_adj_em: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_adj_oe: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_adj_de: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_tempo: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_sos: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_luck: Optional[int] = Field(default=None, ge=1, le=400)
+    rank_adj_em: int | None = Field(default=None, ge=1, le=400)
+    rank_adj_oe: int | None = Field(default=None, ge=1, le=400)
+    rank_adj_de: int | None = Field(default=None, ge=1, le=400)
+    rank_tempo: int | None = Field(default=None, ge=1, le=400)
+    rank_sos: int | None = Field(default=None, ge=1, le=400)
+    rank_luck: int | None = Field(default=None, ge=1, le=400)
 
     # Record
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)
-    conference: Optional[str] = None
+    conference: str | None = None
 
     # Average Possession Length
-    apl_off: Optional[float] = Field(default=None, description="Avg Possession Length (Off)")
-    apl_def: Optional[float] = Field(default=None, description="Avg Possession Length (Def)")
+    apl_off: float | None = Field(default=None, description="Avg Possession Length (Off)")
+    apl_def: float | None = Field(default=None, description="Avg Possession Length (Def)")
 
     @field_validator("adj_em")
     @classmethod
@@ -113,14 +112,14 @@ class FourFactors(BaseModel):
     ft_rate_def: float = Field(..., ge=0, le=100, description="FT Rate (Defense)")
 
     # Rankings
-    rank_efg_off: Optional[int] = None
-    rank_efg_def: Optional[int] = None
-    rank_to_off: Optional[int] = None
-    rank_to_def: Optional[int] = None
-    rank_or_off: Optional[int] = None
-    rank_or_def: Optional[int] = None
-    rank_ft_rate_off: Optional[int] = None
-    rank_ft_rate_def: Optional[int] = None
+    rank_efg_off: int | None = None
+    rank_efg_def: int | None = None
+    rank_to_off: int | None = None
+    rank_to_def: int | None = None
+    rank_or_off: int | None = None
+    rank_or_def: int | None = None
+    rank_ft_rate_off: int | None = None
+    rank_ft_rate_def: int | None = None
 
     class Config:
         from_attributes = True
@@ -147,9 +146,9 @@ class PointDistribution(BaseModel):
     three_pct_def: float = Field(..., ge=0, le=60)
 
     # Rankings
-    rank_three_pct: Optional[int] = None
-    rank_two_pct: Optional[int] = None
-    rank_ft_pct: Optional[int] = None
+    rank_three_pct: int | None = None
+    rank_two_pct: int | None = None
+    rank_ft_pct: int | None = None
 
     @field_validator("ft_pct", "two_pct", "three_pct")
     @classmethod
@@ -174,9 +173,9 @@ class HeightExperience(BaseModel):
     continuity: float = Field(..., ge=0, le=100, description="Roster continuity %")
 
     # Rankings
-    rank_height: Optional[int] = None
-    rank_experience: Optional[int] = None
-    rank_continuity: Optional[int] = None
+    rank_height: int | None = None
+    rank_experience: int | None = None
+    rank_continuity: int | None = None
 
     class Config:
         from_attributes = True
@@ -192,15 +191,15 @@ class FanMatchPrediction(BaseModel):
     snapshot_date: date
     home_team_id: int
     visitor_team_id: int
-    home_team_name: Optional[str] = None
-    visitor_team_name: Optional[str] = None
+    home_team_name: str | None = None
+    visitor_team_name: str | None = None
 
     pred_home_score: float = Field(..., ge=30, le=150, description="Predicted home score")
     pred_visitor_score: float = Field(..., ge=30, le=150, description="Predicted visitor score")
     pred_margin: float = Field(..., description="Predicted margin (home - visitor)")
     home_win_prob: float = Field(..., ge=0, le=1, description="Home win probability")
     pred_tempo: float = Field(..., ge=55, le=90, description="Predicted tempo")
-    thrill_score: Optional[float] = Field(default=None, ge=0, le=100, description="Game excitement score")
+    thrill_score: float | None = Field(default=None, ge=0, le=100, description="Game excitement score")
 
     class Config:
         from_attributes = True
@@ -229,10 +228,10 @@ class MiscStats(BaseModel):
     block_pct_def: float = Field(..., ge=0, le=30, description="Opponent block percentage")
 
     # Rankings
-    rank_fg3_pct: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_fg2_pct: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_ft_pct: Optional[int] = Field(default=None, ge=1, le=400)
-    rank_assist_rate: Optional[int] = Field(default=None, ge=1, le=400)
+    rank_fg3_pct: int | None = Field(default=None, ge=1, le=400)
+    rank_fg2_pct: int | None = Field(default=None, ge=1, le=400)
+    rank_ft_pct: int | None = Field(default=None, ge=1, le=400)
+    rank_assist_rate: int | None = Field(default=None, ge=1, le=400)
 
     class Config:
         from_attributes = True
@@ -244,12 +243,12 @@ class GamePrediction(BaseModel):
     Stores both the prediction and eventual result for model evaluation.
     """
 
-    id: Optional[int] = None
+    id: int | None = None
     game_date: date
     team1_id: int
     team2_id: int
-    team1_name: Optional[str] = None
-    team2_name: Optional[str] = None
+    team1_name: str | None = None
+    team2_name: str | None = None
 
     # Predictions
     predicted_margin: float = Field(..., description="Predicted margin (team1 - team2)")
@@ -259,23 +258,23 @@ class GamePrediction(BaseModel):
     confidence_upper: float = Field(..., description="Upper bound of confidence interval")
 
     # Vegas lines at prediction time
-    vegas_spread: Optional[float] = None
-    vegas_total: Optional[float] = None
+    vegas_spread: float | None = None
+    vegas_total: float | None = None
 
     # Actual results (filled after game)
-    actual_margin: Optional[float] = None
-    actual_total: Optional[float] = None
+    actual_margin: float | None = None
+    actual_total: float | None = None
 
     # Calculated metrics (after game)
-    prediction_error: Optional[float] = None
-    beat_spread: Optional[bool] = None
-    clv: Optional[float] = None  # Closing Line Value
+    prediction_error: float | None = None
+    beat_spread: bool | None = None
+    clv: float | None = None  # Closing Line Value
 
     # Metadata
     model_version: str = "v1.0"
     neutral_site: bool = False
-    created_at: Optional[datetime] = None
-    resolved_at: Optional[datetime] = None
+    created_at: datetime | None = None
+    resolved_at: datetime | None = None
 
     @field_validator("win_probability")
     @classmethod
@@ -385,12 +384,12 @@ class MatchupData(BaseModel):
 
     team1: TeamRating
     team2: TeamRating
-    team1_four_factors: Optional[FourFactors] = None
-    team2_four_factors: Optional[FourFactors] = None
-    team1_point_dist: Optional[PointDistribution] = None
-    team2_point_dist: Optional[PointDistribution] = None
-    team1_height: Optional[HeightExperience] = None
-    team2_height: Optional[HeightExperience] = None
+    team1_four_factors: FourFactors | None = None
+    team2_four_factors: FourFactors | None = None
+    team1_point_dist: PointDistribution | None = None
+    team2_point_dist: PointDistribution | None = None
+    team1_height: HeightExperience | None = None
+    team2_height: HeightExperience | None = None
 
     # Recent history
     team1_recent_games: list[dict] = []
@@ -401,7 +400,7 @@ class MatchupData(BaseModel):
 
     # Venue info
     neutral_site: bool = False
-    home_team: Optional[int] = None  # team_id of home team
+    home_team: int | None = None  # team_id of home team
 
 
 class DailySnapshot(BaseModel):
@@ -426,7 +425,7 @@ class SeasonData(BaseModel):
 
     season: int
     snapshots: list[DailySnapshot]
-    preseason_ratings: Optional[list[TeamRating]] = None
+    preseason_ratings: list[TeamRating] | None = None
     teams: list[Team]
 
     @property

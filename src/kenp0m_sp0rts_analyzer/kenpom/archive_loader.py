@@ -11,12 +11,12 @@ including:
 
 import logging
 import time
+from collections.abc import Generator
 from datetime import date, timedelta
-from typing import Any, Generator
+from typing import Any
 
-from .database import DatabaseManager
 from .exceptions import ArchiveNotAvailableError, SyncError
-from .models import BackfillResult, TeamRating
+from .models import BackfillResult
 from .repository import KenPomRepository
 from .validators import DataValidator
 

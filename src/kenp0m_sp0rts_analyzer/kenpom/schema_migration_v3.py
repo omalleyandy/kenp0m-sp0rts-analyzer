@@ -4,7 +4,7 @@ This migration adds missing columns and renames fields to match the official
 KenPom API field names as documented in kenpom_api_docs_20251216.json.
 
 Key changes:
-1. ratings_snapshots: Add raw efficiency/tempo, rename rank_tempo to rank_adj_tempo
+1. ratings: Add raw efficiency/tempo, rename rank_tempo to rank_adj_tempo
 2. point_distribution: Add defensive rank columns
 3. height_experience: Add position heights and missing ranks
 4. misc_stats: Add missing rate and rank columns
@@ -73,51 +73,47 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         conn.execute("BEGIN")
 
         # ============================================================
-        # 1. ratings_snapshots - Add missing columns from ratings API
+        # 1. ratings - Add missing columns from ratings API
         # ============================================================
-        logger.info("Updating ratings_snapshots table...")
+        logger.info("Updating ratings table...")
 
         # Raw (non-adjusted) efficiency metrics
-        add_column_if_missing(conn, "ratings_snapshots", "oe", "REAL")
-        add_column_if_missing(conn, "ratings_snapshots", "de", "REAL")
-        add_column_if_missing(conn, "ratings_snapshots", "tempo", "REAL")
+        add_column_if_missing(conn, "ratings", "oe", "REAL")
+        add_column_if_missing(conn, "ratings", "de", "REAL")
+        add_column_if_missing(conn, "ratings", "tempo", "REAL")
 
         # Raw efficiency ranks
-        add_column_if_missing(conn, "ratings_snapshots", "rank_oe", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_de", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_tempo_raw", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_oe", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_de", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_tempo_raw", "INTEGER")
 
         # Additional ranks
-        add_column_if_missing(conn, "ratings_snapshots", "rank_pythag", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_ncsos", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_soso", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_sosd", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_pythag", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_ncsos", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_soso", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_sosd", "INTEGER")
 
         # APL ranks (APL columns already exist)
-        add_column_if_missing(conn, "ratings_snapshots", "rank_apl_off", "INTEGER")
-        add_column_if_missing(conn, "ratings_snapshots", "rank_apl_def", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_apl_off", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_apl_def", "INTEGER")
 
         # Conference APL
-        add_column_if_missing(conn, "ratings_snapshots", "conf_apl_off", "REAL")
-        add_column_if_missing(conn, "ratings_snapshots", "conf_apl_def", "REAL")
-        add_column_if_missing(
-            conn, "ratings_snapshots", "rank_conf_apl_off", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "ratings_snapshots", "rank_conf_apl_def", "INTEGER"
-        )
+        add_column_if_missing(conn, "ratings", "conf_apl_off", "REAL")
+        add_column_if_missing(conn, "ratings", "conf_apl_def", "REAL")
+        add_column_if_missing(conn, "ratings", "rank_conf_apl_off", "INTEGER")
+        add_column_if_missing(conn, "ratings", "rank_conf_apl_def", "INTEGER")
 
         # Rename rank_tempo to rank_adj_tempo (if not already renamed)
         # SQLite doesn't support RENAME COLUMN in older versions, so we need
         # to check if the new column exists and migrate data if needed
-        if column_exists(conn, "ratings_snapshots", "rank_tempo"):
-            if not column_exists(conn, "ratings_snapshots", "rank_adj_tempo"):
+        if column_exists(conn, "ratings", "rank_tempo"):
+            if not column_exists(conn, "ratings", "rank_adj_tempo"):
                 add_column_if_missing(
-                    conn, "ratings_snapshots", "rank_adj_tempo", "INTEGER"
+                    conn, "ratings", "rank_adj_tempo", "INTEGER"
                 )
                 conn.execute(
                     """
-                    UPDATE ratings_snapshots
+                    UPDATE ratings
                     SET rank_adj_tempo = rank_tempo
                     WHERE rank_adj_tempo IS NULL
                     """
@@ -146,24 +142,46 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         logger.info("Updating height_experience table...")
 
         # Position-specific heights (API: Hgt5, Hgt4, Hgt3, Hgt2, Hgt1)
-        add_column_if_missing(conn, "height_experience", "hgt_c", "REAL")  # Center
-        add_column_if_missing(conn, "height_experience", "hgt_pf", "REAL")  # PF
-        add_column_if_missing(conn, "height_experience", "hgt_sf", "REAL")  # SF
-        add_column_if_missing(conn, "height_experience", "hgt_sg", "REAL")  # SG
-        add_column_if_missing(conn, "height_experience", "hgt_pg", "REAL")  # PG
+        add_column_if_missing(
+            conn, "height_experience", "hgt_c", "REAL"
+        )  # Center
+        add_column_if_missing(
+            conn, "height_experience", "hgt_pf", "REAL"
+        )  # PF
+        add_column_if_missing(
+            conn, "height_experience", "hgt_sf", "REAL"
+        )  # SF
+        add_column_if_missing(
+            conn, "height_experience", "hgt_sg", "REAL"
+        )  # SG
+        add_column_if_missing(
+            conn, "height_experience", "hgt_pg", "REAL"
+        )  # PG
 
         # Position height ranks
-        add_column_if_missing(conn, "height_experience", "rank_hgt_c", "INTEGER")
-        add_column_if_missing(conn, "height_experience", "rank_hgt_pf", "INTEGER")
-        add_column_if_missing(conn, "height_experience", "rank_hgt_sf", "INTEGER")
-        add_column_if_missing(conn, "height_experience", "rank_hgt_sg", "INTEGER")
-        add_column_if_missing(conn, "height_experience", "rank_hgt_pg", "INTEGER")
+        add_column_if_missing(
+            conn, "height_experience", "rank_hgt_c", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "height_experience", "rank_hgt_pf", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "height_experience", "rank_hgt_sf", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "height_experience", "rank_hgt_sg", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "height_experience", "rank_hgt_pg", "INTEGER"
+        )
 
         # Additional ranks
         add_column_if_missing(
             conn, "height_experience", "rank_effective_height", "INTEGER"
         )
-        add_column_if_missing(conn, "height_experience", "rank_bench", "INTEGER")
+        add_column_if_missing(
+            conn, "height_experience", "rank_bench", "INTEGER"
+        )
 
         # ============================================================
         # 4. misc_stats - Add missing rate and rank columns
@@ -183,18 +201,38 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         add_column_if_missing(conn, "misc_stats", "adj_de", "REAL")
 
         # All rank columns for misc stats
-        add_column_if_missing(conn, "misc_stats", "rank_fg3_pct_def", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_fg2_pct_def", "INTEGER")
+        add_column_if_missing(
+            conn, "misc_stats", "rank_fg3_pct_def", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_fg2_pct_def", "INTEGER"
+        )
         add_column_if_missing(conn, "misc_stats", "rank_ft_pct_def", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_block_pct_off", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_block_pct_def", "INTEGER")
+        add_column_if_missing(
+            conn, "misc_stats", "rank_block_pct_off", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_block_pct_def", "INTEGER"
+        )
         add_column_if_missing(conn, "misc_stats", "rank_steal_rate", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_steal_rate_def", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_nst_rate_off", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_nst_rate_def", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_assist_rate_def", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_fg3_rate_off", "INTEGER")
-        add_column_if_missing(conn, "misc_stats", "rank_fg3_rate_def", "INTEGER")
+        add_column_if_missing(
+            conn, "misc_stats", "rank_steal_rate_def", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_nst_rate_off", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_nst_rate_def", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_assist_rate_def", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_fg3_rate_off", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "misc_stats", "rank_fg3_rate_def", "INTEGER"
+        )
         add_column_if_missing(conn, "misc_stats", "rank_adj_oe", "INTEGER")
         add_column_if_missing(conn, "misc_stats", "rank_adj_de", "INTEGER")
 
@@ -203,8 +241,12 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         # ============================================================
         logger.info("Updating fanmatch_predictions table...")
 
-        add_column_if_missing(conn, "fanmatch_predictions", "season", "INTEGER")
-        add_column_if_missing(conn, "fanmatch_predictions", "home_rank", "INTEGER")
+        add_column_if_missing(
+            conn, "fanmatch_predictions", "season", "INTEGER"
+        )
+        add_column_if_missing(
+            conn, "fanmatch_predictions", "home_rank", "INTEGER"
+        )
         add_column_if_missing(
             conn, "fanmatch_predictions", "visitor_rank", "INTEGER"
         )
@@ -212,14 +254,16 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         # ============================================================
         # 6. Update schema version
         # ============================================================
-        conn.execute("INSERT OR REPLACE INTO schema_version (version) VALUES (3)")
+        conn.execute(
+            "INSERT OR REPLACE INTO schema_version (version) VALUES (3)"
+        )
 
         conn.commit()
         logger.info("Schema migration v3 completed successfully!")
 
         # Print column count summary
         tables = [
-            "ratings_snapshots",
+            "ratings",
             "four_factors",
             "point_distribution",
             "height_experience",

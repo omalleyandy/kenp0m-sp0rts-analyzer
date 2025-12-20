@@ -6,13 +6,11 @@ to handle authentication and JavaScript rendering.
 
 import logging
 import os
-import time
 from dataclasses import dataclass
-from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
-from playwright.sync_api import sync_playwright, Page
+from playwright.sync_api import Page, sync_playwright
 
 # Load environment variables
 load_dotenv()
@@ -638,7 +636,7 @@ def main():
     if players:
         df = scraper.to_dataframe(players)
         print(f"\n{'='*80}")
-        print(f"SCRAPING COMPLETE")
+        print("SCRAPING COMPLETE")
         print(f"{'='*80}")
         print(f"Total Players: {len(players)}")
         print(f"Season: {args.year}")
