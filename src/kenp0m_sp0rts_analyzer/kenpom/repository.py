@@ -1376,3 +1376,200 @@ class KenPomRepository:
                     (conference,),
                 )
             return [TeamRating(**dict(row)) for row in cursor.fetchall()]
+
+    # ==================== Vegas Odds ====================
+
+    def _normalize_team_name(self, name: str) -> str:
+        """Normalize team name for matching."""
+        import re
+
+        normalized = name.lower().strip()
+        normalized = re.sub(r"[^\w\s]", "", normalized)
+        normalized = re.sub(r"\s+", " ", normalized)
+        return normalized
+
+    def save_vegas_odds(
+        self,
+        game_date: date,
+        games: list[dict[str, Any]],
+        snapshot_type: str = "current",
+    ) -> int:
+        """Save Vegas odds from overtime.ag.
+
+        Args:
+            game_date: Date of the games.
+            games: List of game dictionaries with odds.
+            snapshot_type: Type of snapshot ('open', 'current', 'close').
+
+        Returns:
+            Number of records saved.
+        """
+        from datetime import datetime
+
+        count = 0
+        snapshot_at = datetime.now()
+
+        with self.db.transaction() as conn:
+            for game in games:
+                away_team = game.get("away_team", "")
+                home_team = game.get("home_team", "")
+
+                if not away_team or not home_team:
+                    continue
+
+                away_normalized = self._normalize_team_name(away_team)
+                home_normalized = self._normalize_team_name(home_team)
+
+                # Try to find team IDs
+                away_team_obj = self.get_team_by_name(away_team)
+                home_team_obj = self.get_team_by_name(home_team)
+                away_team_id = away_team_obj.team_id if away_team_obj else None
+                home_team_id = home_team_obj.team_id if home_team_obj else None
+
+                conn.execute(
+                    """
+                    INSERT INTO vegas_odds (
+                        game_date, game_time, away_team, home_team,
+                        away_team_normalized, home_team_normalized,
+                        spread, spread_away_odds, spread_home_odds,
+                        total, over_odds, under_odds,
+                        away_ml, home_ml,
+                        snapshot_type, snapshot_at,
+                        source, category,
+                        away_team_id, home_team_id
+                    ) VALUES (
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    )
+                    ON CONFLICT(game_date, away_team_normalized, home_team_normalized, snapshot_type)
+                    DO UPDATE SET
+                        spread = excluded.spread,
+                        spread_away_odds = excluded.spread_away_odds,
+                        spread_home_odds = excluded.spread_home_odds,
+                        total = excluded.total,
+                        over_odds = excluded.over_odds,
+                        under_odds = excluded.under_odds,
+                        away_ml = excluded.away_ml,
+                        home_ml = excluded.home_ml,
+                        snapshot_at = excluded.snapshot_at
+                    """,
+                    (
+                        game_date,
+                        game.get("time", ""),
+                        away_team,
+                        home_team,
+                        away_normalized,
+                        home_normalized,
+                        game.get("spread"),
+                        game.get("spread_away_odds", -110),
+                        game.get("spread_home_odds", -110),
+                        game.get("total"),
+                        game.get("over_odds", -110),
+                        game.get("under_odds", -110),
+                        game.get("away_ml"),
+                        game.get("home_ml"),
+                        snapshot_type,
+                        snapshot_at,
+                        game.get("source", "overtime.ag"),
+                        game.get("category", "college_basketball"),
+                        away_team_id,
+                        home_team_id,
+                    ),
+                )
+                count += 1
+
+        logger.info(
+            f"Saved {count} vegas odds for {game_date} ({snapshot_type})"
+        )
+        return count
+
+    def get_vegas_odds_for_date(
+        self,
+        game_date: date,
+        snapshot_type: str = "current",
+    ) -> list[dict[str, Any]]:
+        """Get Vegas odds for a specific date.
+
+        Args:
+            game_date: Date to query.
+            snapshot_type: Type of snapshot to retrieve.
+
+        Returns:
+            List of odds dictionaries.
+        """
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM vegas_odds
+                WHERE game_date = ? AND snapshot_type = ?
+                ORDER BY game_time
+                """,
+                (game_date, snapshot_type),
+            )
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_vegas_odds_for_game(
+        self,
+        away_team: str,
+        home_team: str,
+        game_date: date | None = None,
+    ) -> dict[str, Any] | None:
+        """Get Vegas odds for a specific game.
+
+        Args:
+            away_team: Away team name.
+            home_team: Home team name.
+            game_date: Optional date (defaults to today).
+
+        Returns:
+            Latest odds for the game or None.
+        """
+        game_date = game_date or date.today()
+        away_normalized = self._normalize_team_name(away_team)
+        home_normalized = self._normalize_team_name(home_team)
+
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT * FROM vegas_odds
+                WHERE game_date = ?
+                AND away_team_normalized = ?
+                AND home_team_normalized = ?
+                ORDER BY snapshot_at DESC
+                LIMIT 1
+                """,
+                (game_date, away_normalized, home_normalized),
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def get_todays_games_with_odds(self) -> list[dict[str, Any]]:
+        """Get today's games with both KenPom predictions and Vegas odds.
+
+        Returns:
+            List of game dictionaries with combined data.
+        """
+        from datetime import date as date_type
+
+        today = date_type.today()
+
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                """
+                SELECT
+                    v.game_date,
+                    v.game_time,
+                    v.away_team,
+                    v.home_team,
+                    v.spread,
+                    v.total,
+                    v.away_ml,
+                    v.home_ml,
+                    v.snapshot_at
+                FROM vegas_odds v
+                WHERE v.game_date = ?
+                AND v.snapshot_type = 'current'
+                ORDER BY v.game_time
+                """,
+                (today,),
+            )
+            return [dict(row) for row in cursor.fetchall()]

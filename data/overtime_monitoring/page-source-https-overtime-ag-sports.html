@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html ng-app="mainModule">
+<head id="Head1"><meta charset="utf-8" />
+    <base href="/sports">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico?v=20202024" /><meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=.25, user-scalable=yes" /><title>
+	overtime.ag
+</title><link href="/sports/content/css/site?v=3HS9cclMH5hF25GDHtTwnO8NhejT7rukUHgCNZJiE4A1" rel="stylesheet"/>
+<link href="/sports/content/css/skin?v=nD31jFfvt1d2KpHo3Am22BVyO34fnxFbSlh9_xttSG81" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="/sports/assets_core/owlcarousel/assets/owl-carousel-min.css" /><link rel="stylesheet" href="/sports/assets_core/owlcarousel/assets/owl-theme-default-min.css" /><link rel="stylesheet" href="/sports/assets_core/vkeyboard/kioskboard-2.3.0.min.css?v=260" /></head>
+<body id="body_bg">
+<div id="snow"></div>
+    <div ng-controller="appController" id="app" dw-loading="Rep">
+
+        
+
+        
+        <header ng-include="Templates.client.header"></header>
+        
+
+        <div id="wrapper" class="{{PageWrapperClass}}" ng-class="{active: IsMobileDevice && ShowSideBar,mobile:IsMobileDevice , wrapper_noheader: HideHeader }">
+            <div class="sidebar-wrapper hidden-print" ng-include="Templates.leftSidebar.sportsMenu" id="{{sideBarId}}" ng-if="ShowSideBar"></div>
+            <div class="page-content-wrapper" id="lineDiv" ng-class="{extended: (showBetSlipInWebSite==false && ShowBetSlip), dashboard: Selections.length == 0 || FirstLoad, 'hidden-print': DialogTemplate != '', 'w-100': !ShowSideBar}">
+                <div class="page-content-wrapper-inner">
+
+                    <div class="content-header navbar-fixed-top sb-expanded" id="topHeader" ng-include="Templates.mobileHeader" ng-show="IsMobileDevice"></div>
+                    <!-- Mobile Header-->
+
+                    <ng-view></ng-view>
+
+                    <section ng-include="Templates.client.footer"></section>
+
+                </div>
+            </div>
+            <div ng-if="!IsMobileDevice && ShowBetSlip && showBetSlipInWebSite" id="betSlipController">
+
+                <div class="wtype d-flex justify-content-center" ng-class="{'offline':IsOffline(), 'wager-type-height' : WagerTypesView.IsMultiple() && WagerTypeAtBetSlip === true}" ng-if="WagerTypeAtBetSlip === true">
+                    <div class="row pl-5 pr-5 text-center">
+                        <div class="select_wrapper" ng-show="IsMobileDevice">
+                            <select tabindex="-1"
+                                ng-model="::WagerTypesView.Selected"
+                                ng-options="Translate(w.name) for w in WagerTypesView.List | restrictIfBets:Customer.Restrictions"
+                                class="dropdown" ng-change="Events.ChangeWagerType()">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fixed_wrapper" ng-show="!IsMobileDevice" style="width: 281px">
+                        <div class="wagertype-wrapper">
+                            <div class="tabButtonContainer" style="border-right: 0">
+
+                                <button ng-show="!IsMobileDevice" type="button" class="btn btn-small btn-period" aria-hidden="true"
+                  ng-repeat="w in WagerTypesView.GetMenuList() | filter:title"
+                                    ng-if="w.title"
+                                    ng-class="{active : WagerTypesView.Selected.name == w.name || (WagerTypesView.IsMultiple() && w.multiple), 'pl-5':$index == 0 }"
+                                    ng-click="SelectWagerType(w)"
+                                    ng-bind="Translate(w.title)">
+                                </button>
+
+                                <div class="multiple_select_wrapper" ng-show="WagerTypesView.IsMultiple()">
+                                    <select class="dropdown" ng-options="Translate(w.name) for w in WagerTypesView.List | filter:{multiple:true} | restrictIfBets:Customer.Restrictions" ng-model="WagerTypesView.Selected" ng-change="SelectWagerType()">
+                                    </select>
+                                </div>
+
+                                <div class="teasers-options multiple_select_wrapper" ng-show="WagerTypesView.IsTeaser() && WagerTypeAtBetSlip === true">
+                                    <div class=" pl-5 pr-5" ng-show="Teasers.List && Teasers.List.length">
+                                        <select class="dropdown" ng-model="Teasers.Selected" ng-options="t as t.TeaserName group by t.Category for t in Teasers.List track by t.TeaserName" ng-change="Events.ToggleTeasers(t)" ng-disabled="TeaserSelectDisabled()">
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <div class="pl-5 pr-5" ng-show="!SportsLoading && (!Teasers.List || !Teasers.List.length)">
+                                            <span ng-bind="Translate('No teasers available')"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-include="Templates.betSlip"></div>
+            </div>
+            <!-- Display of bet slip -->
+
+            <div class="foo_options" id="page_footer"></div>
+            <!-- footer -->
+        </div>
+
+        <!-- Preloading-->
+        <div class="preloading-wrap hidden">
+            <div class="cssload-dots">
+                <div class="cssload-dot"></div>
+                <div class="cssload-dot"></div>
+                <div class="cssload-dot"></div>
+                <div class="cssload-dot"></div>
+                <div class="cssload-dot"></div>
+            </div>
+        </div>
+        <div class="svg-loader-wrapper">
+            <img ng-src="/sports/assets_core/img/loadingFilter.svg" onload="SVGInject(this)" />
+        </div>
+        <!-- Modal -->
+        <div class="modal fade modal-wide dark" ng-class="ModalClass" id="modalDialog" role="dialog" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div ng-include="DialogTemplate"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div ng-if="!Customer.Info.ShowBetSlipInWebSite || IsMobileDevice" class="modal fade modal-wide dark modal-bs" ng-class="ModalClass" id="modalDialog_preloaded" role="dialog" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div ng-include="Templates.betSlip"></div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div id="chat-icon" ng-click="openChatWindow()">
+            <a class="chat-open-services" data-tooltip="Contact Us" data-placement="left">
+                <img src="sports/assets_core/img/chat-icon-white.png" width="30" height="30" />
+            </a>
+        </div>-->
+    </div>
+    <script src="https://api.liquidrenders.com/index.php/Open/Banner2/banners.js?div=carouselExampleIndicators&url=https://overtime.ag/&vrs=12"></script>
+
+    <script>
+        window.webConfig = {
+            cacheVersion: '20211025',
+        loginEncryptionMode: '',
+        loginEncryptionEnabled: 'False' == 'True',
+        customerIdSufix: '',
+        sportsRoot: '/sports',
+        translationFileSufix: '',
+        defaultLanguage: 'ENG',
+        siteTitle: 'overtime.ag',
+        debugMode: 'False' == 'True',
+        captchaApiKey: '',
+        webSocketServerUrl: 'https://ws.ticosports.com/signalr',
+        currentDomain: 'overtime.ag',
+        hideHeader: 'False' == 'True',
+		hidePitchersSelection: 'False' == 'True' 
+        };
+  </script>
+    <script src="/sports/content/app/angular?v=MsU5q0mf5qZ7zpxmBR4ScQ0ol5offUfhgfTf08UYS0U1"></script>
+
+    <script src="/sports/content/app/libs?v=lWxUGSghmS5avfCyYYIb2PDWykmjLhpKFIDrKZIW2RM1"></script>
+
+    <script src="/sports/content/app/bootstrap?v=wWPifE4Xy782ee04HKFStPSkQJ8BgM45GPRJKRA6p_M1"></script>
+
+    <script src="/sports/content/app/controllers?v=mx6r_UboKqos3zux7lQRnIPnA_I_XNA13C9_XBVKZT41"></script>
+
+    <script src="/sports/content/app/core?v=3AwOWHek8Ygq5GQCIW1VhKBjjxn3WsUe6DI4voJVt6I1"></script>
+
+    <script src="/sports/content/app/services?v=UCEZofBi4nPtmd481fprEio-Gnv7AqFN8AzGY-Bo9bI1"></script>
+
+
+    
+    <script type="text/javascript" src='https://ws.ticosports.com/signalr/hubs'></script>
+    
+
+    <script src="/sports/assets_core/js/googleAnalytics.js"></script>
+	
+  
+
+    <script src="/sports/assets_core/js/jsPDF/jsPDF_2_3_1/jspdf.umd.min.js"></script>
+    <script src="/sports/assets_core/js/jsPDF/autotable/autotable_3_5_14/jspdf.plugin.autotable.js"></script>
+    <script src="/sports/assets_core/js/exportFromJson/export_from_json_1.3.9/export_from_json.js"></script>
+    <script src="/sports/app/services/app.preloader.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script type="text/javascript" src="https://livesrv02.ticosports.com/iframeresizer/iframeResizer.min.js?v=6447"></script>
+    <script src="/sports/assets_core/js/svg-inject.min.js"></script>
+  <!-- <script src="/sports/assets_core/vkeyboard/kioskboard-2.3.0.min.js"></script> -->
+  <script src="/sports/assets_core/vkeyboard/kioskboard.js?v1"></script>
+
+  <script src="/sports/assets_core/vkeyboard/init.js"></script>
+    <script src="/sports/assets_core/owlcarousel/owl.carousel.min.js"></script>
+        
+      
+    
+   
+    <script>var sip = "10.0.3.12";</script>
+	
+	
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b0f10609dc0889a',t:'MTc2NjIzMjkxNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"56b157a8a9974efcaa8a01775be2baa3","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

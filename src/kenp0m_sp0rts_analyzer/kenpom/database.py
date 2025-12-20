@@ -282,6 +282,43 @@ CREATE TABLE IF NOT EXISTS sync_history (
     duration_seconds REAL
 );
 
+-- Vegas odds from overtime.ag (sole source for CBB lines)
+CREATE TABLE IF NOT EXISTS vegas_odds (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    game_date DATE NOT NULL,
+    game_time TEXT,
+    away_team TEXT NOT NULL,
+    home_team TEXT NOT NULL,
+    -- Normalized names for matching
+    away_team_normalized TEXT,
+    home_team_normalized TEXT,
+    -- Spread (from home team perspective, negative = home favored)
+    spread REAL,
+    spread_away_odds INTEGER DEFAULT -110,
+    spread_home_odds INTEGER DEFAULT -110,
+    -- Total (over/under)
+    total REAL,
+    over_odds INTEGER DEFAULT -110,
+    under_odds INTEGER DEFAULT -110,
+    -- Moneyline
+    away_ml INTEGER,
+    home_ml INTEGER,
+    -- Snapshot tracking
+    snapshot_type TEXT DEFAULT 'current',  -- 'open', 'current', 'close'
+    snapshot_at TIMESTAMP NOT NULL,
+    -- Source metadata
+    source TEXT DEFAULT 'overtime.ag',
+    category TEXT DEFAULT 'college_basketball',
+    -- FK references (optional, for teams we have in DB)
+    away_team_id INTEGER,
+    home_team_id INTEGER,
+    -- Metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (away_team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id),
+    UNIQUE(game_date, away_team_normalized, home_team_normalized, snapshot_type)
+);
+
 -- Performance indexes
 CREATE INDEX IF NOT EXISTS idx_ratings_date ON ratings(snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_ratings_team ON ratings(team_id);
@@ -301,6 +338,10 @@ CREATE INDEX IF NOT EXISTS idx_fanmatch_game ON fanmatch(game_id);
 CREATE INDEX IF NOT EXISTS idx_fanmatch_season ON fanmatch(season);
 CREATE INDEX IF NOT EXISTS idx_misc_date ON misc_stats(snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_misc_team ON misc_stats(team_id);
+CREATE INDEX IF NOT EXISTS idx_vegas_date ON vegas_odds(game_date);
+CREATE INDEX IF NOT EXISTS idx_vegas_snapshot ON vegas_odds(snapshot_at);
+CREATE INDEX IF NOT EXISTS idx_vegas_type ON vegas_odds(snapshot_type);
+CREATE INDEX IF NOT EXISTS idx_vegas_teams ON vegas_odds(away_team_normalized, home_team_normalized);
 """
 
 
@@ -449,6 +490,7 @@ class DatabaseManager:
             "height",
             "fanmatch",
             "misc_stats",
+            "vegas_odds",
             "game_predictions",
             "accuracy_metrics",
             "sync_history",
@@ -564,6 +606,7 @@ class DatabaseManager:
             "height",
             "fanmatch",
             "misc_stats",
+            "vegas_odds",
             "game_predictions",
             "accuracy_metrics",
             "sync_history",
@@ -586,6 +629,7 @@ class DatabaseManager:
             tables = [
                 "accuracy_metrics",
                 "game_predictions",
+                "vegas_odds",
                 "fanmatch",
                 "misc_stats",
                 "height",
