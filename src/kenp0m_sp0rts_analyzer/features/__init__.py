@@ -5,5 +5,13 @@ from .feature_engineer import (
     DatabaseFeatureEngineer,
     GameFeatures,
 )
+from .line_movement import LineMovement, LineMovementTracker, LineSnapshot
 
-__all__ = ["AdvancedFeatureEngineer", "DatabaseFeatureEngineer", "GameFeatures"]
+__all__ = [
+    "AdvancedFeatureEngineer",
+    "DatabaseFeatureEngineer",
+    "GameFeatures",
+    "LineMovement",
+    "LineMovementTracker",
+    "LineSnapshot",
+]
