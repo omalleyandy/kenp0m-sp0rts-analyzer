@@ -11,12 +11,12 @@ Designed to integrate with:
 
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
-from .database import DatabaseManager
 from .exceptions import SyncError
 from .models import SyncResult
 from .repository import KenPomRepository
@@ -130,8 +130,12 @@ class BatchScheduler:
 
         # Callbacks
         self.on_task_start: Callable[[ScheduledTask], None] | None = None
-        self.on_task_complete: Callable[[ScheduledTask, SyncResult], None] | None = None
-        self.on_workflow_complete: Callable[[DailyWorkflowResult], None] | None = None
+        self.on_task_complete: (
+            Callable[[ScheduledTask, SyncResult], None] | None
+        ) = None
+        self.on_workflow_complete: (
+            Callable[[DailyWorkflowResult], None] | None
+        ) = None
 
     @property
     def api(self):
@@ -167,6 +171,18 @@ class BatchScheduler:
                 endpoint="pointdist",
                 sync_func=self._sync_point_distribution,
                 priority=3,
+            ),
+            ScheduledTask(
+                name="misc_stats",
+                endpoint="misc-stats",
+                sync_func=self._sync_misc_stats,
+                priority=4,
+            ),
+            ScheduledTask(
+                name="fanmatch",
+                endpoint="fanmatch",
+                sync_func=self._sync_fanmatch,
+                priority=5,
             ),
         ]
 
@@ -245,7 +261,9 @@ class BatchScheduler:
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
             )
 
-    def _sync_point_distribution(self, year: int, snapshot_date: date) -> SyncResult:
+    def _sync_point_distribution(
+        self, year: int, snapshot_date: date
+    ) -> SyncResult:
         """Sync point distribution data."""
         start_time = datetime.now()
         errors = []
@@ -254,10 +272,14 @@ class BatchScheduler:
             response = self.api.get_pointdist(year=year)
             data = list(response.data)
 
-            count = self.repository.save_point_distribution(snapshot_date, data)
+            count = self.repository.save_point_distribution(
+                snapshot_date, data
+            )
             duration = (datetime.now() - start_time).total_seconds()
 
-            logger.info(f"Synced {count} point distributions in {duration:.2f}s")
+            logger.info(
+                f"Synced {count} point distributions in {duration:.2f}s"
+            )
 
             return SyncResult(
                 success=True,
@@ -272,6 +294,74 @@ class BatchScheduler:
             return SyncResult(
                 success=False,
                 endpoint="pointdist",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
+    def _sync_misc_stats(self, year: int, snapshot_date: date) -> SyncResult:
+        """Sync misc stats data."""
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            response = self.api.get_misc_stats(year=year)
+            data = list(response.data)
+
+            count = self.repository.save_misc_stats(snapshot_date, data)
+            duration = (datetime.now() - start_time).total_seconds()
+
+            logger.info(f"Synced {count} misc stats in {duration:.2f}s")
+
+            return SyncResult(
+                success=True,
+                endpoint="misc-stats",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"Misc stats sync failed: {e}")
+            errors.append(str(e))
+            return SyncResult(
+                success=False,
+                endpoint="misc-stats",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
+    def _sync_fanmatch(self, year: int, snapshot_date: date) -> SyncResult:
+        """Sync FanMatch predictions."""
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            response = self.api.get_fanmatch(date=snapshot_date)
+            data = list(response.data)
+
+            count = self.repository.save_fanmatch_predictions(
+                snapshot_date, data
+            )
+            duration = (datetime.now() - start_time).total_seconds()
+
+            logger.info(
+                f"Synced {count} fanmatch predictions in {duration:.2f}s"
+            )
+
+            return SyncResult(
+                success=True,
+                endpoint="fanmatch",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"FanMatch sync failed: {e}")
+            errors.append(str(e))
+            return SyncResult(
+                success=False,
+                endpoint="fanmatch",
                 records_synced=0,
                 errors=errors,
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
@@ -365,7 +455,9 @@ class BatchScheduler:
         results: dict[str, SyncResult] = {}
         all_errors: list[str] = []
 
-        logger.info(f"Starting daily workflow for {snapshot_date} (season {year})")
+        logger.info(
+            f"Starting daily workflow for {snapshot_date} (season {year})"
+        )
 
         # Sort tasks by priority
         sorted_tasks = sorted(
@@ -383,7 +475,9 @@ class BatchScheduler:
 
                     # Retry if enabled
                     if retry_failed and task.retry_count < task.max_retries:
-                        logger.info(f"Retrying {task.name} ({task.retry_count}/{task.max_retries})")
+                        logger.info(
+                            f"Retrying {task.name} ({task.retry_count}/{task.max_retries})"
+                        )
                         time.sleep(2)  # Brief pause before retry
                         result = self.run_task(task, year, snapshot_date)
                         results[task.name] = result
@@ -468,24 +562,26 @@ class BatchScheduler:
         }
 
         for task in self.tasks:
-            status["tasks"].append({
-                "name": task.name,
-                "endpoint": task.endpoint,
-                "enabled": task.enabled,
-                "last_run": task.last_run.isoformat() if task.last_run else None,
-                "last_status": task.last_status.value,
-                "retry_count": task.retry_count,
-            })
+            status["tasks"].append(
+                {
+                    "name": task.name,
+                    "endpoint": task.endpoint,
+                    "enabled": task.enabled,
+                    "last_run": task.last_run.isoformat()
+                    if task.last_run
+                    else None,
+                    "last_status": task.last_status.value,
+                    "retry_count": task.retry_count,
+                }
+            )
 
         # Get most recent sync for each endpoint
         for task in self.tasks:
             sync = self.repository.db.get_latest_sync(task.endpoint)
             if sync:
-                if status["last_workflow"] is None:
-                    status["last_workflow"] = sync
-                elif sync.get("completed_at", datetime.min) > status["last_workflow"].get(
-                    "completed_at", datetime.min
-                ):
+                if status["last_workflow"] is None or sync.get("completed_at", datetime.min) > status[
+                    "last_workflow"
+                ].get("completed_at", datetime.min):
                     status["last_workflow"] = sync
 
         return status
@@ -544,6 +640,7 @@ def create_cron_command() -> str:
         0 6 * * * cd /path/to/project && python -m kenp0m_sp0rts_analyzer.kenpom.batch_scheduler
     """
     import sys
+
     return (
         f"0 6 * * * cd {sys.path[0]} && "
         f"python -m kenp0m_sp0rts_analyzer.kenpom.batch_scheduler"
@@ -555,12 +652,22 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="KenPom Daily Sync Scheduler")
-    parser.add_argument("--check", action="store_true", help="Check if sync is needed")
-    parser.add_argument("--status", action="store_true", help="Show scheduler status")
-    parser.add_argument("--force", action="store_true", help="Force sync even if recent")
+    parser.add_argument(
+        "--check", action="store_true", help="Check if sync is needed"
+    )
+    parser.add_argument(
+        "--status", action="store_true", help="Show scheduler status"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Force sync even if recent"
+    )
     parser.add_argument("--year", type=int, help="Season year to sync")
-    parser.add_argument("--db-path", default="data/kenpom.db", help="Database path")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument(
+        "--db-path", default="data/kenpom.db", help="Database path"
+    )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Verbose output"
+    )
 
     args = parser.parse_args()
 
@@ -573,6 +680,7 @@ def main():
 
     if args.status:
         import json
+
         status = scheduler.get_status()
         print(json.dumps(status, indent=2, default=str))
         return
@@ -593,7 +701,9 @@ def main():
     result = scheduler.run_daily_workflow(year=args.year)
 
     if result.success:
-        print(f"✓ Sync complete: {result.total_records} records in {result.duration_seconds:.1f}s")
+        print(
+            f"✓ Sync complete: {result.total_records} records in {result.duration_seconds:.1f}s"
+        )
     else:
         print(f"✗ Sync failed: {result.errors}")
         exit(1)

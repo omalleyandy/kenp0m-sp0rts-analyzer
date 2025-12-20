@@ -9,11 +9,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
-from .database import DatabaseManager
 from .exceptions import (
     ConfigurationError,
-    KenPomError,
-    TeamNotFoundError,
 )
 from .models import (
     AccuracyReport,
@@ -80,6 +77,7 @@ class KenPomService:
             if self._api_client is None:
                 try:
                     from kenp0m_sp0rts_analyzer.api_client import KenPomAPI
+
                     self._api_client = KenPomAPI()
                 except Exception as e:
                     raise ConfigurationError(
@@ -217,7 +215,7 @@ class KenPomService:
         Returns:
             SyncResult with operation details.
         """
-        from datetime import datetime
+
         start_time = datetime.now()
         errors = []
 
@@ -298,7 +296,7 @@ class KenPomService:
         Returns:
             SyncResult with operation details.
         """
-        from datetime import datetime
+
         start_time = datetime.now()
         errors = []
 
@@ -356,7 +354,7 @@ class KenPomService:
         Returns:
             SyncResult with operation details.
         """
-        from datetime import datetime
+
         start_time = datetime.now()
         errors = []
 
@@ -369,7 +367,9 @@ class KenPomService:
             data = list(response.data)
 
             snapshot_date = snapshot_date or date.today()
-            count = self.repository.save_point_distribution(snapshot_date, data)
+            count = self.repository.save_point_distribution(
+                snapshot_date, data
+            )
 
             self.repository.db.record_sync(
                 endpoint="pointdist",
@@ -380,7 +380,9 @@ class KenPomService:
             )
 
             duration = (datetime.now() - start_time).total_seconds()
-            logger.info(f"Synced {count} point distributions in {duration:.2f}s")
+            logger.info(
+                f"Synced {count} point distributions in {duration:.2f}s"
+            )
 
             return SyncResult(
                 success=True,
@@ -400,6 +402,123 @@ class KenPomService:
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
             )
 
+    def sync_fanmatch(
+        self,
+        game_date: date | None = None,
+        snapshot_date: date | None = None,
+    ) -> SyncResult:
+        """Sync KenPom FanMatch predictions.
+
+        Args:
+            game_date: Date of games to fetch predictions for.
+            snapshot_date: Date to record snapshot.
+
+        Returns:
+            SyncResult with operation details.
+        """
+
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            game_date = game_date or date.today()
+            snapshot_date = snapshot_date or date.today()
+
+            response = self.api.get_fanmatch(date=game_date)
+            data = list(response.data)
+            count = self.repository.save_fanmatch_predictions(
+                snapshot_date, data
+            )
+
+            self.repository.db.record_sync(
+                endpoint="fanmatch",
+                sync_type="daily",
+                status="success",
+                records_synced=count,
+                started_at=start_time,
+            )
+
+            duration = (datetime.now() - start_time).total_seconds()
+            logger.info(
+                f"Synced {count} fanmatch predictions in {duration:.2f}s"
+            )
+
+            return SyncResult(
+                success=True,
+                endpoint="fanmatch",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"FanMatch sync failed: {e}")
+            errors.append(str(e))
+            return SyncResult(
+                success=False,
+                endpoint="fanmatch",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
+    def sync_misc_stats(
+        self,
+        year: int | None = None,
+        snapshot_date: date | None = None,
+    ) -> SyncResult:
+        """Sync misc stats from API.
+
+        Args:
+            year: Season year.
+            snapshot_date: Date to record snapshot.
+
+        Returns:
+            SyncResult with operation details.
+        """
+
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            if year is None:
+                today = date.today()
+                year = today.year if today.month >= 11 else today.year
+
+            response = self.api.get_misc_stats(year=year)
+            data = list(response.data)
+
+            snapshot_date = snapshot_date or date.today()
+            count = self.repository.save_misc_stats(snapshot_date, data)
+
+            self.repository.db.record_sync(
+                endpoint="misc-stats",
+                sync_type="full",
+                status="success",
+                records_synced=count,
+                started_at=start_time,
+            )
+
+            duration = (datetime.now() - start_time).total_seconds()
+            logger.info(f"Synced {count} misc stats in {duration:.2f}s")
+
+            return SyncResult(
+                success=True,
+                endpoint="misc-stats",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"Misc stats sync failed: {e}")
+            errors.append(str(e))
+            return SyncResult(
+                success=False,
+                endpoint="misc-stats",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
     def sync_all(self, year: int | None = None) -> dict[str, SyncResult]:
         """Sync all data types from the API.
 
@@ -414,6 +533,8 @@ class KenPomService:
         results["ratings"] = self.sync_ratings(year=year)
         results["four_factors"] = self.sync_four_factors(year=year)
         results["point_distribution"] = self.sync_point_distribution(year=year)
+        results["misc_stats"] = self.sync_misc_stats(year=year)
+        results["fanmatch"] = self.sync_fanmatch()
 
         # Log summary
         total_synced = sum(r.records_synced for r in results.values())
@@ -446,7 +567,9 @@ class KenPomService:
         Raises:
             TeamNotFoundError: If either team not found.
         """
-        data = self.repository.get_matchup_data(team1_id, team2_id, snapshot_date)
+        data = self.repository.get_matchup_data(
+            team1_id, team2_id, snapshot_date
+        )
 
         return MatchupData(
             team1=data["team1"],
@@ -521,8 +644,8 @@ class KenPomService:
             "rank_oe_diff": (t1.rank_adj_oe or 200) - (t2.rank_adj_oe or 200),
             "rank_de_diff": (t1.rank_adj_de or 200) - (t2.rank_adj_de or 200),
             # Record-based features
-            "win_pct_diff": (t1.wins / max(1, t1.wins + t1.losses)) -
-                           (t2.wins / max(1, t2.wins + t2.losses)),
+            "win_pct_diff": (t1.wins / max(1, t1.wins + t1.losses))
+            - (t2.wins / max(1, t2.wins + t2.losses)),
         }
 
         # Add Four Factors if available
@@ -530,45 +653,53 @@ class KenPomService:
         ff2 = matchup.team2_four_factors
 
         if ff1 and ff2:
-            features.update({
-                "efg_diff": ff1.efg_pct_off - ff2.efg_pct_off,
-                "to_diff": ff1.to_pct_off - ff2.to_pct_off,
-                "or_diff": ff1.or_pct_off - ff2.or_pct_off,
-                "ft_rate_diff": ff1.ft_rate_off - ff2.ft_rate_off,
-                # Offensive vs opposing defense
-                "efg_adv_t1": ff1.efg_pct_off - ff2.efg_pct_def,
-                "efg_adv_t2": ff2.efg_pct_off - ff1.efg_pct_def,
-            })
+            features.update(
+                {
+                    "efg_diff": ff1.efg_pct_off - ff2.efg_pct_off,
+                    "to_diff": ff1.to_pct_off - ff2.to_pct_off,
+                    "or_diff": ff1.or_pct_off - ff2.or_pct_off,
+                    "ft_rate_diff": ff1.ft_rate_off - ff2.ft_rate_off,
+                    # Offensive vs opposing defense
+                    "efg_adv_t1": ff1.efg_pct_off - ff2.efg_pct_def,
+                    "efg_adv_t2": ff2.efg_pct_off - ff1.efg_pct_def,
+                }
+            )
         else:
             # Default values when Four Factors not available
-            features.update({
-                "efg_diff": 0.0,
-                "to_diff": 0.0,
-                "or_diff": 0.0,
-                "ft_rate_diff": 0.0,
-                "efg_adv_t1": 0.0,
-                "efg_adv_t2": 0.0,
-            })
+            features.update(
+                {
+                    "efg_diff": 0.0,
+                    "to_diff": 0.0,
+                    "or_diff": 0.0,
+                    "ft_rate_diff": 0.0,
+                    "efg_adv_t1": 0.0,
+                    "efg_adv_t2": 0.0,
+                }
+            )
 
         # Add Point Distribution if available
         pd1 = matchup.team1_point_dist
         pd2 = matchup.team2_point_dist
 
         if pd1 and pd2:
-            features.update({
-                "three_pct_diff": pd1.three_pct - pd2.three_pct,
-                "two_pct_diff": pd1.two_pct - pd2.two_pct,
-                "ft_pct_diff": pd1.ft_pct - pd2.ft_pct,
-                # Variance proxy (3-point reliance indicates volatility)
-                "three_reliance_diff": pd1.three_pct - pd2.three_pct,
-            })
+            features.update(
+                {
+                    "three_pct_diff": pd1.three_pct - pd2.three_pct,
+                    "two_pct_diff": pd1.two_pct - pd2.two_pct,
+                    "ft_pct_diff": pd1.ft_pct - pd2.ft_pct,
+                    # Variance proxy (3-point reliance indicates volatility)
+                    "three_reliance_diff": pd1.three_pct - pd2.three_pct,
+                }
+            )
         else:
-            features.update({
-                "three_pct_diff": 0.0,
-                "two_pct_diff": 0.0,
-                "ft_pct_diff": 0.0,
-                "three_reliance_diff": 0.0,
-            })
+            features.update(
+                {
+                    "three_pct_diff": 0.0,
+                    "two_pct_diff": 0.0,
+                    "ft_pct_diff": 0.0,
+                    "three_reliance_diff": 0.0,
+                }
+            )
 
         # Combined tempo for total prediction
         features["avg_tempo"] = (t1.adj_tempo + t2.adj_tempo) / 2

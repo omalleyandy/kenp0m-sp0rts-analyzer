@@ -5,16 +5,18 @@ abstracting away SQL queries and transaction management.
 """
 
 import logging
-from datetime import date, datetime, timedelta
-from typing import Any, Optional
+from datetime import date, timedelta
+from typing import Any
 
 from .database import DatabaseManager
 from .exceptions import DatabaseError, TeamNotFoundError
 from .models import (
     AccuracyReport,
+    FanMatchPrediction,
     FourFactors,
     GamePrediction,
     GameResult,
+    MiscStats,
     PointDistribution,
     Team,
     TeamRating,
@@ -60,10 +62,16 @@ class KenPomRepository:
             for team in teams:
                 # Generate team_id from RankAdjEM if not provided
                 # API doesn't return TeamID, so we use rank as stable identifier
-                team_id = team.get("team_id") or team.get("TeamID") or team.get("RankAdjEM")
+                team_id = (
+                    team.get("team_id")
+                    or team.get("TeamID")
+                    or team.get("RankAdjEM")
+                )
 
                 if team_id is None:
-                    logger.warning(f"Skipping team without ID: {team.get('TeamName')}")
+                    logger.warning(
+                        f"Skipping team without ID: {team.get('TeamName')}"
+                    )
                     continue
 
                 conn.execute(
@@ -116,7 +124,8 @@ class KenPomRepository:
         """
         with self.db.connection() as conn:
             cursor = conn.execute(
-                "SELECT * FROM teams WHERE LOWER(team_name) = LOWER(?)", (name,)
+                "SELECT * FROM teams WHERE LOWER(team_name) = LOWER(?)",
+                (name,),
             )
             row = cursor.fetchone()
             return Team(**dict(row)) if row else None
@@ -451,14 +460,18 @@ class KenPomRepository:
                         record.get("to_pct_def") or record.get("DTO_Pct"),
                         record.get("or_pct_def") or record.get("DOR_Pct"),
                         record.get("ft_rate_def") or record.get("DFT_Rate"),
-                        record.get("rank_efg_off") or record.get("RankeFG_Pct"),
-                        record.get("rank_efg_def") or record.get("RankDeFG_Pct"),
+                        record.get("rank_efg_off")
+                        or record.get("RankeFG_Pct"),
+                        record.get("rank_efg_def")
+                        or record.get("RankDeFG_Pct"),
                         record.get("rank_to_off") or record.get("RankTO_Pct"),
                         record.get("rank_to_def") or record.get("RankDTO_Pct"),
                         record.get("rank_or_off") or record.get("RankOR_Pct"),
                         record.get("rank_or_def") or record.get("RankDOR_Pct"),
-                        record.get("rank_ft_rate_off") or record.get("RankFT_Rate"),
-                        record.get("rank_ft_rate_def") or record.get("RankDFT_Rate"),
+                        record.get("rank_ft_rate_off")
+                        or record.get("RankFT_Rate"),
+                        record.get("rank_ft_rate_def")
+                        or record.get("RankDFT_Rate"),
                     ),
                 )
                 count += 1
@@ -554,14 +567,17 @@ class KenPomRepository:
                         record.get("ft_pct_def") or record.get("DefFt"),
                         record.get("two_pct_def") or record.get("DefFg2"),
                         record.get("three_pct_def") or record.get("DefFg3"),
-                        record.get("rank_three_pct") or record.get("RankOffFg3"),
+                        record.get("rank_three_pct")
+                        or record.get("RankOffFg3"),
                         record.get("rank_two_pct") or record.get("RankOffFg2"),
                         record.get("rank_ft_pct") or record.get("RankOffFt"),
                     ),
                 )
                 count += 1
 
-        logger.debug(f"Saved {count} point distribution records for {snapshot_date}")
+        logger.debug(
+            f"Saved {count} point distribution records for {snapshot_date}"
+        )
         return count
 
     def get_point_distribution(
@@ -599,6 +615,252 @@ class KenPomRepository:
                 )
             row = cursor.fetchone()
             return PointDistribution(**dict(row)) if row else None
+
+    # ==================== FanMatch Predictions ====================
+
+    def save_fanmatch_predictions(
+        self,
+        snapshot_date: date,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save KenPom FanMatch predictions.
+
+        Args:
+            snapshot_date: Date of the data.
+            data: List of fanmatch prediction dictionaries.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                home_id = record.get("HomeTeamID") or record.get(
+                    "home_team_id"
+                )
+                visitor_id = record.get("VisitorTeamID") or record.get(
+                    "visitor_team_id"
+                )
+
+                # Generate game_id from teams and date
+                game_date = record.get(
+                    "GameDate", snapshot_date.strftime("%Y%m%d")
+                )
+                game_id = f"{home_id}-{visitor_id}-{game_date}"
+
+                # Extract predictions
+                home_pred = record.get("HomePred") or record.get(
+                    "pred_home_score", 0
+                )
+                visitor_pred = record.get("VisitorPred") or record.get(
+                    "pred_visitor_score", 0
+                )
+                margin = record.get("pred_margin") or (
+                    home_pred - visitor_pred
+                )
+
+                # Win probability (convert from percentage if needed)
+                home_wp = record.get("HomeWP") or record.get(
+                    "home_win_prob", 50
+                )
+                if home_wp > 1:  # Assume it's a percentage
+                    home_wp = home_wp / 100
+
+                conn.execute(
+                    """
+                    INSERT INTO fanmatch_predictions (
+                        snapshot_date, game_id, home_team_id, visitor_team_id,
+                        home_team_name, visitor_team_name,
+                        pred_home_score, pred_visitor_score, pred_margin,
+                        home_win_prob, pred_tempo, thrill_score
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, game_id) DO UPDATE SET
+                        pred_home_score = excluded.pred_home_score,
+                        pred_visitor_score = excluded.pred_visitor_score,
+                        pred_margin = excluded.pred_margin,
+                        home_win_prob = excluded.home_win_prob,
+                        pred_tempo = excluded.pred_tempo,
+                        thrill_score = excluded.thrill_score
+                    """,
+                    (
+                        snapshot_date,
+                        game_id,
+                        home_id,
+                        visitor_id,
+                        record.get("Home") or record.get("home_team_name"),
+                        record.get("Visitor")
+                        or record.get("visitor_team_name"),
+                        home_pred,
+                        visitor_pred,
+                        margin,
+                        home_wp,
+                        record.get("PredTempo") or record.get("pred_tempo"),
+                        record.get("ThrillScore")
+                        or record.get("thrill_score"),
+                    ),
+                )
+                count += 1
+
+        logger.debug(f"Saved {count} fanmatch predictions for {snapshot_date}")
+        return count
+
+    def get_fanmatch_for_game(
+        self,
+        home_team_id: int,
+        away_team_id: int,
+        snapshot_date: date | None = None,
+    ) -> FanMatchPrediction | None:
+        """Get KenPom prediction for specific game.
+
+        Args:
+            home_team_id: Home team ID.
+            away_team_id: Away team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            FanMatchPrediction if found, None otherwise.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM fanmatch_predictions
+                    WHERE home_team_id = ? AND visitor_team_id = ?
+                        AND snapshot_date = ?
+                    """,
+                    (home_team_id, away_team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM fanmatch_predictions
+                    WHERE home_team_id = ? AND visitor_team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (home_team_id, away_team_id),
+                )
+            row = cursor.fetchone()
+            return FanMatchPrediction(**dict(row)) if row else None
+
+    # ==================== Misc Stats ====================
+
+    def save_misc_stats(
+        self,
+        snapshot_date: date,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save misc stats data.
+
+        Args:
+            snapshot_date: Date of the data.
+            data: List of misc stats dictionaries.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                team_id = record.get("team_id") or record.get("TeamID")
+
+                # If no team_id, look up by team name
+                if not team_id and record.get("TeamName"):
+                    team = self.get_team_by_name(record["TeamName"])
+                    if team:
+                        team_id = team.team_id
+
+                if not team_id:
+                    continue
+
+                conn.execute(
+                    """
+                    INSERT INTO misc_stats (
+                        snapshot_date, team_id,
+                        fg3_pct_off, fg3_pct_def, fg2_pct_off, fg2_pct_def,
+                        ft_pct_off, ft_pct_def, assist_rate, assist_rate_def,
+                        steal_rate, steal_rate_def, block_pct_off, block_pct_def,
+                        rank_fg3_pct, rank_fg2_pct, rank_ft_pct, rank_assist_rate
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
+                        fg3_pct_off = excluded.fg3_pct_off,
+                        fg3_pct_def = excluded.fg3_pct_def,
+                        fg2_pct_off = excluded.fg2_pct_off,
+                        fg2_pct_def = excluded.fg2_pct_def,
+                        ft_pct_off = excluded.ft_pct_off,
+                        ft_pct_def = excluded.ft_pct_def,
+                        assist_rate = excluded.assist_rate,
+                        assist_rate_def = excluded.assist_rate_def,
+                        steal_rate = excluded.steal_rate,
+                        steal_rate_def = excluded.steal_rate_def,
+                        block_pct_off = excluded.block_pct_off,
+                        block_pct_def = excluded.block_pct_def
+                    """,
+                    (
+                        snapshot_date,
+                        team_id,
+                        record.get("FG3Pct") or record.get("fg3_pct_off"),
+                        record.get("OppFG3Pct") or record.get("fg3_pct_def"),
+                        record.get("FG2Pct") or record.get("fg2_pct_off"),
+                        record.get("OppFG2Pct") or record.get("fg2_pct_def"),
+                        record.get("FTPct") or record.get("ft_pct_off"),
+                        record.get("OppFTPct") or record.get("ft_pct_def"),
+                        record.get("ARate") or record.get("assist_rate"),
+                        record.get("OppARate")
+                        or record.get("assist_rate_def"),
+                        record.get("StlRate") or record.get("steal_rate"),
+                        record.get("OppStlRate")
+                        or record.get("steal_rate_def"),
+                        record.get("BlockPct") or record.get("block_pct_off"),
+                        record.get("OppBlockPct")
+                        or record.get("block_pct_def"),
+                        record.get("RankFG3Pct") or record.get("rank_fg3_pct"),
+                        record.get("RankFG2Pct") or record.get("rank_fg2_pct"),
+                        record.get("RankFTPct") or record.get("rank_ft_pct"),
+                        record.get("RankARate")
+                        or record.get("rank_assist_rate"),
+                    ),
+                )
+                count += 1
+
+        logger.debug(f"Saved {count} misc stats records for {snapshot_date}")
+        return count
+
+    def get_misc_stats(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> MiscStats | None:
+        """Get misc stats for a team.
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            MiscStats if found, None otherwise.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM misc_stats
+                    WHERE team_id = ? AND snapshot_date = ?
+                    """,
+                    (team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM misc_stats
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (team_id,),
+                )
+            row = cursor.fetchone()
+            return MiscStats(**dict(row)) if row else None
 
     # ==================== Predictions ====================
 
@@ -775,11 +1037,7 @@ class KenPomRepository:
             p["prediction_error"] for p in predictions if p["prediction_error"]
         ]
         mae = statistics.mean([abs(e) for e in errors]) if errors else 0
-        rmse = (
-            statistics.mean([e**2 for e in errors]) ** 0.5
-            if errors
-            else 0
-        )
+        rmse = statistics.mean([e**2 for e in errors]) ** 0.5 if errors else 0
 
         # Win accuracy
         correct_wins = sum(
@@ -799,7 +1057,10 @@ class KenPomRepository:
         # Brier score
         brier_scores = []
         for p in predictions:
-            if p["win_probability"] is not None and p["actual_margin"] is not None:
+            if (
+                p["win_probability"] is not None
+                and p["actual_margin"] is not None
+            ):
                 actual_win = 1 if p["actual_margin"] > 0 else 0
                 brier_scores.append((p["win_probability"] - actual_win) ** 2)
         brier = statistics.mean(brier_scores) if brier_scores else 0
@@ -848,10 +1109,18 @@ class KenPomRepository:
         return {
             "team1": team1_rating,
             "team2": team2_rating,
-            "team1_four_factors": self.get_four_factors(team1_id, snapshot_date),
-            "team2_four_factors": self.get_four_factors(team2_id, snapshot_date),
-            "team1_point_dist": self.get_point_distribution(team1_id, snapshot_date),
-            "team2_point_dist": self.get_point_distribution(team2_id, snapshot_date),
+            "team1_four_factors": self.get_four_factors(
+                team1_id, snapshot_date
+            ),
+            "team2_four_factors": self.get_four_factors(
+                team2_id, snapshot_date
+            ),
+            "team1_point_dist": self.get_point_distribution(
+                team1_id, snapshot_date
+            ),
+            "team2_point_dist": self.get_point_distribution(
+                team2_id, snapshot_date
+            ),
             "team1_history": self.get_team_rating_history(team1_id, days=28),
             "team2_history": self.get_team_rating_history(team2_id, days=28),
         }
