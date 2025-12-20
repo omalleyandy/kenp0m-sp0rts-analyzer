@@ -22,7 +22,7 @@ from kenpompy.summary import (
 from kenpompy.team import get_schedule, get_scouting_report, get_valid_teams
 from kenpompy.utils import login
 
-from .utils import get_credentials, normalize_team_name
+from .helpers import get_credentials, normalize_team_name
 
 logger = logging.getLogger(__name__)
 

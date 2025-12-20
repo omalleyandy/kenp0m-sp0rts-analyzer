@@ -36,7 +36,7 @@ from typing import Any
 import pandas as pd
 
 from .api_client import KenPomAPI
-from .utils import normalize_team_name
+from .helpers import normalize_team_name
 
 
 @dataclass

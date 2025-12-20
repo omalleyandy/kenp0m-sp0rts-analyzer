@@ -5,8 +5,8 @@ import logging
 import pandas as pd
 
 from .client import KenPomClient
-from .models import MatchupAnalysis
-from .utils import calculate_expected_score, normalize_team_name
+from .data_models import MatchupAnalysis
+from .helpers import calculate_expected_score, normalize_team_name
 
 logger = logging.getLogger(__name__)
 

@@ -80,8 +80,8 @@ from .luck_regression import LuckRegressionAnalyzer
 # Legacy client
 from .client import KenPomClient
 
-# Models
-from .models import (
+# Data Models
+from .data_models import (
     FourFactors,
     HomeCourtAdvantage,
     MatchupAnalysis,
@@ -89,7 +89,7 @@ from .models import (
 )
 
 # Utils
-from .utils import get_credentials, normalize_team_name, setup_logging
+from .helpers import get_credentials, normalize_team_name, setup_logging
 
 __all__ = [
     "__version__",

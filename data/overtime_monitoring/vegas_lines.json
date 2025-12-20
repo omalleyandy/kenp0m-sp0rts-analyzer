@@ -1,125 +1,459 @@
 {
   "source": "overtime.ag",
-  "date": "2025-12-19",
-  "scraped_at": "2025-12-19T12:30:00",
-  "game_count": 13,
+  "date": "2025-12-20",
+  "scraped_at": "2025-12-20T04:58:38.585953",
+  "snapshot_type": "current",
+  "game_count": 45,
   "games": [
     {
-      "time": "11:00 AM",
-      "away_team": "Dartmouth",
-      "home_team": "Sacred Heart",
-      "spread": -1,
+      "time": "",
+      "away_team": "Oakland",
+      "home_team": "Michigan State",
+      "spread": 20,
       "total": 155,
       "away_ml": null,
-      "home_ml": null
+      "home_ml": null,
+      "category": "college_basketball"
     },
     {
-      "time": "5:00 PM",
-      "away_team": "South Dakota State",
-      "home_team": "Wisc Milwaukee",
-      "spread": 0,
-      "total": 153,
+      "time": "",
+      "away_team": "Montana",
+      "home_team": "Louisville",
+      "spread": 31,
+      "total": 168,
       "away_ml": null,
-      "home_ml": null
+      "home_ml": null,
+      "category": "college_basketball"
     },
     {
-      "time": "6:30 PM",
-      "away_team": "Seton Hall",
-      "home_team": "Providence",
-      "spread": -2.5,
-      "total": 153.5,
+      "time": "",
+      "away_team": "South Dakota",
+      "home_team": "Kansas State",
+      "spread": 21,
+      "total": 171,
       "away_ml": null,
-      "home_ml": null
+      "home_ml": null,
+      "category": "college_basketball"
     },
     {
-      "time": "7:00 PM",
-      "away_team": "Mt. St. Marys",
-      "home_team": "Drexel",
-      "spread": -5,
-      "total": 141,
-      "away_ml": null,
-      "home_ml": null
+      "time": "",
+      "away_team": "St. Johns",
+      "home_team": "Kentucky",
+      "spread": -3,
+      "total": 155,
+      "away_ml": -150,
+      "home_ml": -150,
+      "category": "college_basketball"
     },
     {
-      "time": "7:00 PM",
-      "away_team": "Eastern Michigan",
-      "home_team": "Akron",
-      "spread": -17,
-      "total": 161,
-      "away_ml": null,
-      "home_ml": null
-    },
-    {
-      "time": "7:30 PM",
-      "away_team": "Tulsa",
-      "home_team": "Western Kentucky",
-      "spread": 2.5,
-      "total": 158,
-      "away_ml": null,
-      "home_ml": null
-    },
-    {
-      "time": "8:00 PM",
-      "away_team": "Villanova",
-      "home_team": "Wisconsin",
-      "spread": -5.5,
-      "total": 150.5,
-      "away_ml": null,
-      "home_ml": null
-    },
-    {
-      "time": "9:00 PM",
-      "away_team": "Belmont",
-      "home_team": "Cal Irvine",
-      "spread": -1.5,
+      "time": "",
+      "away_team": "Liberty",
+      "home_team": "Dayton",
+      "spread": 10,
       "total": 147,
-      "away_ml": null,
-      "home_ml": null
+      "away_ml": 415,
+      "home_ml": 415,
+      "category": "college_basketball"
     },
     {
-      "time": "9:30 PM",
-      "away_team": "Abilene Christian",
-      "home_team": "BYU",
-      "spread": -32,
-      "total": 146,
-      "away_ml": null,
-      "home_ml": null
+      "time": "",
+      "away_team": "Georgia State",
+      "home_team": "Appalachian State",
+      "spread": 10,
+      "total": 135,
+      "away_ml": 400,
+      "home_ml": 400,
+      "category": "college_basketball"
     },
     {
-      "time": "10:00 PM",
-      "away_team": "Cal Poly SLO",
-      "home_team": "UCLA",
-      "spread": -26,
-      "total": 160.5,
-      "away_ml": null,
-      "home_ml": null
+      "time": "",
+      "away_team": "Miami Ohio",
+      "home_team": "Ball State",
+      "spread": null,
+      "total": 147,
+      "away_ml": -575,
+      "home_ml": -575,
+      "category": "college_basketball"
     },
     {
-      "time": "10:00 PM",
-      "away_team": "San Diego",
-      "home_team": "UC San Diego",
-      "spread": -13.5,
+      "time": "",
+      "away_team": "Kent State",
+      "home_team": "Massachusetts",
+      "spread": 1,
+      "total": 168,
+      "away_ml": -110,
+      "home_ml": -110,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Coastal Carolina",
+      "home_team": "Old Dominion",
+      "spread": 5,
+      "total": 145,
+      "away_ml": 180,
+      "home_ml": 180,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Colorado State",
+      "home_team": "Utah State",
+      "spread": null,
+      "total": 149,
+      "away_ml": 316,
+      "home_ml": 316,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Marshall",
+      "home_team": "Troy",
+      "spread": null,
+      "total": 152,
+      "away_ml": 170,
+      "home_ml": 170,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Elon",
+      "home_team": "Virginia Tech",
+      "spread": 14,
       "total": 157,
-      "away_ml": null,
-      "home_ml": null
+      "away_ml": 795,
+      "home_ml": 795,
+      "category": "college_basketball"
     },
     {
-      "time": "10:00 PM",
-      "away_team": "Florida Atlantic",
-      "home_team": "Saint Marys CA",
-      "spread": -13.5,
+      "time": "",
+      "away_team": "North Carolina",
+      "home_team": "Ohio State",
+      "spread": -4,
+      "total": 154,
+      "away_ml": -180,
+      "home_ml": -180,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Central Michigan",
+      "home_team": "Northern Illinois",
+      "spread": 3,
+      "total": 148,
+      "away_ml": 135,
+      "home_ml": 135,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "South Alabama",
+      "home_team": "Texas State",
+      "spread": null,
+      "total": 138,
+      "away_ml": 105,
+      "home_ml": 105,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Bowling Green",
+      "home_team": "Ohio",
+      "spread": null,
+      "total": 151,
+      "away_ml": 105,
+      "home_ml": 105,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Grand Canyon",
+      "home_team": "Wyoming",
+      "spread": null,
+      "total": 148,
+      "away_ml": 125,
+      "home_ml": 125,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Jacksonville State",
+      "home_team": "East Tenn State",
+      "spread": 11,
+      "total": 134,
+      "away_ml": 476,
+      "home_ml": 476,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Tennessee Martin",
+      "home_team": "Tennessee Tech",
+      "spread": 2,
+      "total": 145,
+      "away_ml": 110,
+      "home_ml": 110,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Memphis",
+      "home_team": "Mississippi State",
+      "spread": null,
+      "total": 153,
+      "away_ml": 140,
+      "home_ml": 140,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Northeastern",
+      "home_team": "Syracuse",
+      "spread": 15,
+      "total": 143,
+      "away_ml": 910,
+      "home_ml": 910,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Northwestern",
+      "home_team": "Butler",
+      "spread": 2,
+      "total": 157,
+      "away_ml": 115,
+      "home_ml": 115,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Arkansas State",
+      "home_team": "Southern Miss",
+      "spread": -2,
+      "total": 156,
+      "away_ml": -130,
+      "home_ml": -130,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Morehead State",
+      "home_team": "Southern Indiana",
+      "spread": -2,
+      "total": 147,
+      "away_ml": -130,
+      "home_ml": -130,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "SE Missouri State",
+      "home_team": "Tennessee State",
+      "spread": null,
+      "total": 151,
+      "away_ml": 105,
+      "home_ml": 105,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Mercer",
+      "home_team": "Washington State",
+      "spread": null,
+      "total": 152,
+      "away_ml": 256,
+      "home_ml": 256,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "James Madison",
+      "home_team": "Georgia Southern",
+      "spread": null,
+      "total": 156,
+      "away_ml": 120,
+      "home_ml": 120,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Loyola Chicago",
+      "home_team": "Santa Clara",
+      "spread": null,
+      "total": 150,
+      "away_ml": null,
+      "home_ml": null,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "The Citadel",
+      "home_team": "Richmond",
+      "spread": 20,
+      "total": 148,
+      "away_ml": null,
+      "home_ml": null,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Maryland",
+      "home_team": "Virginia",
+      "spread": 16,
+      "total": 154,
+      "away_ml": 910,
+      "home_ml": 910,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Auburn",
+      "home_team": "Purdue",
+      "spread": null,
+      "total": 153,
+      "away_ml": 316,
+      "home_ml": 316,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Fresno State",
+      "home_team": "UNLV",
+      "spread": 8,
+      "total": 158,
+      "away_ml": 280,
+      "home_ml": 280,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Eastern Washington",
+      "home_team": "Utah",
+      "spread": 12,
+      "total": 157,
+      "away_ml": 561,
+      "home_ml": 561,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Portland State",
+      "home_team": "Tulane",
+      "spread": 4,
       "total": 144,
-      "away_ml": null,
-      "home_ml": null
+      "away_ml": 149,
+      "home_ml": 149,
+      "category": "college_basketball"
     },
     {
-      "time": "11:30 PM",
-      "away_team": "Seattle U",
-      "home_team": "Washington",
-      "spread": -8,
-      "total": 147.5,
-      "away_ml": null,
-      "home_ml": null
+      "time": "",
+      "away_team": "Cal Riverside",
+      "home_team": "St. Thomas",
+      "spread": null,
+      "total": 151,
+      "away_ml": 709,
+      "home_ml": 709,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Pennsylvania",
+      "home_team": "Rutgers",
+      "spread": null,
+      "total": 148,
+      "away_ml": 514,
+      "home_ml": 514,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Sacramento State",
+      "home_team": "California Baptist",
+      "spread": 13,
+      "total": 152,
+      "away_ml": 637,
+      "home_ml": 637,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Stanford",
+      "home_team": "Colorado",
+      "spread": null,
+      "total": 155,
+      "away_ml": 200,
+      "home_ml": 200,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Texas Tech",
+      "home_team": "Duke",
+      "spread": null,
+      "total": 153,
+      "away_ml": 306,
+      "home_ml": 306,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Marquette",
+      "home_team": "Creighton",
+      "spread": null,
+      "total": 149,
+      "away_ml": 263,
+      "home_ml": 263,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Xavier",
+      "home_team": "Georgetown",
+      "spread": null,
+      "total": 150,
+      "away_ml": 165,
+      "home_ml": 165,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Utah Tech",
+      "home_team": "Weber State",
+      "spread": null,
+      "total": 148,
+      "away_ml": 200,
+      "home_ml": 200,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Rice",
+      "home_team": "Pepperdine",
+      "spread": null,
+      "total": 140,
+      "away_ml": -120,
+      "home_ml": -120,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "San Jose State",
+      "home_team": "New Mexico",
+      "spread": null,
+      "total": 146,
+      "away_ml": 709,
+      "home_ml": 709,
+      "category": "college_basketball"
+    },
+    {
+      "time": "",
+      "away_team": "Boise State",
+      "home_team": "Nevada",
+      "spread": null,
+      "total": 141,
+      "away_ml": -165,
+      "home_ml": -165,
+      "category": "college_basketball"
     }
   ]
 }
