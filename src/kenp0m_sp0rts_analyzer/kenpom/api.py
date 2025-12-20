@@ -517,6 +517,64 @@ class KenPomService:
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
             )
 
+    def sync_height(
+        self,
+        year: int | None = None,
+        snapshot_date: date | None = None,
+    ) -> SyncResult:
+        """Sync height and experience data from the API.
+
+        Args:
+            year: Season year.
+            snapshot_date: Date to record snapshot.
+
+        Returns:
+            SyncResult with operation details.
+        """
+
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            if year is None:
+                today = date.today()
+                year = today.year if today.month >= 11 else today.year
+
+            response = self.api.get_height(year=year)
+            data = list(response.data)
+
+            snapshot_date = snapshot_date or date.today()
+            count = self.repository.save_height(snapshot_date, data)
+
+            self.repository.db.record_sync(
+                endpoint="height",
+                sync_type="full",
+                status="success",
+                records_synced=count,
+                started_at=start_time,
+            )
+
+            duration = (datetime.now() - start_time).total_seconds()
+            logger.info(f"Synced {count} height records in {duration:.2f}s")
+
+            return SyncResult(
+                success=True,
+                endpoint="height",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"Height sync failed: {e}")
+            errors.append(str(e))
+            return SyncResult(
+                success=False,
+                endpoint="height",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
     def sync_archive(
         self,
         archive_date: date,
@@ -618,6 +676,7 @@ class KenPomService:
         results["four_factors"] = self.sync_four_factors(year=year)
         results["point_distribution"] = self.sync_point_distribution(year=year)
         results["misc_stats"] = self.sync_misc_stats(year=year)
+        results["height"] = self.sync_height(year=year)
         results["fanmatch"] = self.sync_fanmatch()
 
         # Log summary

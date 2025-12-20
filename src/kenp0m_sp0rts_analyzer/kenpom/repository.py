@@ -1036,6 +1036,100 @@ class KenPomRepository:
             row = cursor.fetchone()
             return MiscStats(**dict(row)) if row else None
 
+    # ==================== Height ====================
+
+    def save_height(
+        self,
+        snapshot_date: date,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save height and experience data.
+
+        Args:
+            snapshot_date: Date of the data.
+            data: List of height dictionaries from API.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                team_id = record.get("team_id") or record.get("TeamID")
+
+                # If no team_id, look up by team name
+                if not team_id and record.get("TeamName"):
+                    team = self.get_team_by_name(record["TeamName"])
+                    if team:
+                        team_id = team.team_id
+
+                if not team_id:
+                    continue
+
+                conn.execute(
+                    """
+                    INSERT INTO height (
+                        snapshot_date, team_id,
+                        avg_height, effective_height, experience,
+                        bench_minutes, continuity,
+                        rank_height, rank_experience, rank_continuity,
+                        hgt_c, hgt_pf, hgt_sf, hgt_sg, hgt_pg,
+                        rank_hgt_c, rank_hgt_pf, rank_hgt_sf, rank_hgt_sg, rank_hgt_pg,
+                        rank_effective_height, rank_bench
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
+                        avg_height = excluded.avg_height,
+                        effective_height = excluded.effective_height,
+                        experience = excluded.experience,
+                        bench_minutes = excluded.bench_minutes,
+                        continuity = excluded.continuity,
+                        rank_height = excluded.rank_height,
+                        rank_experience = excluded.rank_experience,
+                        rank_continuity = excluded.rank_continuity,
+                        hgt_c = excluded.hgt_c,
+                        hgt_pf = excluded.hgt_pf,
+                        hgt_sf = excluded.hgt_sf,
+                        hgt_sg = excluded.hgt_sg,
+                        hgt_pg = excluded.hgt_pg,
+                        rank_hgt_c = excluded.rank_hgt_c,
+                        rank_hgt_pf = excluded.rank_hgt_pf,
+                        rank_hgt_sf = excluded.rank_hgt_sf,
+                        rank_hgt_sg = excluded.rank_hgt_sg,
+                        rank_hgt_pg = excluded.rank_hgt_pg,
+                        rank_effective_height = excluded.rank_effective_height,
+                        rank_bench = excluded.rank_bench
+                    """,
+                    (
+                        snapshot_date,
+                        team_id,
+                        record.get("avg_height") or record.get("AvgHgt"),
+                        record.get("effective_height") or record.get("HgtEff"),
+                        record.get("experience") or record.get("Exp"),
+                        record.get("bench_minutes") or record.get("Bench"),
+                        record.get("continuity") or record.get("Continuity"),
+                        record.get("rank_height") or record.get("AvgHgtRank"),
+                        record.get("rank_experience") or record.get("ExpRank"),
+                        record.get("rank_continuity") or record.get("ContinuityRank"),
+                        record.get("hgt_c") or record.get("Hgt5"),
+                        record.get("hgt_pf") or record.get("Hgt4"),
+                        record.get("hgt_sf") or record.get("Hgt3"),
+                        record.get("hgt_sg") or record.get("Hgt2"),
+                        record.get("hgt_pg") or record.get("Hgt1"),
+                        record.get("rank_hgt_c") or record.get("Hgt5Rank"),
+                        record.get("rank_hgt_pf") or record.get("Hgt4Rank"),
+                        record.get("rank_hgt_sf") or record.get("Hgt3Rank"),
+                        record.get("rank_hgt_sg") or record.get("Hgt2Rank"),
+                        record.get("rank_hgt_pg") or record.get("Hgt1Rank"),
+                        record.get("rank_effective_height")
+                        or record.get("HgtEffRank"),
+                        record.get("rank_bench") or record.get("BenchRank"),
+                    ),
+                )
+                count += 1
+
+        logger.debug(f"Saved {count} height records for {snapshot_date}")
+        return count
+
     def get_height(
         self,
         team_id: int,
