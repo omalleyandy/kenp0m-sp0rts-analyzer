@@ -1,98 +1,75 @@
 """
-Train XGBoost models for margin and total predictions
+Train XGBoost models for margin and total predictions.
+
+Usage:
+    python scripts/train_model.py [--samples N] [--start-date YYYY-MM-DD]
+
+This script generates training data from historical ratings and trains
+XGBoost models for margin and total predictions.
 """
 
+import argparse
+import json
 import sys
+from datetime import date, datetime
 from pathlib import Path
-import logging
+
 import numpy as np
 from sklearn.model_selection import train_test_split
-import json
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from kenp0m_sp0rts_analyzer.config import config
-from kenp0m_sp0rts_analyzer.features.feature_engineer import (
-    AdvancedFeatureEngineer,
-)
+from kenp0m_sp0rts_analyzer.features import HistoricalDataLoader
+from kenp0m_sp0rts_analyzer.kenpom import KenPomService
 from kenp0m_sp0rts_analyzer.models.xgboost_model import XGBoostModelWrapper
 from kenp0m_sp0rts_analyzer.utils.logging import setup_logging
-from kenp0m_sp0rts_analyzer.utils.exceptions import NCAABException
-
 
 logger = setup_logging(config.logs_dir, level="INFO", app_name="training")
 
 
-def load_training_data():
-    """Load historical game data for training"""
+def load_training_data(
+    n_samples: int = 5000,
+    start_date: date | None = None,
+    end_date: date | None = None,
+):
+    """Load or generate historical game data for training.
+
+    Args:
+        n_samples: Number of training examples to generate.
+        start_date: Start date for data range.
+        end_date: End date for data range.
+
+    Returns:
+        Tuple of (X, y_margin, y_total, feature_names).
+    """
     logger.info("Loading historical game data...")
 
-    # This would load your actual historical data
-    # For now, returning placeholder structure
-    kenpom_data = {}  # Load KenPom stats
-    historical_games = []  # Load game results
+    # Default date range
+    if end_date is None:
+        end_date = date.today()
+    if start_date is None:
+        start_date = date(end_date.year - 1, 11, 1)
 
-    # TODO: Implement actual data loading from database or CSV
-    # Example structure:
-    # historical_games = [
-    #     {
-    #         "game_id": "2025-01-01_Duke_UNC",
-    #         "date": "2025-01-01",
-    #         "home_team": "Duke",
-    #         "away_team": "UNC",
-    #         "opening_spread": -3.5,
-    #         "opening_total": 152.0,
-    #         "actual_margin": 5,  # Home won by 5
-    #         "actual_total": 145,
-    #     },
-    #     ...
-    # ]
+    # Initialize loader
+    service = KenPomService()
+    loader = HistoricalDataLoader(service)
 
-    return kenpom_data, historical_games
-
-
-def prepare_training_data(kenpom_data, historical_games):
-    """Prepare features and targets for training"""
-    logger.info("Preparing training data...")
-
-    feature_engineer = AdvancedFeatureEngineer(kenpom_data, {})
-
-    all_features = []
-    all_margins = []
-    all_totals = []
-    skipped_games = []
-
-    for game in historical_games:
-        try:
-            game_features = feature_engineer.create_features(
-                home_team=game["home_team"],
-                away_team=game["away_team"],
-                game_date=game["date"],
-                vegas_spread=game.get("opening_spread", -2.5),
-                vegas_total=game.get("opening_total", 152.0),
-            )
-
-            all_features.append(game_features.to_array())
-            all_margins.append(game["actual_margin"])
-            all_totals.append(game["actual_total"])
-
-        except Exception as e:
-            logger.warning(
-                f"Skipping game {game.get('game_id', 'unknown')}: {str(e)}"
-            )
-            skipped_games.append(game.get("game_id", "unknown"))
-            continue
-
-    X = np.array(all_features)
-    y_margin = np.array(all_margins)
-    y_total = np.array(all_totals)
-
-    logger.info(
-        f"Prepared {len(all_features)} games for training (skipped {len(skipped_games)})"
+    # Generate training data
+    X, y_margin, y_total, feature_names = loader.generate_training_data(
+        start_date=start_date,
+        end_date=end_date,
+        n_samples=n_samples,
+        seed=42,
     )
 
-    return X, y_margin, y_total, feature_engineer.FEATURE_NAMES
+    logger.info(
+        f"Generated {len(X)} training examples with {len(feature_names)} "
+        f"features"
+    )
+
+    return X, y_margin, y_total, feature_names
 
 
 def split_training_data(X, y_margin, y_total):
@@ -151,7 +128,7 @@ def train_margin_model(X_train, y_train, X_val, y_val, feature_names):
             feature_names=feature_names,
         )
 
-        logger.info(f"Margin Model Metrics:")
+        logger.info("Margin Model Metrics:")
         logger.info(f"  Train MAE: {metrics['train_mae']:.4f}")
         logger.info(f"  Val MAE: {metrics['val_mae']:.4f}")
         logger.info(f"  Val RMSE: {metrics['val_rmse']:.4f}")
@@ -179,7 +156,7 @@ def train_total_model(X_train, y_train, X_val, y_val, feature_names):
             feature_names=feature_names,
         )
 
-        logger.info(f"Total Model Metrics:")
+        logger.info("Total Model Metrics:")
         logger.info(f"  Train MAE: {metrics['train_mae']:.4f}")
         logger.info(f"  Val MAE: {metrics['val_mae']:.4f}")
         logger.info(f"  Val RMSE: {metrics['val_rmse']:.4f}")
@@ -199,7 +176,7 @@ def save_training_summary(
     logger.info("Saving training summary...")
 
     summary = {
-        "training_timestamp": str(Path.ctime(Path("."))),
+        "training_timestamp": datetime.now().isoformat(),
         "margin_model": {
             "train_mae": margin_metrics["train_mae"],
             "val_mae": margin_metrics["val_mae"],
@@ -226,28 +203,60 @@ def save_training_summary(
     return summary
 
 
+def parse_args():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Train XGBoost models for basketball predictions"
+    )
+    parser.add_argument(
+        "--samples",
+        type=int,
+        default=5000,
+        help="Number of training samples (default: 5000)",
+    )
+    parser.add_argument(
+        "--start-date",
+        type=str,
+        default=None,
+        help="Start date for training data (YYYY-MM-DD)",
+    )
+    parser.add_argument(
+        "--end-date",
+        type=str,
+        default=None,
+        help="End date for training data (YYYY-MM-DD)",
+    )
+    return parser.parse_args()
+
+
 def main():
     """Main training routine"""
+    args = parse_args()
+
     try:
         logger.info("=" * 60)
         logger.info("Starting XGBoost Model Training Pipeline")
         logger.info("=" * 60)
 
-        # 1. Load data
-        kenpom_data, historical_games = load_training_data()
+        # Parse dates
+        start_date = None
+        end_date = None
+        if args.start_date:
+            start_date = datetime.strptime(args.start_date, "%Y-%m-%d").date()
+        if args.end_date:
+            end_date = datetime.strptime(args.end_date, "%Y-%m-%d").date()
 
-        if not historical_games:
-            logger.error("No historical game data loaded!")
-            return False
-
-        # 2. Prepare data
-        X, y_margin, y_total, feature_names = prepare_training_data(
-            kenpom_data, historical_games
+        # 1. Load/generate training data
+        X, y_margin, y_total, feature_names = load_training_data(
+            n_samples=args.samples,
+            start_date=start_date,
+            end_date=end_date,
         )
 
         if len(X) < 100:
             logger.error(
-                f"Insufficient training data: {len(X)} games (need at least 100)"
+                f"Insufficient training data: {len(X)} games "
+                "(need at least 100)"
             )
             return False
 
