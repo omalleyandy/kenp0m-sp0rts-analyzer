@@ -46,7 +46,9 @@ class PredictionResult(BaseModel):
     ) -> tuple[float, float]:
         """Ensure confidence interval is ordered correctly."""
         if v[0] > v[1]:
-            raise ValueError(f"Lower bound {v[0]} must be <= upper bound {v[1]}")
+            raise ValueError(
+                f"Lower bound {v[0]} must be <= upper bound {v[1]}"
+            )
         return v
 
     @field_validator("team1_win_prob")
@@ -127,7 +129,9 @@ class FeatureEngineer:
         features: dict[str, float] = {}
 
         # Efficiency margin difference
-        features["em_diff"] = float(team1_stats["AdjEM"] - team2_stats["AdjEM"])
+        features["em_diff"] = float(
+            team1_stats["AdjEM"] - team2_stats["AdjEM"]
+        )
 
         # Tempo features
         team1_tempo = float(team1_stats["AdjT"])
@@ -154,7 +158,9 @@ class FeatureEngineer:
             features["home_advantage"] = 1.0 if home_team1 else -1.0
 
         # Interaction terms (high tempo favors better team)
-        features["em_tempo_interaction"] = features["em_diff"] * features["tempo_avg"]
+        features["em_tempo_interaction"] = (
+            features["em_diff"] * features["tempo_avg"]
+        )
 
         # APL (Average Possession Length) features
         # Use .get() with defaults for APL fields (may not be available in all data)
@@ -201,7 +207,7 @@ class XGBoostFeatureEngineer(FeatureEngineer):
     ENHANCED_FEATURE_NAMES = [
         # Base features (14)
         *FeatureEngineer.FEATURE_NAMES,
-        # Luck regression features (3)
+        # Luck regression features (4)
         "luck_team1",
         "luck_team2",
         "luck_diff",
@@ -217,6 +223,15 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         "momentum_score_team1",
         "momentum_score_team2",
         "momentum_diff",
+        # PHASE 1.6: Misc Stats features (8) - Total: 35 features
+        "fg3_pct_diff",
+        "fg2_pct_diff",
+        "ft_pct_diff",
+        "assist_rate_diff",
+        "steal_rate_diff",
+        "block_pct_diff",
+        "shooting_quality_team1",
+        "shooting_quality_team2",
     ]
 
     @staticmethod
@@ -229,8 +244,10 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         team2_history: list[dict] | None = None,
         point_dist_team1: dict | None = None,
         point_dist_team2: dict | None = None,
+        misc_stats_team1: dict | None = None,
+        misc_stats_team2: dict | None = None,
     ) -> dict[str, float]:
-        """Create enhanced feature vector with Phase 2 features.
+        """Create enhanced feature vector with Phase 1.6 features.
 
         Args:
             team1_stats: Team 1 KenPom statistics (must include Luck field)
@@ -241,9 +258,11 @@ class XGBoostFeatureEngineer(FeatureEngineer):
             team2_history: Historical ratings for momentum
             point_dist_team1: Point distribution stats (FT_Pct, TwoP_Pct, ThreeP_Pct)
             point_dist_team2: Point distribution stats
+            misc_stats_team1: Misc stats (FG3Pct, FG2Pct, FTPct, ARate, etc.)
+            misc_stats_team2: Misc stats
 
         Returns:
-            Dictionary with 26 engineered features (14 base + 12 enhanced)
+            Dictionary with 35 engineered features (14 base + 21 enhanced)
         """
         # Start with base features
         features = FeatureEngineer.create_features(
@@ -308,15 +327,15 @@ class XGBoostFeatureEngineer(FeatureEngineer):
 
         # --- TIER 1: Momentum Features ---
         if team1_history and len(team1_history) >= 2:
-            features["momentum_score_team1"] = XGBoostFeatureEngineer._calculate_momentum(
-                team1_history
+            features["momentum_score_team1"] = (
+                XGBoostFeatureEngineer._calculate_momentum(team1_history)
             )
         else:
             features["momentum_score_team1"] = 0.0
 
         if team2_history and len(team2_history) >= 2:
-            features["momentum_score_team2"] = XGBoostFeatureEngineer._calculate_momentum(
-                team2_history
+            features["momentum_score_team2"] = (
+                XGBoostFeatureEngineer._calculate_momentum(team2_history)
             )
         else:
             features["momentum_score_team2"] = 0.0
@@ -324,6 +343,62 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         features["momentum_diff"] = (
             features["momentum_score_team1"] - features["momentum_score_team2"]
         )
+
+        # --- PHASE 1.6: Misc Stats Features (8 features: 27 → 35) ---
+        if misc_stats_team1 and misc_stats_team2:
+            # Shooting percentage differentials
+            features["fg3_pct_diff"] = float(
+                misc_stats_team1.get("FG3Pct", 35.0)
+            ) - float(misc_stats_team2.get("FG3Pct", 35.0))
+
+            features["fg2_pct_diff"] = float(
+                misc_stats_team1.get("FG2Pct", 50.0)
+            ) - float(misc_stats_team2.get("FG2Pct", 50.0))
+
+            features["ft_pct_diff"] = float(
+                misc_stats_team1.get("FTPct", 70.0)
+            ) - float(misc_stats_team2.get("FTPct", 70.0))
+
+            # Advanced metrics differentials
+            features["assist_rate_diff"] = float(
+                misc_stats_team1.get("ARate", 50.0)
+            ) - float(misc_stats_team2.get("ARate", 50.0))
+
+            features["steal_rate_diff"] = float(
+                misc_stats_team1.get("StlRate", 10.0)
+            ) - float(misc_stats_team2.get("StlRate", 10.0))
+
+            features["block_pct_diff"] = float(
+                misc_stats_team1.get("BlockPct", 10.0)
+            ) - float(misc_stats_team2.get("BlockPct", 10.0))
+
+            # Composite shooting quality (weighted: 2PT 40%, 3PT 35%, FT 25%)
+            # Higher = better overall shooting team
+            t1_quality = (
+                0.40 * float(misc_stats_team1.get("FG2Pct", 50.0))
+                + 0.35 * float(misc_stats_team1.get("FG3Pct", 35.0))
+                + 0.25 * float(misc_stats_team1.get("FTPct", 70.0))
+            )
+            t2_quality = (
+                0.40 * float(misc_stats_team2.get("FG2Pct", 50.0))
+                + 0.35 * float(misc_stats_team2.get("FG3Pct", 35.0))
+                + 0.25 * float(misc_stats_team2.get("FTPct", 70.0))
+            )
+            features["shooting_quality_team1"] = t1_quality
+            features["shooting_quality_team2"] = t2_quality
+
+        else:
+            # Default values when misc stats not available
+            features["fg3_pct_diff"] = 0.0
+            features["fg2_pct_diff"] = 0.0
+            features["ft_pct_diff"] = 0.0
+            features["assist_rate_diff"] = 0.0
+            features["steal_rate_diff"] = 0.0
+            features["block_pct_diff"] = 0.0
+            features["shooting_quality_team1"] = (
+                52.5  # Weighted avg of defaults
+            )
+            features["shooting_quality_team2"] = 52.5
 
         return features
 
@@ -430,7 +505,9 @@ class GamePredictor:
             ValueError: If feature columns are missing from games_df.
         """
         # Validate feature columns
-        missing_features = set(FeatureEngineer.FEATURE_NAMES) - set(games_df.columns)
+        missing_features = set(FeatureEngineer.FEATURE_NAMES) - set(
+            games_df.columns
+        )
         if missing_features:
             raise ValueError(
                 f"Missing required feature columns: {missing_features}. "
@@ -453,6 +530,12 @@ class GamePredictor:
         team2_stats: dict[str, Any],
         neutral_site: bool = True,
         home_team1: bool = False,
+        team1_history: list[dict] | None = None,
+        team2_history: list[dict] | None = None,
+        point_dist_team1: dict | None = None,
+        point_dist_team2: dict | None = None,
+        misc_stats_team1: dict | None = None,
+        misc_stats_team2: dict | None = None,
     ) -> PredictionResult:
         """Predict game outcome with confidence intervals.
 
@@ -461,6 +544,12 @@ class GamePredictor:
             team2_stats: Team 2 KenPom statistics.
             neutral_site: Whether game is at neutral site.
             home_team1: If not neutral, whether team 1 is home team.
+            team1_history: Optional historical ratings for momentum.
+            team2_history: Optional historical ratings for momentum.
+            point_dist_team1: Optional point distribution stats.
+            point_dist_team2: Optional point distribution stats.
+            misc_stats_team1: Optional misc stats for team 1 (Phase 1.6).
+            misc_stats_team2: Optional misc stats for team 2 (Phase 1.6).
 
         Returns:
             PredictionResult with margin, total, scores, and confidence interval.
@@ -476,7 +565,16 @@ class GamePredictor:
         # Create features using appropriate method based on mode
         if self.use_enhanced_features:
             features = XGBoostFeatureEngineer.create_enhanced_features(
-                team1_stats, team2_stats, neutral_site, home_team1
+                team1_stats,
+                team2_stats,
+                neutral_site,
+                home_team1,
+                team1_history,
+                team2_history,
+                point_dist_team1,
+                point_dist_team2,
+                misc_stats_team1,
+                misc_stats_team2,
             )
         else:
             features = FeatureEngineer.create_features(
@@ -514,7 +612,10 @@ class GamePredictor:
         return PredictionResult(
             predicted_margin=round(predicted_margin, 1),
             predicted_total=round(predicted_total, 1),
-            confidence_interval=(round(lower_margin, 1), round(upper_margin, 1)),
+            confidence_interval=(
+                round(lower_margin, 1),
+                round(upper_margin, 1),
+            ),
             team1_score=round(team1_score, 1),
             team2_score=round(team2_score, 1),
             team1_win_prob=round(win_prob, 3),
@@ -683,7 +784,9 @@ class XGBoostGamePredictor:
 
         # Use appropriate feature engineer based on mode
         self.feature_engineer = (
-            XGBoostFeatureEngineer() if use_enhanced_features else FeatureEngineer()
+            XGBoostFeatureEngineer()
+            if use_enhanced_features
+            else FeatureEngineer()
         )
         self.is_fitted = False
 
@@ -743,6 +846,12 @@ class XGBoostGamePredictor:
         team2_stats: dict[str, Any],
         neutral_site: bool = True,
         home_team1: bool = False,
+        team1_history: list[dict] | None = None,
+        team2_history: list[dict] | None = None,
+        point_dist_team1: dict | None = None,
+        point_dist_team2: dict | None = None,
+        misc_stats_team1: dict | None = None,
+        misc_stats_team2: dict | None = None,
     ) -> PredictionResult:
         """Predict game outcome with confidence intervals.
 
@@ -751,6 +860,12 @@ class XGBoostGamePredictor:
             team2_stats: Team 2 KenPom statistics.
             neutral_site: Whether game is at neutral site.
             home_team1: If not neutral, whether team 1 is home team.
+            team1_history: Optional historical ratings for momentum.
+            team2_history: Optional historical ratings for momentum.
+            point_dist_team1: Optional point distribution stats.
+            point_dist_team2: Optional point distribution stats.
+            misc_stats_team1: Optional misc stats for team 1 (Phase 1.6).
+            misc_stats_team2: Optional misc stats for team 2 (Phase 1.6).
 
         Returns:
             PredictionResult with margin, total, scores, and confidence interval.
@@ -766,7 +881,16 @@ class XGBoostGamePredictor:
         # Create features (use enhanced if configured)
         if self.use_enhanced_features:
             features = self.feature_engineer.create_enhanced_features(
-                team1_stats, team2_stats, neutral_site, home_team1
+                team1_stats,
+                team2_stats,
+                neutral_site,
+                home_team1,
+                team1_history,
+                team2_history,
+                point_dist_team1,
+                point_dist_team2,
+                misc_stats_team1,
+                misc_stats_team2,
             )
         else:
             features = self.feature_engineer.create_features(
@@ -804,7 +928,10 @@ class XGBoostGamePredictor:
         return PredictionResult(
             predicted_margin=round(predicted_margin, 1),
             predicted_total=round(predicted_total, 1),
-            confidence_interval=(round(lower_margin, 1), round(upper_margin, 1)),
+            confidence_interval=(
+                round(lower_margin, 1),
+                round(upper_margin, 1),
+            ),
             team1_score=round(team1_score, 1),
             team2_score=round(team2_score, 1),
             team1_win_prob=round(win_prob, 3),
@@ -906,7 +1033,9 @@ class XGBoostGamePredictor:
         # Sort and return top N
         return df.sort_values("importance", ascending=False).head(top_n)
 
-    def load_model(self, margin_path: str, total_path: str | None = None) -> None:
+    def load_model(
+        self, margin_path: str, total_path: str | None = None
+    ) -> None:
         """Load trained XGBoost models from disk.
 
         Args:
@@ -1079,9 +1208,13 @@ class BacktestingFramework:
 
         # Regression metrics
         mae_margin = float(mean_absolute_error(actual_margins, pred_margins))
-        rmse_margin = float(np.sqrt(mean_squared_error(actual_margins, pred_margins)))
+        rmse_margin = float(
+            np.sqrt(mean_squared_error(actual_margins, pred_margins))
+        )
         mae_total = float(mean_absolute_error(actual_totals, pred_totals))
-        rmse_total = float(np.sqrt(mean_squared_error(actual_totals, pred_totals)))
+        rmse_total = float(
+            np.sqrt(mean_squared_error(actual_totals, pred_totals))
+        )
         r2_margin = float(r2_score(actual_margins, pred_margins))
 
         # Classification accuracy (correct winner)
@@ -1090,13 +1223,17 @@ class BacktestingFramework:
         accuracy = float((pred_winners == actual_winners).mean())
 
         # Brier score (probability calibration)
-        brier_score = float(np.mean((win_probs - actual_winners.astype(float)) ** 2))
+        brier_score = float(
+            np.mean((win_probs - actual_winners.astype(float)) ** 2)
+        )
 
         # ATS record (if line data available)
         if "spread" in test_df.columns:
             # Team 1 covers if: (actual_margin + spread) > 0
             # We predicted correctly if: sign(pred_margin + spread) == sign(actual_margin)
-            ats_correct = (pred_margins + test_df["spread"].values) * actual_margins > 0
+            ats_correct = (
+                pred_margins + test_df["spread"].values
+            ) * actual_margins > 0
             ats_wins = int(ats_correct.sum())
             ats_total = len(test_df)
             ats_record = (ats_wins, ats_total - ats_wins)
@@ -1148,7 +1285,9 @@ class BacktestingFramework:
         for i in range(n_folds):
             # Create fold indices
             test_start = i * fold_size
-            test_end = (i + 1) * fold_size if i < n_folds - 1 else len(games_df)
+            test_end = (
+                (i + 1) * fold_size if i < n_folds - 1 else len(games_df)
+            )
 
             # Split data
             test_df = games_df.iloc[test_start:test_end].copy()
