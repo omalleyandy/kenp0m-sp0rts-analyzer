@@ -316,13 +316,24 @@ class HistoricalDataLoader:
                                 snapshot_date, season, team_id,
                                 team_name, conference,
                                 adj_em, adj_oe, adj_de, adj_tempo,
+                                oe, de, tempo,
                                 rank_adj_em, rank_adj_oe,
-                                rank_adj_de, rank_tempo,
-                                sos, ncsos, luck, pythag
+                                rank_adj_de, rank_adj_tempo,
+                                rank_oe, rank_de, rank_tempo_raw,
+                                sos, soso, sosd, ncsos, luck, pythag,
+                                rank_sos, rank_soso, rank_sosd,
+                                rank_ncsos, rank_luck, rank_pythag,
+                                apl_off, apl_def,
+                                rank_apl_off, rank_apl_def,
+                                conf_apl_off, conf_apl_def,
+                                rank_conf_apl_off, rank_conf_apl_def,
+                                wins, losses
                             )
                             VALUES (
-                                ?, ?, ?, ?, ?, ?, ?, ?,
-                                ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?
                             )
                             ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
                                 team_name = excluded.team_name,
@@ -331,14 +342,38 @@ class HistoricalDataLoader:
                                 adj_oe = excluded.adj_oe,
                                 adj_de = excluded.adj_de,
                                 adj_tempo = excluded.adj_tempo,
+                                oe = excluded.oe,
+                                de = excluded.de,
+                                tempo = excluded.tempo,
                                 rank_adj_em = excluded.rank_adj_em,
                                 rank_adj_oe = excluded.rank_adj_oe,
                                 rank_adj_de = excluded.rank_adj_de,
-                                rank_tempo = excluded.rank_tempo,
+                                rank_adj_tempo = excluded.rank_adj_tempo,
+                                rank_oe = excluded.rank_oe,
+                                rank_de = excluded.rank_de,
+                                rank_tempo_raw = excluded.rank_tempo_raw,
                                 sos = excluded.sos,
+                                soso = excluded.soso,
+                                sosd = excluded.sosd,
                                 ncsos = excluded.ncsos,
                                 luck = excluded.luck,
-                                pythag = excluded.pythag
+                                pythag = excluded.pythag,
+                                rank_sos = excluded.rank_sos,
+                                rank_soso = excluded.rank_soso,
+                                rank_sosd = excluded.rank_sosd,
+                                rank_ncsos = excluded.rank_ncsos,
+                                rank_luck = excluded.rank_luck,
+                                rank_pythag = excluded.rank_pythag,
+                                apl_off = excluded.apl_off,
+                                apl_def = excluded.apl_def,
+                                rank_apl_off = excluded.rank_apl_off,
+                                rank_apl_def = excluded.rank_apl_def,
+                                conf_apl_off = excluded.conf_apl_off,
+                                conf_apl_def = excluded.conf_apl_def,
+                                rank_conf_apl_off = excluded.rank_conf_apl_off,
+                                rank_conf_apl_def = excluded.rank_conf_apl_def,
+                                wins = excluded.wins,
+                                losses = excluded.losses
                             """,
                             (
                                 snapshot_date.isoformat(),
@@ -346,18 +381,51 @@ class HistoricalDataLoader:
                                 team_id,
                                 rating.get("TeamName"),
                                 rating.get("ConfShort"),
+                                # Adjusted metrics
                                 rating.get("AdjEM"),
                                 rating.get("AdjOE"),
                                 rating.get("AdjDE"),
                                 rating.get("AdjTempo"),
+                                # Raw metrics
+                                rating.get("OE"),
+                                rating.get("DE"),
+                                rating.get("Tempo"),
+                                # Adjusted ranks
                                 rating.get("RankAdjEM"),
                                 rating.get("RankAdjOE"),
                                 rating.get("RankAdjDE"),
                                 rating.get("RankAdjTempo"),
+                                # Raw ranks
+                                rating.get("RankOE"),
+                                rating.get("RankDE"),
+                                rating.get("RankTempo"),
+                                # Strength metrics
                                 rating.get("SOS"),
+                                rating.get("SOSO"),
+                                rating.get("SOSD"),
                                 rating.get("NCSOS"),
                                 rating.get("Luck"),
                                 rating.get("Pythag"),
+                                # Strength ranks
+                                rating.get("RankSOS"),
+                                rating.get("RankSOSO"),
+                                rating.get("RankSOSD"),
+                                rating.get("RankNCSOS"),
+                                rating.get("RankLuck"),
+                                rating.get("RankPythag"),
+                                # APL (Average Possession Length)
+                                rating.get("APL_Off"),
+                                rating.get("APL_Def"),
+                                rating.get("RankAPL_Off"),
+                                rating.get("RankAPL_Def"),
+                                # Conference APL
+                                rating.get("ConfAPL_Off"),
+                                rating.get("ConfAPL_Def"),
+                                rating.get("RankConfAPL_Off"),
+                                rating.get("RankConfAPL_Def"),
+                                # Record
+                                rating.get("Wins"),
+                                rating.get("Losses"),
                             ),
                         )
                     conn.commit()
@@ -546,9 +614,25 @@ class HistoricalDataLoader:
                                 fg3_pct_def, fg2_pct_def, ft_pct_def,
                                 assist_rate, assist_rate_def,
                                 steal_rate, steal_rate_def,
-                                block_pct_off, block_pct_def
+                                block_pct_off, block_pct_def,
+                                nst_rate_off, nst_rate_def,
+                                fg3_rate_off, fg3_rate_def,
+                                adj_oe, adj_de,
+                                rank_fg3_pct, rank_fg2_pct, rank_ft_pct,
+                                rank_fg3_pct_def, rank_fg2_pct_def,
+                                rank_ft_pct_def,
+                                rank_assist_rate, rank_assist_rate_def,
+                                rank_steal_rate, rank_steal_rate_def,
+                                rank_block_pct_off, rank_block_pct_def,
+                                rank_nst_rate_off, rank_nst_rate_def,
+                                rank_fg3_rate_off, rank_fg3_rate_def,
+                                rank_adj_oe, rank_adj_de
                             )
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            VALUES (
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                            )
                             ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
                                 fg3_pct_off = excluded.fg3_pct_off,
                                 fg2_pct_off = excluded.fg2_pct_off,
@@ -561,23 +645,88 @@ class HistoricalDataLoader:
                                 steal_rate = excluded.steal_rate,
                                 steal_rate_def = excluded.steal_rate_def,
                                 block_pct_off = excluded.block_pct_off,
-                                block_pct_def = excluded.block_pct_def
+                                block_pct_def = excluded.block_pct_def,
+                                nst_rate_off = excluded.nst_rate_off,
+                                nst_rate_def = excluded.nst_rate_def,
+                                fg3_rate_off = excluded.fg3_rate_off,
+                                fg3_rate_def = excluded.fg3_rate_def,
+                                adj_oe = excluded.adj_oe,
+                                adj_de = excluded.adj_de,
+                                rank_fg3_pct = excluded.rank_fg3_pct,
+                                rank_fg2_pct = excluded.rank_fg2_pct,
+                                rank_ft_pct = excluded.rank_ft_pct,
+                                rank_fg3_pct_def = excluded.rank_fg3_pct_def,
+                                rank_fg2_pct_def = excluded.rank_fg2_pct_def,
+                                rank_ft_pct_def = excluded.rank_ft_pct_def,
+                                rank_assist_rate = excluded.rank_assist_rate,
+                                rank_assist_rate_def =
+                                    excluded.rank_assist_rate_def,
+                                rank_steal_rate = excluded.rank_steal_rate,
+                                rank_steal_rate_def =
+                                    excluded.rank_steal_rate_def,
+                                rank_block_pct_off =
+                                    excluded.rank_block_pct_off,
+                                rank_block_pct_def =
+                                    excluded.rank_block_pct_def,
+                                rank_nst_rate_off = excluded.rank_nst_rate_off,
+                                rank_nst_rate_def = excluded.rank_nst_rate_def,
+                                rank_fg3_rate_off = excluded.rank_fg3_rate_off,
+                                rank_fg3_rate_def = excluded.rank_fg3_rate_def,
+                                rank_adj_oe = excluded.rank_adj_oe,
+                                rank_adj_de = excluded.rank_adj_de
                             """,
                             (
                                 snapshot_date.isoformat(),
                                 team_id,
+                                # Shooting percentages - offense
                                 s.get("FG3Pct"),
                                 s.get("FG2Pct"),
                                 s.get("FTPct"),
+                                # Shooting percentages - defense
                                 s.get("OppFG3Pct"),
                                 s.get("OppFG2Pct"),
                                 s.get("OppFTPct"),
+                                # Assist/steal/block rates
                                 s.get("ARate"),
                                 s.get("OppARate"),
                                 s.get("StlRate"),
                                 s.get("OppStlRate"),
                                 s.get("BlockPct"),
                                 s.get("OppBlockPct"),
+                                # Non-steal turnover rates
+                                s.get("NSTRate"),
+                                s.get("OppNSTRate"),
+                                # 3-point attempt rates
+                                s.get("F3GRate"),
+                                s.get("OppF3GRate"),
+                                # Adjusted efficiencies
+                                s.get("AdjOE"),
+                                s.get("AdjDE"),
+                                # Ranks - offense
+                                s.get("RankFG3Pct"),
+                                s.get("RankFG2Pct"),
+                                s.get("RankFTPct"),
+                                # Ranks - defense
+                                s.get("RankOppFG3Pct"),
+                                s.get("RankOppFG2Pct"),
+                                s.get("RankOppFTPct"),
+                                # Ranks - assist/steal
+                                s.get("RankARate"),
+                                s.get("RankOppARate"),
+                                s.get("RankStlRate"),
+                                s.get("RankOppStlRate"),
+                                # Ranks - block
+                                s.get("RankBlockPct"),
+                                s.get("RankOppBlockPct"),
+                                # Ranks - NST
+                                s.get("RankNSTRate"),
+                                s.get("RankOppNSTRate"),
+                                # Ranks - 3pt rate
+                                s.get("RankF3GRate"),
+                                s.get("RankOppF3GRate"),
+                                # Ranks - efficiency
+                                s.get("RankAdjOE"),
+                                s.get("RankAdjDE"),
                             ),
                         )
                     conn.commit()
@@ -645,30 +794,66 @@ class HistoricalDataLoader:
                                 snapshot_date, team_id,
                                 avg_height, effective_height, experience,
                                 bench_minutes, continuity,
-                                rank_height, rank_experience, rank_continuity
+                                hgt_c, hgt_pf, hgt_sf, hgt_sg, hgt_pg,
+                                rank_height, rank_effective_height,
+                                rank_experience, rank_bench, rank_continuity,
+                                rank_hgt_c, rank_hgt_pf, rank_hgt_sf,
+                                rank_hgt_sg, rank_hgt_pg
                             )
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            VALUES (
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                            )
                             ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
                                 avg_height = excluded.avg_height,
                                 effective_height = excluded.effective_height,
                                 experience = excluded.experience,
                                 bench_minutes = excluded.bench_minutes,
                                 continuity = excluded.continuity,
+                                hgt_c = excluded.hgt_c,
+                                hgt_pf = excluded.hgt_pf,
+                                hgt_sf = excluded.hgt_sf,
+                                hgt_sg = excluded.hgt_sg,
+                                hgt_pg = excluded.hgt_pg,
                                 rank_height = excluded.rank_height,
+                                rank_effective_height =
+                                    excluded.rank_effective_height,
                                 rank_experience = excluded.rank_experience,
-                                rank_continuity = excluded.rank_continuity
+                                rank_bench = excluded.rank_bench,
+                                rank_continuity = excluded.rank_continuity,
+                                rank_hgt_c = excluded.rank_hgt_c,
+                                rank_hgt_pf = excluded.rank_hgt_pf,
+                                rank_hgt_sf = excluded.rank_hgt_sf,
+                                rank_hgt_sg = excluded.rank_hgt_sg,
+                                rank_hgt_pg = excluded.rank_hgt_pg
                             """,
                             (
                                 snapshot_date.isoformat(),
                                 team_id,
+                                # Core metrics
                                 h.get("AvgHgt"),
                                 h.get("HgtEff"),
                                 h.get("Exp"),
                                 h.get("Bench"),
                                 h.get("Continuity"),
+                                # Position heights (API: Hgt5=C, Hgt4=PF, etc.)
+                                h.get("Hgt5"),  # Center
+                                h.get("Hgt4"),  # Power Forward
+                                h.get("Hgt3"),  # Small Forward
+                                h.get("Hgt2"),  # Shooting Guard
+                                h.get("Hgt1"),  # Point Guard
+                                # Ranks
                                 h.get("AvgHgtRank"),
+                                h.get("HgtEffRank"),
                                 h.get("ExpRank"),
+                                h.get("BenchRank"),
                                 h.get("RankContinuity"),
+                                # Position height ranks
+                                h.get("Hgt5Rank"),
+                                h.get("Hgt4Rank"),
+                                h.get("Hgt3Rank"),
+                                h.get("Hgt2Rank"),
+                                h.get("Hgt1Rank"),
                             ),
                         )
                     conn.commit()
@@ -735,26 +920,46 @@ class HistoricalDataLoader:
                             INSERT INTO point_distribution (
                                 snapshot_date, team_id,
                                 ft_pct, two_pct, three_pct,
-                                ft_pct_def, two_pct_def, three_pct_def
+                                ft_pct_def, two_pct_def, three_pct_def,
+                                rank_ft_pct, rank_two_pct, rank_three_pct,
+                                rank_ft_pct_def, rank_two_pct_def,
+                                rank_three_pct_def
                             )
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                             ON CONFLICT(snapshot_date, team_id) DO UPDATE SET
                                 ft_pct = excluded.ft_pct,
                                 two_pct = excluded.two_pct,
                                 three_pct = excluded.three_pct,
                                 ft_pct_def = excluded.ft_pct_def,
                                 two_pct_def = excluded.two_pct_def,
-                                three_pct_def = excluded.three_pct_def
+                                three_pct_def = excluded.three_pct_def,
+                                rank_ft_pct = excluded.rank_ft_pct,
+                                rank_two_pct = excluded.rank_two_pct,
+                                rank_three_pct = excluded.rank_three_pct,
+                                rank_ft_pct_def = excluded.rank_ft_pct_def,
+                                rank_two_pct_def = excluded.rank_two_pct_def,
+                                rank_three_pct_def =
+                                excluded.rank_three_pct_def
                             """,
                             (
                                 snapshot_date.isoformat(),
                                 team_id,
+                                # Offense point distribution
                                 p.get("OffFt"),
                                 p.get("OffFg2"),
                                 p.get("OffFg3"),
+                                # Defense point distribution
                                 p.get("DefFt"),
                                 p.get("DefFg2"),
                                 p.get("DefFg3"),
+                                # Offense ranks
+                                p.get("RankOffFt"),
+                                p.get("RankOffFg2"),
+                                p.get("RankOffFg3"),
+                                # Defense ranks
+                                p.get("RankDefFt"),
+                                p.get("RankDefFg2"),
+                                p.get("RankDefFg3"),
                             ),
                         )
                     conn.commit()
