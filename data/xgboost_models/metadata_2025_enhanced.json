@@ -1,8 +1,8 @@
 {
   "season": 2025,
   "enhanced_features": true,
-  "created_at": "2025-12-19T17:43:41.852124",
-  "feature_count": 35,
+  "created_at": "2025-12-19T18:52:37.542166",
+  "feature_count": 42,
   "quantile_models": {
     "upper_quantile": 0.75,
     "lower_quantile": 0.25
