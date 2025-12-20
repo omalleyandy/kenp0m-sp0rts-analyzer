@@ -1180,14 +1180,14 @@ class XGBoostGamePredictor:
                 f"Lower quantile model not found: {margin_lower_path}"
             )
 
-        # Load models into booster objects (each from separate file)
-        self.margin_model.get_booster().load_model(str(margin_path))
-        self.margin_upper.get_booster().load_model(str(margin_upper_path))
-        self.margin_lower.get_booster().load_model(str(margin_lower_path))
-        self.total_model.get_booster().load_model(str(total_path))
+        # Load models directly (XGBRegressor.load_model, not get_booster)
+        self.margin_model.load_model(str(margin_path))
+        self.margin_upper.load_model(str(margin_upper_path))
+        self.margin_lower.load_model(str(margin_lower_path))
+        self.total_model.load_model(str(total_path))
 
         self.is_fitted = True
-        logger.info(f"Loaded models from {margin_path.parent}/")
+        print(f"Loaded models from {margin_path.parent}/")
 
 
 class BacktestingFramework:

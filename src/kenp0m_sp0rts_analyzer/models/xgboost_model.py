@@ -162,13 +162,19 @@ class XGBoostModelWrapper:
             self.logger.error(f"Training failed: {str(e)}")
             raise ModelError(f"Training failed: {str(e)}")
 
-    def predict(self, X: np.ndarray, scale: bool = True) -> np.ndarray:
+    def predict(
+        self,
+        X: np.ndarray,
+        scale: bool = True,
+        feature_names: list | None = None,
+    ) -> np.ndarray:
         """
-        Make predictions
+        Make predictions.
 
         Args:
             X: Input features
             scale: Whether to scale features
+            feature_names: Feature names (required if model was trained with them)
 
         Returns:
             Predictions
@@ -182,7 +188,9 @@ class XGBoostModelWrapper:
             else:
                 X_scaled = X
 
-            dmatrix = xgb.DMatrix(X_scaled)
+            # Use feature names if provided or stored
+            names = feature_names or self.feature_names
+            dmatrix = xgb.DMatrix(X_scaled, feature_names=names)
             predictions = self.model.predict(dmatrix)
 
             return predictions
@@ -236,7 +244,7 @@ class XGBoostModelWrapper:
 
     def load(self, model_dir: Path) -> bool:
         """
-        Load model and scaler from disk
+        Load model and optional scaler from disk.
 
         Args:
             model_dir: Directory containing model files
@@ -252,21 +260,29 @@ class XGBoostModelWrapper:
             self.model = xgb.Booster()
             self.model.load_model(str(model_path))
 
-            # Load scaler
+            # Load scaler (optional - some models trained without scaling)
             scaler_path = model_dir / f"{self.model_name}_scaler.pkl"
-            with open(scaler_path, "rb") as f:
-                self.scaler = pickle.load(f)
+            if scaler_path.exists():
+                with open(scaler_path, "rb") as f:
+                    self.scaler = pickle.load(f)
+            else:
+                self.scaler = None
+                self.logger.info("No scaler found, using unscaled features")
 
-            # Load metadata
+            # Load metadata (optional)
             metadata_path = model_dir / f"{self.model_name}_metadata.json"
-            with open(metadata_path) as f:
-                self.metadata = json.load(f)
+            if metadata_path.exists():
+                with open(metadata_path) as f:
+                    self.metadata = json.load(f)
+            else:
+                self.metadata = {}
 
-            # Load feature names
+            # Load feature names (optional)
             features_path = model_dir / f"{self.model_name}_features.json"
-            with open(features_path) as f:
-                feature_data = json.load(f)
-                self.feature_names = feature_data["feature_names"]
+            if features_path.exists():
+                with open(features_path) as f:
+                    feature_data = json.load(f)
+                    self.feature_names = feature_data["feature_names"]
 
             self.logger.info(f"Model loaded from {model_dir}")
             return True

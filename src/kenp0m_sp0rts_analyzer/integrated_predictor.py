@@ -461,8 +461,11 @@ class IntegratedPredictor:
         # Convert to array for prediction
         feature_array = game_features.to_array().reshape(1, -1)
 
-        # Get prediction from XGBoost wrapper
-        prediction = self.xgb_wrapper.predict(feature_array)[0]
+        # Get prediction from XGBoost wrapper (with feature names)
+        prediction = self.xgb_wrapper.predict(
+            feature_array,
+            feature_names=game_features.feature_names,
+        )[0]
 
         # Calculate edge vs Vegas (implied margin from spread)
         # Vegas spread is from home perspective: negative = home favored
