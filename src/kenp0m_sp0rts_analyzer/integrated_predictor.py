@@ -22,24 +22,24 @@ Example:
 
 import logging
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
+from .features import DatabaseFeatureEngineer, GameFeatures
 from .kenpom import (
-    KenPomService,
-    BatchScheduler,
-    TeamRating,
-    GamePrediction,
     AccuracyReport,
+    BatchScheduler,
+    KenPomService,
+    TeamRating,
 )
+from .models import XGBoostModelWrapper
 from .prediction import (
-    XGBoostGamePredictor,
     XGBoostFeatureEngineer,
-    PredictionResult,
+    XGBoostGamePredictor,
 )
 
 logger = logging.getLogger(__name__)
@@ -87,12 +87,16 @@ class GameAnalysis:
     @property
     def has_spread_edge(self) -> bool:
         """Check if there's meaningful edge vs spread (>2 points)."""
-        return self.edge_vs_spread is not None and abs(self.edge_vs_spread) >= 2.0
+        return (
+            self.edge_vs_spread is not None and abs(self.edge_vs_spread) >= 2.0
+        )
 
     @property
     def has_total_edge(self) -> bool:
         """Check if there's meaningful edge vs total (>3 points)."""
-        return self.edge_vs_total is not None and abs(self.edge_vs_total) >= 3.0
+        return (
+            self.edge_vs_total is not None and abs(self.edge_vs_total) >= 3.0
+        )
 
     def to_dict(self) -> dict:
         """Convert to dictionary for serialization."""
@@ -150,6 +154,7 @@ class IntegratedPredictor:
         use_enhanced_features: bool = True,
         use_ensemble: bool = True,
         ensemble_weights: dict[str, float] | None = None,
+        use_xgb_wrapper: bool = False,
     ):
         """Initialize the integrated predictor.
 
@@ -158,11 +163,15 @@ class IntegratedPredictor:
             model_path: Path to trained XGBoost model (optional).
             use_enhanced_features: Use 42-feature enhanced model.
             use_ensemble: Enable ensemble blending (XGBoost + FanMatch).
-            ensemble_weights: Custom weights dict (default: {'xgboost': 0.70, 'fanmatch': 0.30}).
+            ensemble_weights: Custom weights dict
+                (default: {'xgboost': 0.70, 'fanmatch': 0.30}).
+            use_xgb_wrapper: Use new XGBoostModelWrapper with
+                DatabaseFeatureEngineer.
         """
         self.kenpom = KenPomService(db_path=db_path)
         self.use_enhanced_features = use_enhanced_features
         self.use_ensemble = use_ensemble
+        self.use_xgb_wrapper = use_xgb_wrapper
 
         # Set ensemble weights (default 70/30 XGBoost/FanMatch)
         if ensemble_weights is None:
@@ -170,14 +179,30 @@ class IntegratedPredictor:
         else:
             self.ensemble_weights = ensemble_weights
 
-        # Initialize XGBoost predictor
-        self.predictor = XGBoostGamePredictor(use_enhanced_features=use_enhanced_features)
+        # Initialize XGBoost predictor (legacy)
+        self.predictor = XGBoostGamePredictor(
+            use_enhanced_features=use_enhanced_features
+        )
         self.feature_engineer = XGBoostFeatureEngineer()
+
+        # Initialize new XGBoost components
+        self.db_feature_engineer = DatabaseFeatureEngineer(self.kenpom)
+        self.xgb_wrapper: XGBoostModelWrapper | None = None
 
         # Load model if path provided
         if model_path and Path(model_path).exists():
-            self.predictor.load_model(model_path)
-            logger.info(f"Loaded model from {model_path}")
+            model_dir = Path(model_path).parent
+            if use_xgb_wrapper:
+                # Load using new wrapper
+                self.xgb_wrapper = XGBoostModelWrapper(
+                    model_name="ncaab_xgb", model_type="margin"
+                )
+                self.xgb_wrapper.load(model_dir)
+                logger.info(f"Loaded XGBoost wrapper model from {model_dir}")
+            else:
+                # Load using legacy predictor
+                self.predictor.load_model(model_path)
+                logger.info(f"Loaded legacy model from {model_path}")
 
         # Team name cache for fast lookup
         self._team_cache: dict[str, int] = {}
@@ -366,6 +391,129 @@ class IntegratedPredictor:
             except Exception as e:
                 logger.warning(f"Failed to predict {home} vs {away}: {e}")
         return results
+
+    def predict_with_xgb_wrapper(
+        self,
+        home_team: str,
+        away_team: str,
+        vegas_spread: float,
+        vegas_total: float,
+        game_date: date | None = None,
+        opening_spread: float | None = None,
+        opening_total: float | None = None,
+    ) -> dict[str, Any]:
+        """Predict game using XGBoostModelWrapper with 40 database features.
+
+        This method uses the new DatabaseFeatureEngineer to pull features
+        directly from the KenPom database and the XGBoostModelWrapper for
+        model inference.
+
+        Args:
+            home_team: Home team name.
+            away_team: Away team name.
+            vegas_spread: Current Vegas spread (negative = home favored).
+            vegas_total: Current Vegas over/under total.
+            game_date: Game date (defaults to today).
+            opening_spread: Opening line spread for line movement analysis.
+            opening_total: Opening line total.
+
+        Returns:
+            Dictionary with prediction results:
+                - game_id: Unique game identifier
+                - predicted_margin: XGBoost predicted margin
+                - vegas_spread: Input Vegas spread
+                - edge: Model edge vs Vegas (predicted - implied)
+                - features: All 40 feature values
+                - model_confidence: Model metadata (if available)
+
+        Raises:
+            ValueError: If XGBoostModelWrapper is not loaded.
+
+        Example:
+            >>> predictor = IntegratedPredictor(use_xgb_wrapper=True)
+            >>> result = predictor.predict_with_xgb_wrapper(
+            ...     home_team="Duke",
+            ...     away_team="North Carolina",
+            ...     vegas_spread=-3.5,
+            ...     vegas_total=152.5,
+            ... )
+            >>> print(f"Predicted margin: {result['predicted_margin']:+.1f}")
+            >>> print(f"Edge vs Vegas: {result['edge']:+.1f}")
+        """
+        if self.xgb_wrapper is None:
+            raise ValueError(
+                "XGBoostModelWrapper not loaded. "
+                "Initialize with use_xgb_wrapper=True "
+                "and provide a valid model_path."
+            )
+
+        # Generate features from database
+        game_features = self.db_feature_engineer.create_features(
+            home_team=home_team,
+            away_team=away_team,
+            vegas_spread=vegas_spread,
+            vegas_total=vegas_total,
+            game_date=game_date,
+            opening_spread=opening_spread,
+            opening_total=opening_total,
+        )
+
+        # Convert to array for prediction
+        feature_array = game_features.to_array().reshape(1, -1)
+
+        # Get prediction from XGBoost wrapper
+        prediction = self.xgb_wrapper.predict(feature_array)[0]
+
+        # Calculate edge vs Vegas (implied margin from spread)
+        # Vegas spread is from home perspective: negative = home favored
+        vegas_implied_margin = -vegas_spread
+        edge = prediction - vegas_implied_margin
+
+        return {
+            "game_id": game_features.game_id,
+            "home_team": home_team,
+            "away_team": away_team,
+            "predicted_margin": float(prediction),
+            "vegas_spread": vegas_spread,
+            "vegas_total": vegas_total,
+            "vegas_implied_margin": vegas_implied_margin,
+            "edge": float(edge),
+            "has_edge": abs(edge) >= 2.0,
+            "features": game_features.features,
+            "feature_names": game_features.feature_names,
+            "model_mae": self.xgb_wrapper.metadata.get("mae"),
+            "timestamp": game_features.timestamp,
+        }
+
+    def get_game_features(
+        self,
+        home_team: str,
+        away_team: str,
+        vegas_spread: float,
+        vegas_total: float,
+        game_date: date | None = None,
+    ) -> GameFeatures:
+        """Get all 40 features for a game matchup from database.
+
+        This is useful for debugging, analysis, or external model usage.
+
+        Args:
+            home_team: Home team name.
+            away_team: Away team name.
+            vegas_spread: Vegas spread.
+            vegas_total: Vegas total.
+            game_date: Game date.
+
+        Returns:
+            GameFeatures object with all 40 features.
+        """
+        return self.db_feature_engineer.create_features(
+            home_team=home_team,
+            away_team=away_team,
+            vegas_spread=vegas_spread,
+            vegas_total=vegas_total,
+            game_date=game_date,
+        )
 
     def find_edges(
         self,
