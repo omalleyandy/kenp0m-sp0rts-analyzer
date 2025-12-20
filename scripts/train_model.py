@@ -226,6 +226,12 @@ def parse_args():
         default=None,
         help="End date for training data (YYYY-MM-DD)",
     )
+    parser.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Path to CSV file with historical game results",
+    )
     return parser.parse_args()
 
 
@@ -238,20 +244,31 @@ def main():
         logger.info("Starting XGBoost Model Training Pipeline")
         logger.info("=" * 60)
 
-        # Parse dates
-        start_date = None
-        end_date = None
-        if args.start_date:
-            start_date = datetime.strptime(args.start_date, "%Y-%m-%d").date()
-        if args.end_date:
-            end_date = datetime.strptime(args.end_date, "%Y-%m-%d").date()
+        # 1. Load training data
+        if args.csv:
+            # Load from CSV file with real game results
+            logger.info(f"Loading training data from CSV: {args.csv}")
+            service = KenPomService()
+            loader = HistoricalDataLoader(service)
+            X, y_margin, y_total, feature_names = loader.load_from_csv(
+                args.csv
+            )
+        else:
+            # Generate simulated training data
+            start_date = None
+            end_date = None
+            if args.start_date:
+                start_date = datetime.strptime(
+                    args.start_date, "%Y-%m-%d"
+                ).date()
+            if args.end_date:
+                end_date = datetime.strptime(args.end_date, "%Y-%m-%d").date()
 
-        # 1. Load/generate training data
-        X, y_margin, y_total, feature_names = load_training_data(
-            n_samples=args.samples,
-            start_date=start_date,
-            end_date=end_date,
-        )
+            X, y_margin, y_total, feature_names = load_training_data(
+                n_samples=args.samples,
+                start_date=start_date,
+                end_date=end_date,
+            )
 
         if len(X) < 100:
             logger.error(
