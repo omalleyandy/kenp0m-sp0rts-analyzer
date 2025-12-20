@@ -2,7 +2,7 @@
 
 Validates:
 1. Ensemble prediction accuracy improvement vs pure XGBoost
-2. FanMatch available for ≥80% of games
+2. FanMatch available for >=80% of games
 3. End-to-end pipeline functional
 """
 
@@ -84,9 +84,9 @@ def validate_ensemble_functionality(predictor: IntegratedPredictor) -> bool:
 def validate_fanmatch_availability(predictor: IntegratedPredictor) -> bool:
     """Validate FanMatch availability.
 
-    Checkpoint: FanMatch available for ≥80% of games
+    Checkpoint: FanMatch available for >=80% of games
     """
-    print_section("CHECKPOINT 2: FanMatch Availability (≥80%)")
+    print_section("CHECKPOINT 2: FanMatch Availability (>=80%)")
 
     try:
         # Query fanmatch_predictions table
@@ -120,10 +120,10 @@ def validate_fanmatch_availability(predictor: IntegratedPredictor) -> bool:
             print(f"Availability: {availability:.1f}%")
 
             if availability >= 80:
-                print(f"[OK] FanMatch availability ≥80%")
+                print(f"[OK] FanMatch availability >=80%")
                 return True
             else:
-                print(f"[!] FanMatch availability <80% (target: ≥80%)")
+                print(f"[!] FanMatch availability <80% (target: >=80%)")
                 return False
 
     except Exception as e:
@@ -135,7 +135,7 @@ def validate_fanmatch_availability(predictor: IntegratedPredictor) -> bool:
 def validate_end_to_end_pipeline(predictor: IntegratedPredictor) -> bool:
     """Validate end-to-end prediction pipeline.
 
-    Checkpoint: Complete workflow from data → prediction → edge detection
+    Checkpoint: Complete workflow from data -> prediction -> edge detection
     """
     print_section("CHECKPOINT 3: End-to-End Pipeline")
 

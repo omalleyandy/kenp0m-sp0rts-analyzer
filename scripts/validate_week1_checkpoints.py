@@ -85,7 +85,7 @@ def validate_misc_stats_sync(service: KenPomService) -> bool:
             print(f"[OK] Misc Stats sync successful: {result.records_synced} teams")
             return True
         elif result.success and result.records_synced > 0:
-            print(f"[!] Misc Stats sync retrieved {result.records_synced} teams (target: ≥300)")
+            print(f"[!] Misc Stats sync retrieved {result.records_synced} teams (target: >=300)")
             return result.records_synced >= 300
         else:
             print(f"[X] Misc Stats sync failed: {result.errors}")
@@ -105,7 +105,7 @@ def validate_misc_stats_sync(service: KenPomService) -> bool:
                     print("[OK] Misc Stats table functional (using existing data)")
                     return True
                 else:
-                    print(f"[!] Misc Stats has {count} records (target: ≥300)")
+                    print(f"[!] Misc Stats has {count} records (target: >=300)")
                     return False
         except Exception as db_error:
             print(f"[X] Database error: {db_error}")
@@ -159,7 +159,7 @@ def validate_query_performance(service: KenPomService) -> bool:
     print(f"\nPerformance Summary:")
     print(f"  Queries tested: {len(results)}")
     print(f"  Passed (<100ms): {sum(1 for _, _, passed in results if passed)}")
-    print(f"  Failed (≥100ms): {sum(1 for _, _, passed in results if not passed)}")
+    print(f"  Failed (>=100ms): {sum(1 for _, _, passed in results if not passed)}")
 
     return all_passed
 
@@ -172,23 +172,23 @@ def validate_foreign_keys(service: KenPomService) -> bool:
     print_section("CHECKPOINT 4: Foreign Key Integrity")
 
     checks = [
-        ("FanMatch → Teams (home)", """
+        ("FanMatch -> Teams (home)", """
             SELECT COUNT(*) FROM fanmatch_predictions f
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = f.home_team_id)
         """),
-        ("FanMatch → Teams (visitor)", """
+        ("FanMatch -> Teams (visitor)", """
             SELECT COUNT(*) FROM fanmatch_predictions f
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = f.visitor_team_id)
         """),
-        ("Misc Stats → Teams", """
+        ("Misc Stats -> Teams", """
             SELECT COUNT(*) FROM misc_stats m
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = m.team_id)
         """),
-        ("Four Factors → Teams", """
+        ("Four Factors -> Teams", """
             SELECT COUNT(*) FROM four_factors f
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = f.team_id)
         """),
-        ("Point Dist → Teams", """
+        ("Point Dist -> Teams", """
             SELECT COUNT(*) FROM point_distribution p
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = p.team_id)
         """),
