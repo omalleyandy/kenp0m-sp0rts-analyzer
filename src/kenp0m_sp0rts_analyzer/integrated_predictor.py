@@ -392,6 +392,297 @@ class IntegratedPredictor:
                 logger.warning(f"Failed to predict {home} vs {away}: {e}")
         return results
 
+    def _get_team_stats_for_features(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> dict[str, Any]:
+        """Get team stats formatted for XGBoostFeatureEngineer.
+
+        Fetches data from the database and converts it to the dictionary
+        format expected by XGBoostFeatureEngineer.create_enhanced_features().
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Optional snapshot date.
+
+        Returns:
+            Dictionary with team stats (AdjEM, AdjO, AdjD, AdjT, Luck, etc.)
+        """
+        rating = self.kenpom.get_team_rating(
+            team_id=team_id, snapshot_date=snapshot_date
+        )
+        if rating is None:
+            raise ValueError(f"No rating found for team ID {team_id}")
+
+        # Core stats from ratings
+        stats: dict[str, Any] = {
+            "TeamName": rating.team_name,
+            "TeamID": team_id,
+            "AdjEM": rating.adj_em,
+            "AdjO": rating.adj_oe,
+            "AdjD": rating.adj_de,
+            "AdjOE": rating.adj_oe,
+            "AdjDE": rating.adj_de,
+            "AdjT": rating.adj_tempo,
+            "AdjTempo": rating.adj_tempo,
+            "Luck": rating.luck if rating.luck is not None else 0.0,
+            "Pythag": 0.5 + (rating.adj_em / 40),  # Estimate from AdjEM
+            "SOS": rating.sos if hasattr(rating, "sos") else 5.0,
+            "SOSO": rating.soso if hasattr(rating, "soso") else 5.0,
+            "SOSD": rating.sosd if hasattr(rating, "sosd") else 5.0,
+        }
+
+        # Try to get APL from tempo analysis (estimate if not available)
+        # Average possession length in seconds (~18s average)
+        if rating.adj_tempo > 0:
+            # Faster tempo = shorter possessions
+            stats["APL_Off"] = (
+                2400 / rating.adj_tempo if rating.adj_tempo else 18.0
+            )
+            stats["APL_Def"] = (
+                2400 / rating.adj_tempo if rating.adj_tempo else 18.0
+            )
+        else:
+            stats["APL_Off"] = 18.0
+            stats["APL_Def"] = 18.0
+
+        return stats
+
+    def predict_with_enhanced_features(
+        self,
+        home_team: str | int,
+        away_team: str | int,
+        neutral_site: bool = False,
+        vegas_spread: float | None = None,
+        vegas_total: float | None = None,
+        snapshot_date: date | None = None,
+    ) -> dict[str, Any]:
+        """Predict game using trained XGBoost model with 42 enhanced features.
+
+        This method uses XGBoostFeatureEngineer.create_enhanced_features() to
+        generate the exact 42 features the trained model expects, then runs
+        inference using the loaded model.
+
+        Args:
+            home_team: Home team name or ID.
+            away_team: Away team name or ID.
+            neutral_site: Whether game is at neutral site.
+            vegas_spread: Current Vegas spread (negative = home favored).
+            vegas_total: Current Vegas over/under total.
+            snapshot_date: Date for ratings snapshot.
+
+        Returns:
+            Dictionary with prediction results:
+                - predicted_margin: XGBoost predicted margin (home - away)
+                - predicted_total: XGBoost predicted total points
+                - confidence_interval: (lower, upper) bounds
+                - win_probability: Home team win probability
+                - vegas_spread: Input Vegas spread
+                - edge: Model edge vs Vegas (if spread provided)
+                - features: All 42 feature values
+        """
+        # Resolve team IDs and names
+        home_id, home_name = self._resolve_team_id(home_team)
+        away_id, away_name = self._resolve_team_id(away_team)
+
+        # Get team stats in format for XGBoostFeatureEngineer
+        home_stats = self._get_team_stats_for_features(home_id, snapshot_date)
+        away_stats = self._get_team_stats_for_features(away_id, snapshot_date)
+
+        # Get additional data for enhanced features (optional)
+        # These can be None and create_enhanced_features will use defaults
+        misc_stats_home = None
+        misc_stats_away = None
+        height_home = None
+        height_away = None
+        point_dist_home = None
+        point_dist_away = None
+
+        # Try to get misc stats from database
+        try:
+            with self.kenpom.repository.db.connection() as conn:
+                # Get misc stats (columns use _off/_def suffixes)
+                misc_home = conn.execute(
+                    """
+                    SELECT fg3_pct_off, fg2_pct_off, ft_pct_off,
+                           assist_rate, steal_rate, block_pct_off
+                    FROM misc_stats
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1
+                    """,
+                    (home_id,),
+                ).fetchone()
+                if misc_home:
+                    misc_stats_home = {
+                        "FG3Pct": misc_home[0] or 35.0,
+                        "FG2Pct": misc_home[1] or 50.0,
+                        "FTPct": misc_home[2] or 70.0,
+                        "ARate": misc_home[3] or 50.0,
+                        "StlRate": misc_home[4] or 10.0,
+                        "BlkPct": misc_home[5] or 10.0,
+                    }
+
+                misc_away = conn.execute(
+                    """
+                    SELECT fg3_pct_off, fg2_pct_off, ft_pct_off,
+                           assist_rate, steal_rate, block_pct_off
+                    FROM misc_stats
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1
+                    """,
+                    (away_id,),
+                ).fetchone()
+                if misc_away:
+                    misc_stats_away = {
+                        "FG3Pct": misc_away[0] or 35.0,
+                        "FG2Pct": misc_away[1] or 50.0,
+                        "FTPct": misc_away[2] or 70.0,
+                        "ARate": misc_away[3] or 50.0,
+                        "StlRate": misc_away[4] or 10.0,
+                        "BlkPct": misc_away[5] or 10.0,
+                    }
+
+                # Get height/experience data
+                height_h = conn.execute(
+                    """SELECT effective_height, experience,
+                    continuity, bench_minutes FROM height
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1""",
+                    (home_id,),
+                ).fetchone()
+                if height_h:
+                    height_home = {
+                        "EffHeight": height_h[0] or 0.0,
+                        "Experience": height_h[1] or 2.0,
+                        "Continuity": height_h[2] or 0.5,
+                        "Bench": height_h[3] or 30.0,
+                    }
+
+                height_a = conn.execute(
+                    """SELECT effective_height, experience,
+                    continuity, bench_minutes FROM height
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1""",
+                    (away_id,),
+                ).fetchone()
+                if height_a:
+                    height_away = {
+                        "EffHeight": height_a[0] or 0.0,
+                        "Experience": height_a[1] or 2.0,
+                        "Continuity": height_a[2] or 0.5,
+                        "Bench": height_a[3] or 30.0,
+                    }
+
+                # Get point distribution (columns: ft_pct, two_pct, three_pct)
+                pd_home = conn.execute(
+                    """
+                    SELECT ft_pct, two_pct, three_pct
+                    FROM point_distribution
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1
+                    """,
+                    (home_id,),
+                ).fetchone()
+                if pd_home:
+                    point_dist_home = {
+                        "FT_Pct": pd_home[0] or 20.0,
+                        "TwoP_Pct": pd_home[1] or 50.0,
+                        "ThreeP_Pct": pd_home[2] or 30.0,
+                    }
+
+                pd_away = conn.execute(
+                    """
+                    SELECT ft_pct, two_pct, three_pct
+                    FROM point_distribution
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC LIMIT 1
+                    """,
+                    (away_id,),
+                ).fetchone()
+                if pd_away:
+                    point_dist_away = {
+                        "FT_Pct": pd_away[0] or 20.0,
+                        "TwoP_Pct": pd_away[1] or 50.0,
+                        "ThreeP_Pct": pd_away[2] or 30.0,
+                    }
+        except Exception as e:
+            logger.warning(f"Could not fetch enhanced stats: {e}")
+
+        # Create enhanced features (42 total)
+        features = XGBoostFeatureEngineer.create_enhanced_features(
+            team1_stats=home_stats,
+            team2_stats=away_stats,
+            neutral_site=neutral_site,
+            home_team1=not neutral_site,  # home_team is team1
+            misc_stats_team1=misc_stats_home,
+            misc_stats_team2=misc_stats_away,
+            height_team1=height_home,
+            height_team2=height_away,
+            point_dist_team1=point_dist_home,
+            point_dist_team2=point_dist_away,
+        )
+
+        # Convert to DataFrame for XGBoost
+        feature_names = XGBoostFeatureEngineer.ENHANCED_FEATURE_NAMES
+        features_df = pd.DataFrame([features])[feature_names]
+
+        # Run prediction using trained predictor
+        if self.predictor.is_fitted:
+            # Use the internal models directly
+            margin_pred = float(
+                self.predictor.margin_model.predict(features_df)[0]
+            )
+            total_pred = float(
+                self.predictor.total_model.predict(features_df)[0]
+            )
+            margin_upper = float(
+                self.predictor.margin_upper.predict(features_df)[0]
+            )
+            margin_lower = float(
+                self.predictor.margin_lower.predict(features_df)[0]
+            )
+        else:
+            # Fallback to KenPom formula
+            margin_pred = self._kenpom_margin(
+                self.kenpom.get_team_rating(team_id=home_id),
+                self.kenpom.get_team_rating(team_id=away_id),
+                neutral_site,
+            )
+            total_pred = self._kenpom_total(
+                self.kenpom.get_team_rating(team_id=home_id),
+                self.kenpom.get_team_rating(team_id=away_id),
+            )
+            margin_upper = margin_pred + 10
+            margin_lower = margin_pred - 10
+
+        # Calculate win probability
+        win_prob = self._margin_to_probability(margin_pred)
+
+        # Calculate edge if Vegas spread provided
+        edge = None
+        if vegas_spread is not None:
+            vegas_implied_margin = -vegas_spread
+            edge = margin_pred - vegas_implied_margin
+
+        return {
+            "home_team": home_name,
+            "away_team": away_name,
+            "predicted_margin": round(margin_pred, 1),
+            "predicted_total": round(total_pred, 1),
+            "confidence_interval": (
+                round(margin_lower, 1),
+                round(margin_upper, 1),
+            ),
+            "win_probability": round(win_prob, 3),
+            "vegas_spread": vegas_spread,
+            "vegas_total": vegas_total,
+            "edge": round(edge, 1) if edge is not None else None,
+            "has_edge": edge is not None and abs(edge) >= 2.0,
+            "features": features,
+            "feature_count": len(features),
+        }
+
     def predict_with_xgb_wrapper(
         self,
         home_team: str,
@@ -404,9 +695,9 @@ class IntegratedPredictor:
     ) -> dict[str, Any]:
         """Predict game using XGBoostModelWrapper with 40 database features.
 
-        This method uses the new DatabaseFeatureEngineer to pull features
-        directly from the KenPom database and the XGBoostModelWrapper for
-        model inference.
+        NOTE: This method uses DatabaseFeatureEngineer which produces different
+        features than the enhanced model. For the trained 42-feature model,
+        use predict_with_enhanced_features() instead.
 
         Args:
             home_team: Home team name.
@@ -418,27 +709,7 @@ class IntegratedPredictor:
             opening_total: Opening line total.
 
         Returns:
-            Dictionary with prediction results:
-                - game_id: Unique game identifier
-                - predicted_margin: XGBoost predicted margin
-                - vegas_spread: Input Vegas spread
-                - edge: Model edge vs Vegas (predicted - implied)
-                - features: All 40 feature values
-                - model_confidence: Model metadata (if available)
-
-        Raises:
-            ValueError: If XGBoostModelWrapper is not loaded.
-
-        Example:
-            >>> predictor = IntegratedPredictor(use_xgb_wrapper=True)
-            >>> result = predictor.predict_with_xgb_wrapper(
-            ...     home_team="Duke",
-            ...     away_team="North Carolina",
-            ...     vegas_spread=-3.5,
-            ...     vegas_total=152.5,
-            ... )
-            >>> print(f"Predicted margin: {result['predicted_margin']:+.1f}")
-            >>> print(f"Edge vs Vegas: {result['edge']:+.1f}")
+            Dictionary with prediction results.
         """
         if self.xgb_wrapper is None:
             raise ValueError(

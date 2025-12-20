@@ -36,18 +36,32 @@ class TeamRating(BaseModel):
     season: int
 
     # Core efficiency metrics
-    adj_em: float = Field(..., ge=-50, le=50, description="Adjusted Efficiency Margin")
-    adj_oe: float = Field(..., ge=70, le=150, description="Adjusted Offensive Efficiency")
-    adj_de: float = Field(..., ge=70, le=150, description="Adjusted Defensive Efficiency")
+    adj_em: float = Field(
+        ..., ge=-50, le=50, description="Adjusted Efficiency Margin"
+    )
+    adj_oe: float = Field(
+        ..., ge=70, le=150, description="Adjusted Offensive Efficiency"
+    )
+    adj_de: float = Field(
+        ..., ge=70, le=150, description="Adjusted Defensive Efficiency"
+    )
     adj_tempo: float = Field(..., ge=55, le=90, description="Adjusted Tempo")
 
     # Luck and strength metrics
-    luck: float = Field(default=0.0, ge=-0.3, le=0.3, description="Luck rating")
+    luck: float = Field(
+        default=0.0, ge=-0.3, le=0.3, description="Luck rating"
+    )
     sos: float = Field(default=0.0, description="Strength of Schedule")
-    soso: float = Field(default=0.0, description="Strength of Schedule (Offense)")
-    sosd: float = Field(default=0.0, description="Strength of Schedule (Defense)")
+    soso: float = Field(
+        default=0.0, description="Strength of Schedule (Offense)"
+    )
+    sosd: float = Field(
+        default=0.0, description="Strength of Schedule (Defense)"
+    )
     ncsos: float = Field(default=0.0, description="Non-Conference SOS")
-    pythag: float = Field(default=0.5, ge=0, le=1, description="Pythagorean expectation")
+    pythag: float = Field(
+        default=0.5, ge=0, le=1, description="Pythagorean expectation"
+    )
 
     # Rankings
     rank_adj_em: int | None = Field(default=None, ge=1, le=400)
@@ -63,8 +77,12 @@ class TeamRating(BaseModel):
     conference: str | None = None
 
     # Average Possession Length
-    apl_off: float | None = Field(default=None, description="Avg Possession Length (Off)")
-    apl_def: float | None = Field(default=None, description="Avg Possession Length (Def)")
+    apl_off: float | None = Field(
+        default=None, description="Avg Possession Length (Off)"
+    )
+    apl_def: float | None = Field(
+        default=None, description="Avg Possession Length (Def)"
+    )
 
     @field_validator("adj_em")
     @classmethod
@@ -100,16 +118,32 @@ class FourFactors(BaseModel):
     snapshot_date: date
 
     # Offensive Four Factors
-    efg_pct_off: float = Field(..., ge=0, le=100, description="Effective FG% (Offense)")
-    to_pct_off: float = Field(..., ge=0, le=50, description="Turnover Rate (Offense)")
-    or_pct_off: float = Field(..., ge=0, le=60, description="Offensive Rebound % (Offense)")
-    ft_rate_off: float = Field(..., ge=0, le=100, description="FT Rate (Offense)")
+    efg_pct_off: float = Field(
+        ..., ge=0, le=100, description="Effective FG% (Offense)"
+    )
+    to_pct_off: float = Field(
+        ..., ge=0, le=50, description="Turnover Rate (Offense)"
+    )
+    or_pct_off: float = Field(
+        ..., ge=0, le=60, description="Offensive Rebound % (Offense)"
+    )
+    ft_rate_off: float = Field(
+        ..., ge=0, le=100, description="FT Rate (Offense)"
+    )
 
     # Defensive Four Factors (opponent values)
-    efg_pct_def: float = Field(..., ge=0, le=100, description="Effective FG% (Defense)")
-    to_pct_def: float = Field(..., ge=0, le=50, description="Turnover Rate (Defense)")
-    or_pct_def: float = Field(..., ge=0, le=60, description="Offensive Rebound % (Defense)")
-    ft_rate_def: float = Field(..., ge=0, le=100, description="FT Rate (Defense)")
+    efg_pct_def: float = Field(
+        ..., ge=0, le=100, description="Effective FG% (Defense)"
+    )
+    to_pct_def: float = Field(
+        ..., ge=0, le=50, description="Turnover Rate (Defense)"
+    )
+    or_pct_def: float = Field(
+        ..., ge=0, le=60, description="Offensive Rebound % (Defense)"
+    )
+    ft_rate_def: float = Field(
+        ..., ge=0, le=100, description="FT Rate (Defense)"
+    )
 
     # Rankings
     rank_efg_off: int | None = None
@@ -137,8 +171,12 @@ class PointDistribution(BaseModel):
 
     # Offensive distribution (% of points)
     ft_pct: float = Field(..., ge=0, le=50, description="% of points from FTs")
-    two_pct: float = Field(..., ge=20, le=80, description="% of points from 2-pointers")
-    three_pct: float = Field(..., ge=0, le=60, description="% of points from 3-pointers")
+    two_pct: float = Field(
+        ..., ge=20, le=80, description="% of points from 2-pointers"
+    )
+    three_pct: float = Field(
+        ..., ge=0, le=60, description="% of points from 3-pointers"
+    )
 
     # Defensive distribution (opponent)
     ft_pct_def: float = Field(..., ge=0, le=50)
@@ -166,11 +204,24 @@ class HeightExperience(BaseModel):
     team_id: int
     snapshot_date: date
 
-    avg_height: float = Field(..., ge=70, le=85, description="Average height in inches")
-    effective_height: float = Field(..., ge=70, le=85, description="Minutes-weighted height")
-    experience: float = Field(..., ge=0, le=4, description="Average years of experience")
-    bench_minutes: float = Field(..., ge=0, le=100, description="Bench minutes %")
-    continuity: float = Field(..., ge=0, le=100, description="Roster continuity %")
+    avg_height: float = Field(
+        ..., ge=70, le=85, description="Average height in inches"
+    )
+    effective_height: float = Field(
+        ...,
+        ge=-10,
+        le=10,
+        description="Effective height relative score (z-score)",
+    )
+    experience: float = Field(
+        ..., ge=0, le=5, description="Average years of experience"
+    )
+    bench_minutes: float = Field(
+        ..., ge=0, le=100, description="Bench minutes %"
+    )
+    continuity: float = Field(
+        ..., ge=0, le=1, description="Roster continuity (0-1)"
+    )
 
     # Rankings
     rank_height: int | None = None
@@ -194,12 +245,22 @@ class FanMatchPrediction(BaseModel):
     home_team_name: str | None = None
     visitor_team_name: str | None = None
 
-    pred_home_score: float = Field(..., ge=30, le=150, description="Predicted home score")
-    pred_visitor_score: float = Field(..., ge=30, le=150, description="Predicted visitor score")
-    pred_margin: float = Field(..., description="Predicted margin (home - visitor)")
-    home_win_prob: float = Field(..., ge=0, le=1, description="Home win probability")
+    pred_home_score: float = Field(
+        ..., ge=30, le=150, description="Predicted home score"
+    )
+    pred_visitor_score: float = Field(
+        ..., ge=30, le=150, description="Predicted visitor score"
+    )
+    pred_margin: float = Field(
+        ..., description="Predicted margin (home - visitor)"
+    )
+    home_win_prob: float = Field(
+        ..., ge=0, le=1, description="Home win probability"
+    )
     pred_tempo: float = Field(..., ge=55, le=90, description="Predicted tempo")
-    thrill_score: float | None = Field(default=None, ge=0, le=100, description="Game excitement score")
+    thrill_score: float | None = Field(
+        default=None, ge=0, le=100, description="Game excitement score"
+    )
 
     class Config:
         from_attributes = True
@@ -212,20 +273,36 @@ class MiscStats(BaseModel):
     snapshot_date: date
 
     # Shooting percentages (0-100 scale)
-    fg3_pct_off: float = Field(..., ge=0, le=100, description="3PT FG% (Offense)")
-    fg3_pct_def: float = Field(..., ge=0, le=100, description="3PT FG% (Defense)")
-    fg2_pct_off: float = Field(..., ge=0, le=100, description="2PT FG% (Offense)")
-    fg2_pct_def: float = Field(..., ge=0, le=100, description="2PT FG% (Defense)")
+    fg3_pct_off: float = Field(
+        ..., ge=0, le=100, description="3PT FG% (Offense)"
+    )
+    fg3_pct_def: float = Field(
+        ..., ge=0, le=100, description="3PT FG% (Defense)"
+    )
+    fg2_pct_off: float = Field(
+        ..., ge=0, le=100, description="2PT FG% (Offense)"
+    )
+    fg2_pct_def: float = Field(
+        ..., ge=0, le=100, description="2PT FG% (Defense)"
+    )
     ft_pct_off: float = Field(..., ge=0, le=100, description="FT% (Offense)")
     ft_pct_def: float = Field(..., ge=0, le=100, description="FT% (Defense)")
 
     # Advanced metrics
     assist_rate: float = Field(..., ge=0, le=100, description="Assist rate")
-    assist_rate_def: float = Field(..., ge=0, le=100, description="Opponent assist rate")
+    assist_rate_def: float = Field(
+        ..., ge=0, le=100, description="Opponent assist rate"
+    )
     steal_rate: float = Field(..., ge=0, le=50, description="Steal rate")
-    steal_rate_def: float = Field(..., ge=0, le=50, description="Opponent steal rate")
-    block_pct_off: float = Field(..., ge=0, le=30, description="Block percentage")
-    block_pct_def: float = Field(..., ge=0, le=30, description="Opponent block percentage")
+    steal_rate_def: float = Field(
+        ..., ge=0, le=50, description="Opponent steal rate"
+    )
+    block_pct_off: float = Field(
+        ..., ge=0, le=30, description="Block percentage"
+    )
+    block_pct_def: float = Field(
+        ..., ge=0, le=30, description="Opponent block percentage"
+    )
 
     # Rankings
     rank_fg3_pct: int | None = Field(default=None, ge=1, le=400)
@@ -251,11 +328,21 @@ class GamePrediction(BaseModel):
     team2_name: str | None = None
 
     # Predictions
-    predicted_margin: float = Field(..., description="Predicted margin (team1 - team2)")
-    predicted_total: float = Field(..., ge=80, le=200, description="Predicted total")
-    win_probability: float = Field(..., ge=0, le=1, description="Team1 win probability")
-    confidence_lower: float = Field(..., description="Lower bound of confidence interval")
-    confidence_upper: float = Field(..., description="Upper bound of confidence interval")
+    predicted_margin: float = Field(
+        ..., description="Predicted margin (team1 - team2)"
+    )
+    predicted_total: float = Field(
+        ..., ge=80, le=200, description="Predicted total"
+    )
+    win_probability: float = Field(
+        ..., ge=0, le=1, description="Team1 win probability"
+    )
+    confidence_lower: float = Field(
+        ..., description="Lower bound of confidence interval"
+    )
+    confidence_upper: float = Field(
+        ..., description="Upper bound of confidence interval"
+    )
 
     # Vegas lines at prediction time
     vegas_spread: float | None = None
@@ -332,12 +419,18 @@ class AccuracyReport(BaseModel):
 
     # Margin accuracy
     mae_margin: float = Field(..., ge=0, description="Mean Absolute Error")
-    rmse_margin: float = Field(..., ge=0, description="Root Mean Squared Error")
+    rmse_margin: float = Field(
+        ..., ge=0, description="Root Mean Squared Error"
+    )
     r2_margin: float = Field(..., ge=-1, le=1, description="R² score")
 
     # Win prediction accuracy
-    win_accuracy: float = Field(..., ge=0, le=1, description="Correct winner %")
-    brier_score: float = Field(..., ge=0, le=1, description="Probability calibration")
+    win_accuracy: float = Field(
+        ..., ge=0, le=1, description="Correct winner %"
+    )
+    brier_score: float = Field(
+        ..., ge=0, le=1, description="Probability calibration"
+    )
 
     # Against-the-spread performance
     ats_wins: int = 0
