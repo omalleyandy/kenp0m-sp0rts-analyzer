@@ -1,0 +1,125 @@
+{
+  "source": "overtime.ag",
+  "date": "2025-12-19",
+  "scraped_at": "2025-12-19T12:30:00",
+  "game_count": 13,
+  "games": [
+    {
+      "time": "11:00 AM",
+      "away_team": "Dartmouth",
+      "home_team": "Sacred Heart",
+      "spread": -1,
+      "total": 155,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "5:00 PM",
+      "away_team": "South Dakota State",
+      "home_team": "Wisc Milwaukee",
+      "spread": 0,
+      "total": 153,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "6:30 PM",
+      "away_team": "Seton Hall",
+      "home_team": "Providence",
+      "spread": -2.5,
+      "total": 153.5,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "7:00 PM",
+      "away_team": "Mt. St. Marys",
+      "home_team": "Drexel",
+      "spread": -5,
+      "total": 141,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "7:00 PM",
+      "away_team": "Eastern Michigan",
+      "home_team": "Akron",
+      "spread": -17,
+      "total": 161,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "7:30 PM",
+      "away_team": "Tulsa",
+      "home_team": "Western Kentucky",
+      "spread": 2.5,
+      "total": 158,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "8:00 PM",
+      "away_team": "Villanova",
+      "home_team": "Wisconsin",
+      "spread": -5.5,
+      "total": 150.5,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "9:00 PM",
+      "away_team": "Belmont",
+      "home_team": "Cal Irvine",
+      "spread": -1.5,
+      "total": 147,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "9:30 PM",
+      "away_team": "Abilene Christian",
+      "home_team": "BYU",
+      "spread": -32,
+      "total": 146,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "10:00 PM",
+      "away_team": "Cal Poly SLO",
+      "home_team": "UCLA",
+      "spread": -26,
+      "total": 160.5,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "10:00 PM",
+      "away_team": "San Diego",
+      "home_team": "UC San Diego",
+      "spread": -13.5,
+      "total": 157,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "10:00 PM",
+      "away_team": "Florida Atlantic",
+      "home_team": "Saint Marys CA",
+      "spread": -13.5,
+      "total": 144,
+      "away_ml": null,
+      "home_ml": null
+    },
+    {
+      "time": "11:30 PM",
+      "away_team": "Seattle U",
+      "home_team": "Washington",
+      "spread": -8,
+      "total": 147.5,
+      "away_ml": null,
+      "home_ml": null
+    }
+  ]
+}
