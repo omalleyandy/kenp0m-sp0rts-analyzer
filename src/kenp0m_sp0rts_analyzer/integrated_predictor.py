@@ -274,7 +274,7 @@ class IntegratedPredictor:
         )
 
         # Get XGBoost prediction
-        if self.predictor.model is not None:
+        if self.predictor.is_fitted:
             # Use trained model
             result = self.predictor.predict(features)
             xgb_margin = result.margin

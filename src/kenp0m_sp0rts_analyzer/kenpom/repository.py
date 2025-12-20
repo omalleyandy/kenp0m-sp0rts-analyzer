@@ -16,6 +16,7 @@ from .models import (
     FourFactors,
     GamePrediction,
     GameResult,
+    HeightExperience,
     MiscStats,
     PointDistribution,
     Team,
@@ -861,6 +862,42 @@ class KenPomRepository:
                 )
             row = cursor.fetchone()
             return MiscStats(**dict(row)) if row else None
+
+    def get_height_experience(
+        self,
+        team_id: int,
+        snapshot_date: date | None = None,
+    ) -> HeightExperience | None:
+        """Get height/experience data for a team.
+
+        Args:
+            team_id: Team ID.
+            snapshot_date: Optional date (defaults to latest).
+
+        Returns:
+            HeightExperience if found, None otherwise.
+        """
+        with self.db.connection() as conn:
+            if snapshot_date:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM height_experience
+                    WHERE team_id = ? AND snapshot_date = ?
+                    """,
+                    (team_id, snapshot_date),
+                )
+            else:
+                cursor = conn.execute(
+                    """
+                    SELECT * FROM height_experience
+                    WHERE team_id = ?
+                    ORDER BY snapshot_date DESC
+                    LIMIT 1
+                    """,
+                    (team_id,),
+                )
+            row = cursor.fetchone()
+            return HeightExperience(**dict(row)) if row else None
 
     # ==================== Predictions ====================
 
