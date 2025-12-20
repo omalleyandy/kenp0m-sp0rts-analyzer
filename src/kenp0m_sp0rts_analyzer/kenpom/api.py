@@ -424,7 +424,7 @@ class KenPomService:
             game_date = game_date or date.today()
             snapshot_date = snapshot_date or date.today()
 
-            response = self.api.get_fanmatch(date=game_date)
+            response = self.api.get_fanmatch(game_date=game_date)
             data = list(response.data)
             count = self.repository.save_fanmatch_predictions(
                 snapshot_date, data
