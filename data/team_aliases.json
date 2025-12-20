@@ -2,8 +2,13 @@
   "_metadata": {
     "description": "Team name aliases mapping various sources to KenPom canonical names",
     "canonical_source": "KenPom",
-    "last_updated": "2025-12-18",
-    "sources": ["overtime.ag", "espn", "action_network", "covers"]
+    "last_updated": "2025-12-20",
+    "sources": [
+      "overtime.ag",
+      "espn",
+      "action_network",
+      "covers"
+    ]
   },
   "aliases": {
     "Appalachian State": "Appalachian St.",
@@ -26,7 +31,6 @@
     "UL - Lafayette": "Louisiana",
     "UMKC": "Kansas City",
     "Va Commonwealth": "VCU",
-
     "Alabama State": "Alabama St.",
     "Alcorn State": "Alcorn St.",
     "Arizona State": "Arizona St.",
@@ -77,7 +81,6 @@
     "Wichita State": "Wichita St.",
     "Wright State": "Wright St.",
     "Youngstown State": "Youngstown St.",
-
     "NC State": "N.C. State",
     "North Carolina State": "N.C. State",
     "UConn": "Connecticut",
@@ -87,12 +90,10 @@
     "Southern Cal": "USC",
     "South Carolina Upstate": "USC Upstate",
     "SC Upstate": "USC Upstate",
-
     "Miami (FL)": "Miami FL",
     "Miami Florida": "Miami FL",
     "Miami (OH)": "Miami OH",
     "Miami Ohio": "Miami OH",
-
     "St. John's": "St. John's",
     "Saint John's": "St. John's",
     "St Johns": "St. John's",
@@ -103,7 +104,6 @@
     "Saint Bonaventure": "St. Bonaventure",
     "St. Thomas": "St. Thomas",
     "Saint Thomas": "St. Thomas",
-
     "UNC": "North Carolina",
     "UK": "Kentucky",
     "OSU": "Ohio St.",
@@ -126,7 +126,6 @@
     "LIU": "LIU",
     "VMI": "VMI",
     "NJIT": "NJIT",
-
     "Louisiana-Lafayette": "Louisiana",
     "UL Lafayette": "Louisiana",
     "ULL": "Louisiana",
@@ -136,61 +135,84 @@
     "UTA": "UT Arlington",
     "UT Rio Grande Valley": "UT Rio Grande Valley",
     "UTRGV": "UT Rio Grande Valley",
-
     "Southern Miss": "Southern Miss",
     "Southern Mississippi": "Southern Miss",
     "USM": "Southern Miss",
     "Middle Tennessee State": "Middle Tennessee",
     "MTSU": "Middle Tennessee",
-
     "Virginia Commonwealth": "VCU",
     "Va. Commonwealth": "VCU",
-
     "Illinois-Chicago": "Illinois Chicago",
     "UIC": "Illinois Chicago",
-
     "Texas A&M-Corpus Christi": "Texas A&M Corpus Chris",
     "TAMUCC": "Texas A&M Corpus Chris",
-
     "Southeast Missouri St.": "Southeast Missouri",
     "SEMO": "Southeast Missouri",
-
     "Southeastern La.": "Southeastern Louisiana",
     "SE Louisiana": "Southeastern Louisiana",
-
     "East Texas A&M": "East Texas A&M",
     "ETAMU": "East Texas A&M",
-
     "North Carolina A&T": "North Carolina A&T",
     "NC A&T": "North Carolina A&T",
-
     "North Carolina Central": "North Carolina Central",
     "NCCU": "North Carolina Central",
-
     "Prairie View": "Prairie View A&M",
     "Prairie View A&M": "Prairie View A&M",
     "PVAMU": "Prairie View A&M",
-
     "Arkansas-Pine Bluff": "Arkansas Pine Bluff",
     "UAPB": "Arkansas Pine Bluff",
-
     "Maryland-Eastern Shore": "Maryland Eastern Shore",
     "UMES": "Maryland Eastern Shore",
-
     "Central Connecticut State": "Central Connecticut",
     "CCSU": "Central Connecticut",
-
     "Purdue Fort Wayne": "Purdue Fort Wayne",
     "PFW": "Purdue Fort Wayne",
     "Fort Wayne": "Purdue Fort Wayne",
     "IPFW": "Purdue Fort Wayne",
-
     "IU Indianapolis": "IU Indy",
     "IUPUI": "IU Indy",
     "Indiana-Purdue": "IU Indy",
-
     "Nebraska-Omaha": "Nebraska Omaha",
     "UNO": "Nebraska Omaha",
-    "Omaha": "Nebraska Omaha"
+    "Omaha": "Nebraska Omaha",
+    "Long Island University": "LIU",
+    "Long Island": "LIU",
+    "Queens University": "Queens",
+    "Queens (NC)": "Queens",
+    "Ole Miss": "Mississippi",
+    "UAlbany": "Albany",
+    "Albany (NY)": "Albany",
+    "App St.": "Appalachian St.",
+    "App State": "Appalachian St.",
+    "Sam Houston": "Sam Houston St.",
+    "SHSU": "Sam Houston St.",
+    "Seattle U": "Seattle",
+    "Seattle University": "Seattle",
+    "San Jos\u00e9 State": "San Jose St.",
+    "San Jose St.": "San Jose St.",
+    "SJSU": "San Jose St.",
+    "Hawai'i": "Hawaii",
+    "St. Thomas-Minnesota": "St. Thomas",
+    "St Thomas (MN)": "St. Thomas",
+    "UT Martin": "Tennessee Martin",
+    "Tennessee-Martin": "Tennessee Martin",
+    "UTM": "Tennessee Martin",
+    "UL Monroe": "Louisiana Monroe",
+    "Florida International": "FIU",
+    "Florida Intl": "FIU",
+    "Bethune-Cookman": "Bethune Cookman",
+    "B-CU": "Bethune Cookman",
+    "Gardner-Webb": "Gardner Webb",
+    "California Baptist": "Cal Baptist",
+    "CBU": "Cal Baptist",
+    "American University": "American",
+    "American U": "American",
+    "Cal State Northridge": "Cal St. Northridge",
+    "CSUN": "Cal St. Northridge",
+    "Miami": "Miami FL",
+    "Miami (Florida)": "Miami FL",
+    "N.C. State": "NC State",
+    "Southeast Missouri State": "Southeast Missouri",
+    "Maryland Eastern Shore": "Maryland Eastern Shore"
   }
 }
