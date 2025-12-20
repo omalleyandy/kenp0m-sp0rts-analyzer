@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS point_distribution (
     UNIQUE(snapshot_date, team_id)
 );
 
--- Height and experience data
-CREATE TABLE IF NOT EXISTS height_experience (
+-- Height data (from height API endpoint)
+CREATE TABLE IF NOT EXISTS height (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     snapshot_date DATE NOT NULL,
     team_id INTEGER NOT NULL,
@@ -328,9 +328,7 @@ class DatabaseManager:
             conn: Active database connection.
         """
         # Get current schema version
-        cursor = conn.execute(
-            "SELECT MAX(version) FROM schema_version"
-        )
+        cursor = conn.execute("SELECT MAX(version) FROM schema_version")
         result = cursor.fetchone()
         current_version = result[0] if result[0] else 0
 
@@ -440,7 +438,7 @@ class DatabaseManager:
             "ratings",
             "four_factors",
             "point_distribution",
-            "height_experience",
+            "height",
             "fanmatch_predictions",
             "misc_stats",
             "game_predictions",
@@ -555,7 +553,7 @@ class DatabaseManager:
             "ratings",
             "four_factors",
             "point_distribution",
-            "height_experience",
+            "height",
             "fanmatch_predictions",
             "misc_stats",
             "game_predictions",
@@ -582,7 +580,7 @@ class DatabaseManager:
                 "game_predictions",
                 "fanmatch_predictions",
                 "misc_stats",
-                "height_experience",
+                "height",
                 "point_distribution",
                 "four_factors",
                 "ratings",

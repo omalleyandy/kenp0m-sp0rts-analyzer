@@ -744,7 +744,7 @@ class HistoricalDataLoader:
         return total
 
     def populate_height(self, seasons: list[int]) -> int:
-        """Populate height_experience table for specified seasons.
+        """Populate height table for specified seasons.
 
         Args:
             seasons: List of season years to populate.
@@ -790,7 +790,7 @@ class HistoricalDataLoader:
 
                         conn.execute(
                             """
-                            INSERT INTO height_experience (
+                            INSERT INTO height (
                                 snapshot_date, team_id,
                                 avg_height, effective_height, experience,
                                 bench_minutes, continuity,

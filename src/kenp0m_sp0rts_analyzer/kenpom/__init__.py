@@ -107,7 +107,7 @@ Tables:
 - ratings: Daily rating snapshots with UNIQUE(date, team_id)
 - four_factors: Dean Oliver's Four Factors data
 - point_distribution: Point source distribution (FT, 2P, 3P)
-- height_experience: Height and experience metrics
+- height: Height and experience metrics
 - game_predictions: Predictions for accuracy tracking
 - accuracy_metrics: Daily accuracy summaries
 - sync_history: Data sync operation logs

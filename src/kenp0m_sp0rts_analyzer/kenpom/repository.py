@@ -1033,12 +1033,12 @@ class KenPomRepository:
             row = cursor.fetchone()
             return MiscStats(**dict(row)) if row else None
 
-    def get_height_experience(
+    def get_height(
         self,
         team_id: int,
         snapshot_date: date | None = None,
     ) -> HeightExperience | None:
-        """Get height/experience data for a team.
+        """Get height data for a team.
 
         Args:
             team_id: Team ID.
@@ -1051,7 +1051,7 @@ class KenPomRepository:
             if snapshot_date:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM height_experience
+                    SELECT * FROM height
                     WHERE team_id = ? AND snapshot_date = ?
                     """,
                     (team_id, snapshot_date),
@@ -1059,7 +1059,7 @@ class KenPomRepository:
             else:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM height_experience
+                    SELECT * FROM height
                     WHERE team_id = ?
                     ORDER BY snapshot_date DESC
                     LIMIT 1
@@ -1330,12 +1330,8 @@ class KenPomRepository:
             ),
             "team1_misc_stats": self.get_misc_stats(team1_id, snapshot_date),
             "team2_misc_stats": self.get_misc_stats(team2_id, snapshot_date),
-            "team1_height": self.get_height_experience(
-                team1_id, snapshot_date
-            ),
-            "team2_height": self.get_height_experience(
-                team2_id, snapshot_date
-            ),
+            "team1_height": self.get_height(team1_id, snapshot_date),
+            "team2_height": self.get_height(team2_id, snapshot_date),
             "team1_history": self.get_team_rating_history(team1_id, days=28),
             "team2_history": self.get_team_rating_history(team2_id, days=28),
         }

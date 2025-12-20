@@ -89,8 +89,8 @@ if result.has_spread_edge:
 - **RealtimeMonitor**: Live rating change detection
 
 ### Database Schema
-8 tables: teams, ratings_snapshots, four_factors, point_distribution, 
-height_experience, game_predictions, accuracy_metrics, sync_history
+8 tables: teams, ratings, four_factors, point_distribution,
+height, game_predictions, accuracy_metrics, sync_history
 
 ## Commands
 

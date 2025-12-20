@@ -6,7 +6,7 @@ KenPom API field names as documented in kenpom_api_docs_20251216.json.
 Key changes:
 1. ratings: Add raw efficiency/tempo, rename rank_tempo to rank_adj_tempo
 2. point_distribution: Add defensive rank columns
-3. height_experience: Add position heights and missing ranks
+3. height: Add position heights and missing ranks
 4. misc_stats: Add missing rate and rank columns
 5. fanmatch_predictions: Add season and rank columns
 
@@ -137,51 +137,29 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         )
 
         # ============================================================
-        # 3. height_experience - Add position heights and ranks
+        # 3. height - Add position heights and ranks
         # ============================================================
-        logger.info("Updating height_experience table...")
+        logger.info("Updating height table...")
 
         # Position-specific heights (API: Hgt5, Hgt4, Hgt3, Hgt2, Hgt1)
-        add_column_if_missing(
-            conn, "height_experience", "hgt_c", "REAL"
-        )  # Center
-        add_column_if_missing(
-            conn, "height_experience", "hgt_pf", "REAL"
-        )  # PF
-        add_column_if_missing(
-            conn, "height_experience", "hgt_sf", "REAL"
-        )  # SF
-        add_column_if_missing(
-            conn, "height_experience", "hgt_sg", "REAL"
-        )  # SG
-        add_column_if_missing(
-            conn, "height_experience", "hgt_pg", "REAL"
-        )  # PG
+        add_column_if_missing(conn, "height", "hgt_c", "REAL")  # Center
+        add_column_if_missing(conn, "height", "hgt_pf", "REAL")  # PF
+        add_column_if_missing(conn, "height", "hgt_sf", "REAL")  # SF
+        add_column_if_missing(conn, "height", "hgt_sg", "REAL")  # SG
+        add_column_if_missing(conn, "height", "hgt_pg", "REAL")  # PG
 
         # Position height ranks
-        add_column_if_missing(
-            conn, "height_experience", "rank_hgt_c", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "height_experience", "rank_hgt_pf", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "height_experience", "rank_hgt_sf", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "height_experience", "rank_hgt_sg", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "height_experience", "rank_hgt_pg", "INTEGER"
-        )
+        add_column_if_missing(conn, "height", "rank_hgt_c", "INTEGER")
+        add_column_if_missing(conn, "height", "rank_hgt_pf", "INTEGER")
+        add_column_if_missing(conn, "height", "rank_hgt_sf", "INTEGER")
+        add_column_if_missing(conn, "height", "rank_hgt_sg", "INTEGER")
+        add_column_if_missing(conn, "height", "rank_hgt_pg", "INTEGER")
 
         # Additional ranks
         add_column_if_missing(
-            conn, "height_experience", "rank_effective_height", "INTEGER"
+            conn, "height", "rank_effective_height", "INTEGER"
         )
-        add_column_if_missing(
-            conn, "height_experience", "rank_bench", "INTEGER"
-        )
+        add_column_if_missing(conn, "height", "rank_bench", "INTEGER")
 
         # ============================================================
         # 4. misc_stats - Add missing rate and rank columns
@@ -266,7 +244,7 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
             "ratings",
             "four_factors",
             "point_distribution",
-            "height_experience",
+            "height",
             "misc_stats",
             "fanmatch_predictions",
         ]
