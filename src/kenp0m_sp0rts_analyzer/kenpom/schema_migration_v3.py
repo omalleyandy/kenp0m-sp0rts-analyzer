@@ -8,7 +8,7 @@ Key changes:
 2. point_distribution: Add defensive rank columns
 3. height: Add position heights and missing ranks
 4. misc_stats: Add missing rate and rank columns
-5. fanmatch_predictions: Add season and rank columns
+5. fanmatch: Add season and rank columns
 
 Run once to upgrade existing database.
 """
@@ -215,19 +215,14 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         add_column_if_missing(conn, "misc_stats", "rank_adj_de", "INTEGER")
 
         # ============================================================
-        # 5. fanmatch_predictions - Add season and rank columns
+        # 5. fanmatch - Columns now in base schema
         # ============================================================
-        logger.info("Updating fanmatch_predictions table...")
-
-        add_column_if_missing(
-            conn, "fanmatch_predictions", "season", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "fanmatch_predictions", "home_rank", "INTEGER"
-        )
-        add_column_if_missing(
-            conn, "fanmatch_predictions", "visitor_rank", "INTEGER"
-        )
+        logger.info("Checking fanmatch table...")
+        # Note: season, home_rank, visitor_rank are now in the base schema
+        # These are kept for backwards compatibility with older databases
+        add_column_if_missing(conn, "fanmatch", "season", "INTEGER")
+        add_column_if_missing(conn, "fanmatch", "home_rank", "INTEGER")
+        add_column_if_missing(conn, "fanmatch", "visitor_rank", "INTEGER")
 
         # ============================================================
         # 6. Update schema version
@@ -246,7 +241,7 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
             "point_distribution",
             "height",
             "misc_stats",
-            "fanmatch_predictions",
+            "fanmatch",
         ]
         logger.info("\nColumn counts after migration:")
         for table in tables:

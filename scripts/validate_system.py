@@ -63,9 +63,7 @@ def validate_fanmatch_sync(service: KenPomService) -> bool:
 
         try:
             with service.repository.db.connection() as conn:
-                cursor = conn.execute(
-                    "SELECT COUNT(*) FROM fanmatch_predictions"
-                )
+                cursor = conn.execute("SELECT COUNT(*) FROM fanmatch")
                 count = cursor.fetchone()[0]
                 print(f"  Database table exists with {count} existing records")
                 if count > 0:
@@ -153,7 +151,7 @@ def validate_query_performance(service: KenPomService) -> bool:
         ),
         (
             "FanMatch predictions",
-            "SELECT * FROM fanmatch_predictions ORDER BY snapshot_date DESC LIMIT 50",
+            "SELECT * FROM fanmatch ORDER BY snapshot_date DESC LIMIT 50",
         ),
     ]
 
@@ -199,14 +197,14 @@ def validate_foreign_keys(service: KenPomService) -> bool:
         (
             "FanMatch -> Teams (home)",
             """
-            SELECT COUNT(*) FROM fanmatch_predictions f
+            SELECT COUNT(*) FROM fanmatch f
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = f.home_team_id)
         """,
         ),
         (
             "FanMatch -> Teams (visitor)",
             """
-            SELECT COUNT(*) FROM fanmatch_predictions f
+            SELECT COUNT(*) FROM fanmatch f
             WHERE NOT EXISTS (SELECT 1 FROM teams t WHERE t.team_id = f.visitor_team_id)
         """,
         ),
@@ -322,7 +320,7 @@ def validate_fanmatch_availability(predictor: IntegratedPredictor) -> bool:
             cursor = conn.execute(
                 """
                 SELECT COUNT(DISTINCT game_id)
-                FROM fanmatch_predictions
+                FROM fanmatch
                 WHERE snapshot_date >= date('now', '-7 days')
             """
             )
@@ -331,7 +329,7 @@ def validate_fanmatch_availability(predictor: IntegratedPredictor) -> bool:
             cursor = conn.execute(
                 """
                 SELECT COUNT(*)
-                FROM fanmatch_predictions
+                FROM fanmatch
                 WHERE snapshot_date >= date('now', '-7 days')
             """
             )

@@ -149,25 +149,32 @@ CREATE TABLE IF NOT EXISTS height (
     UNIQUE(snapshot_date, team_id)
 );
 
--- KenPom FanMatch predictions for ensemble blending
-CREATE TABLE IF NOT EXISTS fanmatch_predictions (
+-- KenPom FanMatch predictions (from fanmatch API endpoint)
+CREATE TABLE IF NOT EXISTS fanmatch (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    snapshot_date DATE NOT NULL,
-    game_id TEXT NOT NULL,
-    home_team_id INTEGER NOT NULL,
-    visitor_team_id INTEGER NOT NULL,
-    home_team_name TEXT,
-    visitor_team_name TEXT,
-    pred_home_score REAL NOT NULL,
-    pred_visitor_score REAL NOT NULL,
-    pred_margin REAL NOT NULL,
-    home_win_prob REAL NOT NULL,
+    -- API fields (matching KenPom API naming)
+    season INTEGER NOT NULL,
+    game_id INTEGER NOT NULL,
+    game_date DATE NOT NULL,
+    home TEXT NOT NULL,
+    visitor TEXT NOT NULL,
+    home_rank INTEGER,
+    visitor_rank INTEGER,
+    home_pred REAL NOT NULL,
+    visitor_pred REAL NOT NULL,
+    home_wp REAL NOT NULL,
     pred_tempo REAL NOT NULL,
     thrill_score REAL,
+    -- Additional fields for FK relationships
+    home_team_id INTEGER,
+    visitor_team_id INTEGER,
+    -- Calculated/derived fields
+    pred_margin REAL,
+    -- Metadata
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (home_team_id) REFERENCES teams(team_id),
     FOREIGN KEY (visitor_team_id) REFERENCES teams(team_id),
-    UNIQUE(snapshot_date, game_id)
+    UNIQUE(game_date, game_id)
 );
 
 -- Miscellaneous team statistics (shooting, assists, steals, blocks)
@@ -289,8 +296,9 @@ CREATE INDEX IF NOT EXISTS idx_predictions_pending
     ON game_predictions(game_date) WHERE resolved_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_sync_endpoint ON sync_history(endpoint, sync_type);
 CREATE INDEX IF NOT EXISTS idx_teams_name ON teams(team_name);
-CREATE INDEX IF NOT EXISTS idx_fanmatch_date ON fanmatch_predictions(snapshot_date);
-CREATE INDEX IF NOT EXISTS idx_fanmatch_game ON fanmatch_predictions(game_id);
+CREATE INDEX IF NOT EXISTS idx_fanmatch_date ON fanmatch(game_date);
+CREATE INDEX IF NOT EXISTS idx_fanmatch_game ON fanmatch(game_id);
+CREATE INDEX IF NOT EXISTS idx_fanmatch_season ON fanmatch(season);
 CREATE INDEX IF NOT EXISTS idx_misc_date ON misc_stats(snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_misc_team ON misc_stats(team_id);
 """
@@ -439,7 +447,7 @@ class DatabaseManager:
             "four_factors",
             "point_distribution",
             "height",
-            "fanmatch_predictions",
+            "fanmatch",
             "misc_stats",
             "game_predictions",
             "accuracy_metrics",
@@ -554,7 +562,7 @@ class DatabaseManager:
             "four_factors",
             "point_distribution",
             "height",
-            "fanmatch_predictions",
+            "fanmatch",
             "misc_stats",
             "game_predictions",
             "accuracy_metrics",
@@ -578,7 +586,7 @@ class DatabaseManager:
             tables = [
                 "accuracy_metrics",
                 "game_predictions",
-                "fanmatch_predictions",
+                "fanmatch",
                 "misc_stats",
                 "height",
                 "point_distribution",

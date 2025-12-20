@@ -426,9 +426,7 @@ class KenPomService:
 
             response = self.api.get_fanmatch(game_date=game_date)
             data = list(response.data)
-            count = self.repository.save_fanmatch_predictions(
-                snapshot_date, data
-            )
+            count = self.repository.save_fanmatch(game_date, data)
 
             self.repository.db.record_sync(
                 endpoint="fanmatch",
@@ -546,7 +544,9 @@ class KenPomService:
                 )
 
             # Fetch from archive API
-            response = self.api.get_archive(date=archive_date.strftime("%Y-%m-%d"))
+            response = self.api.get_archive(
+                date=archive_date.strftime("%Y-%m-%d")
+            )
             data = list(response.data)
 
             # Validate responses

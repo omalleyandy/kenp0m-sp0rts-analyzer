@@ -787,18 +787,18 @@ class KenPomRepository:
             row = cursor.fetchone()
             return PointDistribution(**dict(row)) if row else None
 
-    # ==================== FanMatch Predictions ====================
+    # ==================== FanMatch ====================
 
-    def save_fanmatch_predictions(
+    def save_fanmatch(
         self,
-        snapshot_date: date,
+        game_date: date,
         data: list[dict[str, Any]],
     ) -> int:
         """Save KenPom FanMatch predictions.
 
         Args:
-            snapshot_date: Date of the data.
-            data: List of fanmatch prediction dictionaries.
+            game_date: Date of the games.
+            data: List of fanmatch prediction dictionaries from API.
 
         Returns:
             Number of records saved.
@@ -806,107 +806,110 @@ class KenPomRepository:
         count = 0
         with self.db.transaction() as conn:
             for record in data:
-                home_id = record.get("HomeTeamID") or record.get(
-                    "home_team_id"
-                )
-                visitor_id = record.get("VisitorTeamID") or record.get(
-                    "visitor_team_id"
-                )
+                # Get API fields
+                game_id = record.get("GameID")
+                season = record.get("Season")
+                home = record.get("Home")
+                visitor = record.get("Visitor")
+                home_rank = record.get("HomeRank")
+                visitor_rank = record.get("VisitorRank")
+                home_pred = record.get("HomePred", 0)
+                visitor_pred = record.get("VisitorPred", 0)
+                home_wp = record.get("HomeWP", 0.5)
+                pred_tempo = record.get("PredTempo")
+                thrill_score = record.get("ThrillScore")
 
-                # Generate game_id from teams and date
-                game_date = record.get(
-                    "GameDate", snapshot_date.strftime("%Y%m%d")
-                )
-                game_id = f"{home_id}-{visitor_id}-{game_date}"
+                # Calculate margin
+                pred_margin = home_pred - visitor_pred if home_pred else None
 
-                # Extract predictions
-                home_pred = record.get("HomePred") or record.get(
-                    "pred_home_score", 0
+                # Look up team IDs if possible
+                home_team = self.get_team_by_name(home) if home else None
+                visitor_team = (
+                    self.get_team_by_name(visitor) if visitor else None
                 )
-                visitor_pred = record.get("VisitorPred") or record.get(
-                    "pred_visitor_score", 0
+                home_team_id = home_team.team_id if home_team else None
+                visitor_team_id = (
+                    visitor_team.team_id if visitor_team else None
                 )
-                margin = record.get("pred_margin") or (
-                    home_pred - visitor_pred
-                )
-
-                # Win probability (convert from percentage if needed)
-                home_wp = record.get("HomeWP") or record.get(
-                    "home_win_prob", 50
-                )
-                if home_wp > 1:  # Assume it's a percentage
-                    home_wp = home_wp / 100
 
                 conn.execute(
                     """
-                    INSERT INTO fanmatch_predictions (
-                        snapshot_date, game_id, home_team_id, visitor_team_id,
-                        home_team_name, visitor_team_name,
-                        pred_home_score, pred_visitor_score, pred_margin,
-                        home_win_prob, pred_tempo, thrill_score
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ON CONFLICT(snapshot_date, game_id) DO UPDATE SET
-                        pred_home_score = excluded.pred_home_score,
-                        pred_visitor_score = excluded.pred_visitor_score,
-                        pred_margin = excluded.pred_margin,
-                        home_win_prob = excluded.home_win_prob,
+                    INSERT INTO fanmatch (
+                        season, game_id, game_date, home, visitor,
+                        home_rank, visitor_rank, home_pred, visitor_pred,
+                        home_wp, pred_tempo, thrill_score,
+                        home_team_id, visitor_team_id, pred_margin
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(game_date, game_id) DO UPDATE SET
+                        season = excluded.season,
+                        home = excluded.home,
+                        visitor = excluded.visitor,
+                        home_rank = excluded.home_rank,
+                        visitor_rank = excluded.visitor_rank,
+                        home_pred = excluded.home_pred,
+                        visitor_pred = excluded.visitor_pred,
+                        home_wp = excluded.home_wp,
                         pred_tempo = excluded.pred_tempo,
-                        thrill_score = excluded.thrill_score
+                        thrill_score = excluded.thrill_score,
+                        home_team_id = excluded.home_team_id,
+                        visitor_team_id = excluded.visitor_team_id,
+                        pred_margin = excluded.pred_margin
                     """,
                     (
-                        snapshot_date,
+                        season,
                         game_id,
-                        home_id,
-                        visitor_id,
-                        record.get("Home") or record.get("home_team_name"),
-                        record.get("Visitor")
-                        or record.get("visitor_team_name"),
+                        game_date,
+                        home,
+                        visitor,
+                        home_rank,
+                        visitor_rank,
                         home_pred,
                         visitor_pred,
-                        margin,
                         home_wp,
-                        record.get("PredTempo") or record.get("pred_tempo"),
-                        record.get("ThrillScore")
-                        or record.get("thrill_score"),
+                        pred_tempo,
+                        thrill_score,
+                        home_team_id,
+                        visitor_team_id,
+                        pred_margin,
                     ),
                 )
                 count += 1
 
-        logger.debug(f"Saved {count} fanmatch predictions for {snapshot_date}")
+        logger.debug(f"Saved {count} fanmatch records for {game_date}")
         return count
 
     def get_fanmatch_for_game(
         self,
         home_team_id: int,
         away_team_id: int,
-        snapshot_date: date | None = None,
+        game_date: date | None = None,
     ) -> FanMatchPrediction | None:
         """Get KenPom prediction for specific game.
 
         Args:
             home_team_id: Home team ID.
             away_team_id: Away team ID.
-            snapshot_date: Optional date (defaults to latest).
+            game_date: Optional date (defaults to latest).
 
         Returns:
             FanMatchPrediction if found, None otherwise.
         """
         with self.db.connection() as conn:
-            if snapshot_date:
+            if game_date:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM fanmatch_predictions
+                    SELECT * FROM fanmatch
                     WHERE home_team_id = ? AND visitor_team_id = ?
-                        AND snapshot_date = ?
+                        AND game_date = ?
                     """,
-                    (home_team_id, away_team_id, snapshot_date),
+                    (home_team_id, away_team_id, game_date),
                 )
             else:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM fanmatch_predictions
+                    SELECT * FROM fanmatch
                     WHERE home_team_id = ? AND visitor_team_id = ?
-                    ORDER BY snapshot_date DESC
+                    ORDER BY game_date DESC
                     LIMIT 1
                     """,
                     (home_team_id, away_team_id),

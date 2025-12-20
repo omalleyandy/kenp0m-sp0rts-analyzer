@@ -340,9 +340,7 @@ class BatchScheduler:
             response = self.api.get_fanmatch(date=snapshot_date)
             data = list(response.data)
 
-            count = self.repository.save_fanmatch_predictions(
-                snapshot_date, data
-            )
+            count = self.repository.save_fanmatch(snapshot_date, data)
             duration = (datetime.now() - start_time).total_seconds()
 
             logger.info(
@@ -579,9 +577,9 @@ class BatchScheduler:
         for task in self.tasks:
             sync = self.repository.db.get_latest_sync(task.endpoint)
             if sync:
-                if status["last_workflow"] is None or sync.get("completed_at", datetime.min) > status[
-                    "last_workflow"
-                ].get("completed_at", datetime.min):
+                if status["last_workflow"] is None or sync.get(
+                    "completed_at", datetime.min
+                ) > status["last_workflow"].get("completed_at", datetime.min):
                     status["last_workflow"] = sync
 
         return status
