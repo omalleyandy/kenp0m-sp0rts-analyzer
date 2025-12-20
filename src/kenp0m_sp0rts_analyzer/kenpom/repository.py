@@ -404,9 +404,9 @@ class KenPomRepository:
                 )
             return [row["snapshot_date"] for row in cursor.fetchall()]
 
-    # ==================== Archive Ratings ====================
+    # ==================== Archive ====================
 
-    def save_archive_ratings(
+    def save_archive(
         self,
         archive_date: date,
         season: int,
@@ -446,7 +446,7 @@ class KenPomRepository:
 
                 conn.execute(
                     """
-                    INSERT INTO archive_ratings (
+                    INSERT INTO archive (
                         archive_date, season, is_preseason, team_id, team_name,
                         conference, seed, event,
                         adj_em, adj_oe, adj_de, adj_tempo,
@@ -527,7 +527,7 @@ class KenPomRepository:
         )
         return count
 
-    def get_archive_ratings(
+    def get_archive(
         self,
         archive_date: date | None = None,
         season: int | None = None,
@@ -566,7 +566,7 @@ class KenPomRepository:
         with self.db.connection() as conn:
             cursor = conn.execute(
                 f"""
-                SELECT * FROM archive_ratings
+                SELECT * FROM archive
                 WHERE {where_clause}
                 ORDER BY archive_date DESC, rank_adj_em
                 """,

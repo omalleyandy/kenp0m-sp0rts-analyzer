@@ -2,7 +2,7 @@
 
 This migration adds:
 1. conferences table (from conferences endpoint)
-2. archive_ratings table (from archive endpoint)
+2. archive table (from archive endpoint)
 3. Updates to teams table (arena fields)
 4. Removes incomplete efficiency_tempo table
 
@@ -31,8 +31,8 @@ CREATE INDEX IF NOT EXISTS idx_conferences_season ON conferences(season);
 CREATE INDEX IF NOT EXISTS idx_conferences_short ON conferences(conf_short);
 """
 
-ARCHIVE_RATINGS_TABLE = """
-CREATE TABLE IF NOT EXISTS archive_ratings (
+ARCHIVE_TABLE = """
+CREATE TABLE IF NOT EXISTS archive (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     archive_date DATE NOT NULL,
     season INTEGER NOT NULL,
@@ -73,11 +73,12 @@ CREATE TABLE IF NOT EXISTS archive_ratings (
     UNIQUE(archive_date, team_id, is_preseason)
 );
 
-CREATE INDEX IF NOT EXISTS idx_archive_date ON archive_ratings(archive_date);
-CREATE INDEX IF NOT EXISTS idx_archive_team ON archive_ratings(team_id);
-CREATE INDEX IF NOT EXISTS idx_archive_season ON archive_ratings(season);
-CREATE INDEX IF NOT EXISTS idx_archive_preseason ON archive_ratings(is_preseason);
+CREATE INDEX IF NOT EXISTS idx_archive_date ON archive(archive_date);
+CREATE INDEX IF NOT EXISTS idx_archive_team ON archive(team_id);
+CREATE INDEX IF NOT EXISTS idx_archive_season ON archive(season);
+CREATE INDEX IF NOT EXISTS idx_archive_preseason ON archive(is_preseason);
 """
+
 
 # Check if columns exist before adding
 def column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
@@ -108,9 +109,9 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         logger.info("Creating conferences table...")
         conn.executescript(CONFERENCES_TABLE)
 
-        # 2. Add archive_ratings table
-        logger.info("Creating archive_ratings table...")
-        conn.executescript(ARCHIVE_RATINGS_TABLE)
+        # 2. Add archive table
+        logger.info("Creating archive table...")
+        conn.executescript(ARCHIVE_TABLE)
 
         # 3. Update teams table with new columns
         logger.info("Updating teams table...")
@@ -144,7 +145,9 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
             conn.execute("DROP TABLE efficiency_tempo")
 
         # 5. Update schema version
-        conn.execute("INSERT OR REPLACE INTO schema_version (version) VALUES (2)")
+        conn.execute(
+            "INSERT OR REPLACE INTO schema_version (version) VALUES (2)"
+        )
 
         # Commit transaction
         conn.commit()
@@ -154,11 +157,11 @@ def apply_migration(db_path: str = "data/kenpom.db") -> None:
         cursor = conn.execute("SELECT COUNT(*) FROM conferences")
         conf_count = cursor.fetchone()[0]
 
-        cursor = conn.execute("SELECT COUNT(*) FROM archive_ratings")
+        cursor = conn.execute("SELECT COUNT(*) FROM archive")
         archive_count = cursor.fetchone()[0]
 
         logger.info(f"  Conferences: {conf_count} records")
-        logger.info(f"  Archive ratings: {archive_count} records")
+        logger.info(f"  Archive: {archive_count} records")
 
     except Exception as e:
         conn.rollback()

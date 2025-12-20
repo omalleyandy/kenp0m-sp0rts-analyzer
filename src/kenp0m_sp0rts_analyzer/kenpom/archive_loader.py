@@ -157,13 +157,13 @@ class ArchiveLoader:
                 else archive_date.year
             )
 
-            count = self.repository.save_archive_ratings(
+            count = self.repository.save_archive(
                 archive_date=archive_date,
                 season=season,
                 is_preseason=False,
                 data=sanitized,
             )
-            logger.debug(f"Stored {count} archive ratings for {archive_date}")
+            logger.debug(f"Stored {count} archive records for {archive_date}")
 
         return sanitized
 
@@ -203,14 +203,14 @@ class ArchiveLoader:
             # Store with a special date (Nov 1 of the season start)
             preseason_date = date(year - 1, 11, 1)
 
-            count = self.repository.save_archive_ratings(
+            count = self.repository.save_archive(
                 archive_date=preseason_date,
                 season=year,
                 is_preseason=True,
                 data=sanitized,
             )
             logger.debug(
-                f"Stored {count} preseason archive ratings for {year}"
+                f"Stored {count} preseason archive records for {year}"
             )
 
         return sanitized
