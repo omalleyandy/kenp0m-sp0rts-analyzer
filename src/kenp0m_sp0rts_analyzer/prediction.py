@@ -223,7 +223,7 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         "momentum_score_team1",
         "momentum_score_team2",
         "momentum_diff",
-        # PHASE 1.6: Misc Stats features (8) - Total: 35 features
+        # PHASE 1.6: Misc Stats features (8)
         "fg3_pct_diff",
         "fg2_pct_diff",
         "ft_pct_diff",
@@ -232,6 +232,15 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         "block_pct_diff",
         "shooting_quality_team1",
         "shooting_quality_team2",
+        # PHASE 2.2: Height/Experience features (4)
+        "height_diff",
+        "experience_diff",
+        "continuity_diff",
+        "bench_minutes_diff",
+        # PHASE 2.2: Archive momentum features (3) - Total: 42 features
+        "rating_momentum_4wk",
+        "rating_acceleration",
+        "preseason_deviation",
     ]
 
     @staticmethod
@@ -246,8 +255,10 @@ class XGBoostFeatureEngineer(FeatureEngineer):
         point_dist_team2: dict | None = None,
         misc_stats_team1: dict | None = None,
         misc_stats_team2: dict | None = None,
+        height_team1: dict | None = None,
+        height_team2: dict | None = None,
     ) -> dict[str, float]:
-        """Create enhanced feature vector with Phase 1.6 features.
+        """Create enhanced feature vector with Phase 2.2 features.
 
         Args:
             team1_stats: Team 1 KenPom statistics (must include Luck field)
@@ -260,9 +271,11 @@ class XGBoostFeatureEngineer(FeatureEngineer):
             point_dist_team2: Point distribution stats
             misc_stats_team1: Misc stats (FG3Pct, FG2Pct, FTPct, ARate, etc.)
             misc_stats_team2: Misc stats
+            height_team1: Height/experience stats (EffHeight, Experience, Continuity, Bench)
+            height_team2: Height/experience stats
 
         Returns:
-            Dictionary with 35 engineered features (14 base + 21 enhanced)
+            Dictionary with 42 engineered features (14 base + 28 enhanced)
         """
         # Start with base features
         features = FeatureEngineer.create_features(
@@ -400,6 +413,76 @@ class XGBoostFeatureEngineer(FeatureEngineer):
             )
             features["shooting_quality_team2"] = 52.5
 
+        # --- PHASE 2.2: Height/Experience Features (4 features: 35 → 39) ---
+        if height_team1 and height_team2:
+            # Effective height differential (inches)
+            features["height_diff"] = float(
+                height_team1.get("EffHeight", 78.0)
+            ) - float(height_team2.get("EffHeight", 78.0))
+
+            # Experience differential (years)
+            features["experience_diff"] = float(
+                height_team1.get("Experience", 2.0)
+            ) - float(height_team2.get("Experience", 2.0))
+
+            # Continuity differential (percentage of minutes returning)
+            features["continuity_diff"] = float(
+                height_team1.get("Continuity", 50.0)
+            ) - float(height_team2.get("Continuity", 50.0))
+
+            # Bench minutes differential (depth)
+            features["bench_minutes_diff"] = float(
+                height_team1.get("Bench", 30.0)
+            ) - float(height_team2.get("Bench", 30.0))
+        else:
+            # Defaults when height/experience not available
+            features["height_diff"] = 0.0
+            features["experience_diff"] = 0.0
+            features["continuity_diff"] = 0.0
+            features["bench_minutes_diff"] = 0.0
+
+        # --- PHASE 2.2: Archive Momentum Features (3 features: 39 → 42) ---
+        # Calculate 4-week rating momentum using historical snapshots
+        if team1_history and len(team1_history) >= 4:
+            em_recent = float(team1_history[0].get("AdjEM", 0))
+            em_4wk = float(team1_history[3].get("AdjEM", em_recent))
+            t1_momentum = em_recent - em_4wk
+
+            # Acceleration: recent change vs earlier change
+            if len(team1_history) >= 2:
+                em_1wk = float(team1_history[1].get("AdjEM", em_recent))
+                t1_accel = (em_recent - em_1wk) - (em_1wk - em_4wk)
+            else:
+                t1_accel = 0.0
+
+            # Preseason deviation: how much has team changed from preseason?
+            preseason_em = float(team1_history[-1].get("AdjEM", em_recent))
+            t1_preseason = em_recent - preseason_em
+        else:
+            t1_momentum = t1_accel = t1_preseason = 0.0
+
+        # Same for team2
+        if team2_history and len(team2_history) >= 4:
+            em_recent = float(team2_history[0].get("AdjEM", 0))
+            em_4wk = float(team2_history[3].get("AdjEM", em_recent))
+            t2_momentum = em_recent - em_4wk
+
+            if len(team2_history) >= 2:
+                em_1wk = float(team2_history[1].get("AdjEM", em_recent))
+                t2_accel = (em_recent - em_1wk) - (em_1wk - em_4wk)
+            else:
+                t2_accel = 0.0
+
+            preseason_em = float(team2_history[-1].get("AdjEM", em_recent))
+            t2_preseason = em_recent - preseason_em
+        else:
+            t2_momentum = t2_accel = t2_preseason = 0.0
+
+        # Differential features
+        features["rating_momentum_4wk"] = t1_momentum - t2_momentum
+        features["rating_acceleration"] = t1_accel - t2_accel
+        features["preseason_deviation"] = t1_preseason - t2_preseason
+
         return features
 
     @staticmethod
@@ -536,6 +619,8 @@ class GamePredictor:
         point_dist_team2: dict | None = None,
         misc_stats_team1: dict | None = None,
         misc_stats_team2: dict | None = None,
+        height_team1: dict | None = None,
+        height_team2: dict | None = None,
     ) -> PredictionResult:
         """Predict game outcome with confidence intervals.
 
@@ -550,6 +635,8 @@ class GamePredictor:
             point_dist_team2: Optional point distribution stats.
             misc_stats_team1: Optional misc stats for team 1 (Phase 1.6).
             misc_stats_team2: Optional misc stats for team 2 (Phase 1.6).
+            height_team1: Optional height/experience stats for team 1 (Phase 2.2).
+            height_team2: Optional height/experience stats for team 2 (Phase 2.2).
 
         Returns:
             PredictionResult with margin, total, scores, and confidence interval.
@@ -575,6 +662,8 @@ class GamePredictor:
                 point_dist_team2,
                 misc_stats_team1,
                 misc_stats_team2,
+                height_team1,
+                height_team2,
             )
         else:
             features = FeatureEngineer.create_features(
@@ -852,6 +941,8 @@ class XGBoostGamePredictor:
         point_dist_team2: dict | None = None,
         misc_stats_team1: dict | None = None,
         misc_stats_team2: dict | None = None,
+        height_team1: dict | None = None,
+        height_team2: dict | None = None,
     ) -> PredictionResult:
         """Predict game outcome with confidence intervals.
 
@@ -866,6 +957,8 @@ class XGBoostGamePredictor:
             point_dist_team2: Optional point distribution stats.
             misc_stats_team1: Optional misc stats for team 1 (Phase 1.6).
             misc_stats_team2: Optional misc stats for team 2 (Phase 1.6).
+            height_team1: Optional height/experience stats for team 1 (Phase 2.2).
+            height_team2: Optional height/experience stats for team 2 (Phase 2.2).
 
         Returns:
             PredictionResult with margin, total, scores, and confidence interval.
@@ -891,6 +984,8 @@ class XGBoostGamePredictor:
                 point_dist_team2,
                 misc_stats_team1,
                 misc_stats_team2,
+                height_team1,
+                height_team2,
             )
         else:
             features = self.feature_engineer.create_features(

@@ -1123,6 +1123,12 @@ class KenPomRepository:
             ),
             "team1_misc_stats": self.get_misc_stats(team1_id, snapshot_date),
             "team2_misc_stats": self.get_misc_stats(team2_id, snapshot_date),
+            "team1_height": self.get_height_experience(
+                team1_id, snapshot_date
+            ),
+            "team2_height": self.get_height_experience(
+                team2_id, snapshot_date
+            ),
             "team1_history": self.get_team_rating_history(team1_id, days=28),
             "team2_history": self.get_team_rating_history(team2_id, days=28),
         }

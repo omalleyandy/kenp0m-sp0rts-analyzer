@@ -519,6 +519,90 @@ class KenPomService:
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
             )
 
+    def sync_archive(
+        self,
+        archive_date: date,
+        season: int | None = None,
+    ) -> SyncResult:
+        """Sync historical ratings snapshot from archive endpoint.
+
+        Args:
+            archive_date: Historical date to fetch ratings for.
+            season: Optional season year (auto-detected from date if not provided).
+
+        Returns:
+            SyncResult with operation details.
+        """
+        start_time = datetime.now()
+        errors = []
+
+        try:
+            # Determine season from date if not specified
+            if season is None:
+                season = (
+                    archive_date.year
+                    if archive_date.month >= 11
+                    else archive_date.year + 1
+                )
+
+            # Fetch from archive API
+            response = self.api.get_archive(date=archive_date.strftime("%Y-%m-%d"))
+            data = list(response.data)
+
+            # Validate responses
+            sanitized = self.validator.sanitize_response(data)
+
+            # Update teams table FIRST (ratings_snapshots has FK to teams)
+            self.repository.upsert_teams(sanitized)
+
+            # Store ratings in database (reuse existing ratings_snapshots table)
+            count = self.repository.save_ratings_snapshot(
+                snapshot_date=archive_date,
+                season=season,
+                ratings=sanitized,
+            )
+
+            # Record sync
+            self.repository.db.record_sync(
+                endpoint="archive",
+                sync_type="historical",
+                status="success",
+                records_synced=count,
+                started_at=start_time,
+            )
+
+            duration = (datetime.now() - start_time).total_seconds()
+            logger.info(
+                f"Synced archive for {archive_date}: {count} ratings in {duration:.2f}s"
+            )
+
+            return SyncResult(
+                success=True,
+                endpoint="archive",
+                records_synced=count,
+                duration_seconds=duration,
+            )
+
+        except Exception as e:
+            logger.error(f"Archive sync failed for {archive_date}: {e}")
+            errors.append(str(e))
+
+            self.repository.db.record_sync(
+                endpoint="archive",
+                sync_type="historical",
+                status="failed",
+                error_message=str(e),
+                started_at=start_time,
+            )
+
+            return SyncResult(
+                success=False,
+                endpoint="archive",
+                records_synced=0,
+                errors=errors,
+                duration_seconds=(datetime.now() - start_time).total_seconds(),
+            )
+
     def sync_all(self, year: int | None = None) -> dict[str, SyncResult]:
         """Sync all data types from the API.
 
