@@ -182,6 +182,62 @@ class HeightExperience(BaseModel):
         from_attributes = True
 
 
+class FanMatchPrediction(BaseModel):
+    """KenPom game prediction for ensemble blending.
+
+    Provides KenPom's own predictions to blend with XGBoost model.
+    """
+
+    game_id: str
+    snapshot_date: date
+    home_team_id: int
+    visitor_team_id: int
+    home_team_name: Optional[str] = None
+    visitor_team_name: Optional[str] = None
+
+    pred_home_score: float = Field(..., ge=30, le=150, description="Predicted home score")
+    pred_visitor_score: float = Field(..., ge=30, le=150, description="Predicted visitor score")
+    pred_margin: float = Field(..., description="Predicted margin (home - visitor)")
+    home_win_prob: float = Field(..., ge=0, le=1, description="Home win probability")
+    pred_tempo: float = Field(..., ge=55, le=90, description="Predicted tempo")
+    thrill_score: Optional[float] = Field(default=None, ge=0, le=100, description="Game excitement score")
+
+    class Config:
+        from_attributes = True
+
+
+class MiscStats(BaseModel):
+    """Miscellaneous team statistics (shooting, assists, steals, blocks)."""
+
+    team_id: int
+    snapshot_date: date
+
+    # Shooting percentages (0-100 scale)
+    fg3_pct_off: float = Field(..., ge=0, le=100, description="3PT FG% (Offense)")
+    fg3_pct_def: float = Field(..., ge=0, le=100, description="3PT FG% (Defense)")
+    fg2_pct_off: float = Field(..., ge=0, le=100, description="2PT FG% (Offense)")
+    fg2_pct_def: float = Field(..., ge=0, le=100, description="2PT FG% (Defense)")
+    ft_pct_off: float = Field(..., ge=0, le=100, description="FT% (Offense)")
+    ft_pct_def: float = Field(..., ge=0, le=100, description="FT% (Defense)")
+
+    # Advanced metrics
+    assist_rate: float = Field(..., ge=0, le=100, description="Assist rate")
+    assist_rate_def: float = Field(..., ge=0, le=100, description="Opponent assist rate")
+    steal_rate: float = Field(..., ge=0, le=50, description="Steal rate")
+    steal_rate_def: float = Field(..., ge=0, le=50, description="Opponent steal rate")
+    block_pct_off: float = Field(..., ge=0, le=30, description="Block percentage")
+    block_pct_def: float = Field(..., ge=0, le=30, description="Opponent block percentage")
+
+    # Rankings
+    rank_fg3_pct: Optional[int] = Field(default=None, ge=1, le=400)
+    rank_fg2_pct: Optional[int] = Field(default=None, ge=1, le=400)
+    rank_ft_pct: Optional[int] = Field(default=None, ge=1, le=400)
+    rank_assist_rate: Optional[int] = Field(default=None, ge=1, le=400)
+
+    class Config:
+        from_attributes = True
+
+
 class GamePrediction(BaseModel):
     """Game prediction model for tracking accuracy.
 

@@ -149,6 +149,53 @@ CREATE TABLE IF NOT EXISTS height_experience (
     UNIQUE(snapshot_date, team_id)
 );
 
+-- KenPom FanMatch predictions for ensemble blending
+CREATE TABLE IF NOT EXISTS fanmatch_predictions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snapshot_date DATE NOT NULL,
+    game_id TEXT NOT NULL,
+    home_team_id INTEGER NOT NULL,
+    visitor_team_id INTEGER NOT NULL,
+    home_team_name TEXT,
+    visitor_team_name TEXT,
+    pred_home_score REAL NOT NULL,
+    pred_visitor_score REAL NOT NULL,
+    pred_margin REAL NOT NULL,
+    home_win_prob REAL NOT NULL,
+    pred_tempo REAL NOT NULL,
+    thrill_score REAL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (visitor_team_id) REFERENCES teams(team_id),
+    UNIQUE(snapshot_date, game_id)
+);
+
+-- Miscellaneous team statistics (shooting, assists, steals, blocks)
+CREATE TABLE IF NOT EXISTS misc_stats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snapshot_date DATE NOT NULL,
+    team_id INTEGER NOT NULL,
+    fg3_pct_off REAL NOT NULL,
+    fg3_pct_def REAL NOT NULL,
+    fg2_pct_off REAL NOT NULL,
+    fg2_pct_def REAL NOT NULL,
+    ft_pct_off REAL NOT NULL,
+    ft_pct_def REAL NOT NULL,
+    assist_rate REAL NOT NULL,
+    assist_rate_def REAL NOT NULL,
+    steal_rate REAL NOT NULL,
+    steal_rate_def REAL NOT NULL,
+    block_pct_off REAL NOT NULL,
+    block_pct_def REAL NOT NULL,
+    rank_fg3_pct INTEGER,
+    rank_fg2_pct INTEGER,
+    rank_ft_pct INTEGER,
+    rank_assist_rate INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    UNIQUE(snapshot_date, team_id)
+);
+
 -- Game predictions for tracking accuracy
 CREATE TABLE IF NOT EXISTS game_predictions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -242,6 +289,10 @@ CREATE INDEX IF NOT EXISTS idx_predictions_pending
     ON game_predictions(game_date) WHERE resolved_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_sync_endpoint ON sync_history(endpoint, sync_type);
 CREATE INDEX IF NOT EXISTS idx_teams_name ON teams(team_name);
+CREATE INDEX IF NOT EXISTS idx_fanmatch_date ON fanmatch_predictions(snapshot_date);
+CREATE INDEX IF NOT EXISTS idx_fanmatch_game ON fanmatch_predictions(game_id);
+CREATE INDEX IF NOT EXISTS idx_misc_date ON misc_stats(snapshot_date);
+CREATE INDEX IF NOT EXISTS idx_misc_team ON misc_stats(team_id);
 """
 
 
@@ -389,7 +440,11 @@ class DatabaseManager:
             "ratings_snapshots",
             "four_factors",
             "point_distribution",
+            "height_experience",
+            "fanmatch_predictions",
+            "misc_stats",
             "game_predictions",
+            "accuracy_metrics",
             "sync_history",
         ]
 
@@ -501,6 +556,8 @@ class DatabaseManager:
             "four_factors",
             "point_distribution",
             "height_experience",
+            "fanmatch_predictions",
+            "misc_stats",
             "game_predictions",
             "accuracy_metrics",
             "sync_history",
@@ -523,6 +580,8 @@ class DatabaseManager:
             tables = [
                 "accuracy_metrics",
                 "game_predictions",
+                "fanmatch_predictions",
+                "misc_stats",
                 "height_experience",
                 "point_distribution",
                 "four_factors",
