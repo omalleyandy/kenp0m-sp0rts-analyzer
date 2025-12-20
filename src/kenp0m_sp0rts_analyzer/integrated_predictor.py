@@ -148,16 +148,27 @@ class IntegratedPredictor:
         db_path: str = "data/kenpom.db",
         model_path: str | None = None,
         use_enhanced_features: bool = True,
+        use_ensemble: bool = True,
+        ensemble_weights: dict[str, float] | None = None,
     ):
         """Initialize the integrated predictor.
 
         Args:
             db_path: Path to KenPom SQLite database.
             model_path: Path to trained XGBoost model (optional).
-            use_enhanced_features: Use 27-feature enhanced model.
+            use_enhanced_features: Use 42-feature enhanced model.
+            use_ensemble: Enable ensemble blending (XGBoost + FanMatch).
+            ensemble_weights: Custom weights dict (default: {'xgboost': 0.70, 'fanmatch': 0.30}).
         """
         self.kenpom = KenPomService(db_path=db_path)
         self.use_enhanced_features = use_enhanced_features
+        self.use_ensemble = use_ensemble
+
+        # Set ensemble weights (default 70/30 XGBoost/FanMatch)
+        if ensemble_weights is None:
+            self.ensemble_weights = {"xgboost": 0.70, "fanmatch": 0.30}
+        else:
+            self.ensemble_weights = ensemble_weights
 
         # Initialize XGBoost predictor
         self.predictor = XGBoostGamePredictor(use_enhanced_features=use_enhanced_features)
@@ -262,22 +273,57 @@ class IntegratedPredictor:
             snapshot_date=snapshot_date,
         )
 
-        # Make prediction
+        # Get XGBoost prediction
         if self.predictor.model is not None:
             # Use trained model
             result = self.predictor.predict(features)
-            margin = result.margin
-            total = result.total
-            win_prob = result.win_probability
+            xgb_margin = result.margin
+            xgb_total = result.total
+            xgb_win_prob = result.win_probability
             ci = (result.confidence_lower, result.confidence_upper)
         else:
             # Fallback to KenPom-based calculation
-            margin = self._kenpom_margin(
+            xgb_margin = self._kenpom_margin(
                 home_rating, away_rating, neutral_site
             )
-            total = self._kenpom_total(home_rating, away_rating)
-            win_prob = self._margin_to_probability(margin)
-            ci = (margin - 10, margin + 10)
+            xgb_total = self._kenpom_total(home_rating, away_rating)
+            xgb_win_prob = self._margin_to_probability(xgb_margin)
+            ci = (xgb_margin - 10, xgb_margin + 10)
+
+        # Ensemble blending (XGBoost + FanMatch)
+        if self.use_ensemble:
+            # Try to get FanMatch prediction
+            fanmatch = self.kenpom.repository.get_fanmatch_for_game(
+                home_team_id=home_id,
+                away_team_id=away_id,
+                snapshot_date=snapshot_date,
+            )
+
+            if fanmatch:
+                # Blend predictions using configured weights
+                w_xgb = self.ensemble_weights["xgboost"]
+                w_fm = self.ensemble_weights["fanmatch"]
+
+                margin = w_xgb * xgb_margin + w_fm * fanmatch.pred_margin
+                total = w_xgb * xgb_total + w_fm * (
+                    fanmatch.pred_home_score + fanmatch.pred_visitor_score
+                )
+                win_prob = w_xgb * xgb_win_prob + w_fm * fanmatch.home_win_prob
+
+                logger.info(
+                    f"Ensemble blend: XGB({xgb_margin:+.1f}) + "
+                    f"FM({fanmatch.pred_margin:+.1f}) = {margin:+.1f}"
+                )
+            else:
+                # FanMatch unavailable, use XGBoost only
+                margin, total, win_prob = xgb_margin, xgb_total, xgb_win_prob
+                logger.debug(
+                    f"FanMatch unavailable for {home_name} vs {away_name}, "
+                    "using XGBoost only"
+                )
+        else:
+            # Ensemble disabled, use XGBoost only
+            margin, total, win_prob = xgb_margin, xgb_total, xgb_win_prob
 
         return GameAnalysis(
             home_team=home_name,
