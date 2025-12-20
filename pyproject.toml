@@ -33,6 +33,7 @@ dependencies = [
     "playwright>=1.57.0",
     "openpyxl>=3.1.5",
     "xgboost>=3.1.2",
+    "beautifulsoup4>=4.14.3",
 ]
 
 [project.optional-dependencies]
