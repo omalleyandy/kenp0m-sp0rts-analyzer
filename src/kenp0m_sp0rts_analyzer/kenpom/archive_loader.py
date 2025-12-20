@@ -150,15 +150,20 @@ class ArchiveLoader:
         sanitized = self.validator.sanitize_response(data)
 
         if store:
-            # Determine season from date
-            season = archive_date.year if archive_date.month >= 11 else archive_date.year
-
-            count = self.repository.save_ratings_snapshot(
-                snapshot_date=archive_date,
-                season=season,
-                ratings=sanitized,
+            # Determine season from date (Nov-Dec = next year's season)
+            season = (
+                archive_date.year + 1
+                if archive_date.month >= 11
+                else archive_date.year
             )
-            logger.debug(f"Stored {count} ratings for {archive_date}")
+
+            count = self.repository.save_archive_ratings(
+                archive_date=archive_date,
+                season=season,
+                is_preseason=False,
+                data=sanitized,
+            )
+            logger.debug(f"Stored {count} archive ratings for {archive_date}")
 
         return sanitized
 
@@ -198,12 +203,15 @@ class ArchiveLoader:
             # Store with a special date (Nov 1 of the season start)
             preseason_date = date(year - 1, 11, 1)
 
-            count = self.repository.save_ratings_snapshot(
-                snapshot_date=preseason_date,
+            count = self.repository.save_archive_ratings(
+                archive_date=preseason_date,
                 season=year,
-                ratings=sanitized,
+                is_preseason=True,
+                data=sanitized,
             )
-            logger.debug(f"Stored {count} preseason ratings for {year}")
+            logger.debug(
+                f"Stored {count} preseason archive ratings for {year}"
+            )
 
         return sanitized
 
@@ -316,7 +324,9 @@ class ArchiveLoader:
         filled = 0
         skipped = 0
 
-        logger.info(f"Starting backfill: {total_dates} dates from {start_date} to {end_date}")
+        logger.info(
+            f"Starting backfill: {total_dates} dates from {start_date} to {end_date}"
+        )
 
         for i, archive_date in enumerate(dates_to_fill):
             try:
@@ -460,11 +470,13 @@ class ArchiveLoader:
             value = getattr(rating, metric, None)
             if value is not None:
                 change = value - prev_value if prev_value is not None else 0.0
-                changes.append({
-                    "date": rating.snapshot_date,
-                    "value": value,
-                    "change": round(change, 2),
-                })
+                changes.append(
+                    {
+                        "date": rating.snapshot_date,
+                        "value": value,
+                        "change": round(change, 2),
+                    }
+                )
                 prev_value = value
 
         return changes

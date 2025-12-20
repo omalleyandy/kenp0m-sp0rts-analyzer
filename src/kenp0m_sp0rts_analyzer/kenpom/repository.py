@@ -154,7 +154,7 @@ class KenPomRepository:
         with self.db.connection() as conn:
             cursor = conn.execute(
                 """
-                SELECT * FROM teams 
+                SELECT * FROM teams
                 WHERE team_name LIKE ?
                 ORDER BY team_name
                 LIMIT ?
@@ -403,6 +403,176 @@ class KenPomRepository:
                     """
                 )
             return [row["snapshot_date"] for row in cursor.fetchall()]
+
+    # ==================== Archive Ratings ====================
+
+    def save_archive_ratings(
+        self,
+        archive_date: date,
+        season: int,
+        is_preseason: bool,
+        data: list[dict[str, Any]],
+    ) -> int:
+        """Save archive ratings data from the archive API.
+
+        The archive API provides historical snapshots with comparison to final
+        season values (AdjEMFinal, RankChg, etc.).
+
+        Args:
+            archive_date: Date of the archived ratings.
+            season: Season year (e.g., 2025 for 2024-25).
+            is_preseason: Whether this is preseason data.
+            data: List of archive rating dictionaries from API.
+
+        Returns:
+            Number of records saved.
+        """
+        count = 0
+        with self.db.transaction() as conn:
+            for record in data:
+                team_id = record.get("TeamID")
+                team_name = record.get("TeamName")
+
+                # Look up team_id if not provided
+                if not team_id and team_name:
+                    team = self.get_team_by_name(team_name)
+                    if team:
+                        team_id = team.team_id
+                    else:
+                        logger.warning(
+                            f"Team '{team_name}' not found for archive. Skipping."
+                        )
+                        continue
+
+                conn.execute(
+                    """
+                    INSERT INTO archive_ratings (
+                        archive_date, season, is_preseason, team_id, team_name,
+                        conference, seed, event,
+                        adj_em, adj_oe, adj_de, adj_tempo,
+                        rank_adj_em, rank_adj_oe, rank_adj_de, rank_adj_tempo,
+                        adj_em_final, adj_oe_final, adj_de_final, adj_tempo_final,
+                        rank_adj_em_final, rank_adj_oe_final,
+                        rank_adj_de_final, rank_adj_tempo_final,
+                        rank_change, adj_em_change, adj_tempo_change
+                    ) VALUES (
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    )
+                    ON CONFLICT(archive_date, team_id, is_preseason) DO UPDATE SET
+                        season = excluded.season,
+                        is_preseason = excluded.is_preseason,
+                        team_name = excluded.team_name,
+                        conference = excluded.conference,
+                        seed = excluded.seed,
+                        event = excluded.event,
+                        adj_em = excluded.adj_em,
+                        adj_oe = excluded.adj_oe,
+                        adj_de = excluded.adj_de,
+                        adj_tempo = excluded.adj_tempo,
+                        rank_adj_em = excluded.rank_adj_em,
+                        rank_adj_oe = excluded.rank_adj_oe,
+                        rank_adj_de = excluded.rank_adj_de,
+                        rank_adj_tempo = excluded.rank_adj_tempo,
+                        adj_em_final = excluded.adj_em_final,
+                        adj_oe_final = excluded.adj_oe_final,
+                        adj_de_final = excluded.adj_de_final,
+                        adj_tempo_final = excluded.adj_tempo_final,
+                        rank_adj_em_final = excluded.rank_adj_em_final,
+                        rank_adj_oe_final = excluded.rank_adj_oe_final,
+                        rank_adj_de_final = excluded.rank_adj_de_final,
+                        rank_adj_tempo_final = excluded.rank_adj_tempo_final,
+                        rank_change = excluded.rank_change,
+                        adj_em_change = excluded.adj_em_change,
+                        adj_tempo_change = excluded.adj_tempo_change
+                    """,
+                    (
+                        archive_date,
+                        season,
+                        is_preseason,
+                        team_id,
+                        team_name,
+                        record.get("ConfShort"),
+                        record.get("Seed"),
+                        record.get("Event"),
+                        # Current archive date values
+                        record.get("AdjEM"),
+                        record.get("AdjOE"),
+                        record.get("AdjDE"),
+                        record.get("AdjTempo"),
+                        record.get("RankAdjEM"),
+                        record.get("RankAdjOE"),
+                        record.get("RankAdjDE"),
+                        record.get("RankAdjTempo"),
+                        # Final season values
+                        record.get("AdjEMFinal"),
+                        record.get("AdjOEFinal"),
+                        record.get("AdjDEFinal"),
+                        record.get("AdjTempoFinal"),
+                        record.get("RankAdjEMFinal"),
+                        record.get("RankAdjOEFinal"),
+                        record.get("RankAdjDEFinal"),
+                        record.get("RankAdjTempoFinal"),
+                        # Change values
+                        record.get("RankChg"),
+                        record.get("AdjEMChg"),
+                        record.get("AdjTChg"),
+                    ),
+                )
+                count += 1
+
+        logger.info(
+            f"Saved {count} archive ratings for {archive_date} "
+            f"(season={season}, preseason={is_preseason})"
+        )
+        return count
+
+    def get_archive_ratings(
+        self,
+        archive_date: date | None = None,
+        season: int | None = None,
+        is_preseason: bool | None = None,
+        team_id: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Get archive ratings with optional filters.
+
+        Args:
+            archive_date: Filter by specific date.
+            season: Filter by season.
+            is_preseason: Filter by preseason flag.
+            team_id: Filter by team.
+
+        Returns:
+            List of archive rating records.
+        """
+        conditions = []
+        params: list[Any] = []
+
+        if archive_date:
+            conditions.append("archive_date = ?")
+            params.append(archive_date)
+        if season:
+            conditions.append("season = ?")
+            params.append(season)
+        if is_preseason is not None:
+            conditions.append("is_preseason = ?")
+            params.append(is_preseason)
+        if team_id:
+            conditions.append("team_id = ?")
+            params.append(team_id)
+
+        where_clause = " AND ".join(conditions) if conditions else "1=1"
+
+        with self.db.connection() as conn:
+            cursor = conn.execute(
+                f"""
+                SELECT * FROM archive_ratings
+                WHERE {where_clause}
+                ORDER BY archive_date DESC, rank_adj_em
+                """,
+                params,
+            )
+            return [dict(row) for row in cursor.fetchall()]
 
     # ==================== Four Factors ====================
 
