@@ -269,7 +269,7 @@ class BatchScheduler:
         errors = []
 
         try:
-            response = self.api.get_pointdist(year=year)
+            response = self.api.get_point_distribution(year=year)
             data = list(response.data)
 
             count = self.repository.save_point_distribution(
