@@ -1,0 +1,768 @@
+game_date,home_team,away_team,margin,total,home_score,away_score,overtime
+2025-12-01,Chicago St.,St. Xavier (IL),23,147,85,62,False
+2025-12-01,Southern,Louisiana Christian,53,149,101,48,False
+2025-12-01,Villanova,Temple,18,130,74,56,False
+2025-12-01,Toledo,Central St. (OH),44,160,102,58,False
+2025-12-01,Hampton,Apprentice School,36,152,94,58,False
+2025-12-01,Troy,West Georgia,-4,182,89,93,True
+2025-12-01,Delaware,Iona,-23,155,66,89,False
+2025-12-01,Jacksonville St.,North Alabama,-7,139,66,73,False
+2025-12-01,Cincinnati,Tarleton St.,18,134,76,58,False
+2025-12-01,Xavier,Saint Francis,22,170,96,74,False
+2025-12-01,Middle Tennessee,UAB,15,137,76,61,False
+2025-12-01,Incarnate Word,McNeese,4,138,71,67,False
+2025-12-01,Northern Iowa,Coe,65,133,99,34,False
+2025-12-01,Kansas St.,Bowling Green,-16,148,66,82,False
+2025-12-01,Southern Utah,West Coast Baptist,65,183,124,59,False
+2025-12-01,New Mexico,New Mexico Highlands,50,144,97,47,False
+2025-12-01,Colorado,California Baptist,8,148,78,70,False
+2025-12-01,Stanford,Portland,22,166,94,72,False
+2025-12-02,Rutgers,Purdue,-16,146,65,81,False
+2025-12-02,Duke,Florida,1,133,67,66,False
+2025-12-02,Kansas,Connecticut,-5,117,56,61,False
+2025-12-02,Michigan St.,Iowa,19,123,71,52,False
+2025-12-02,Syracuse,Tennessee,2,122,62,60,False
+2025-12-02,Kentucky,North Carolina,-3,131,64,67,False
+2025-12-02,Oregon,USC,-5,159,77,82,False
+2025-12-02,Western Carolina,Virginia-Lynchburg,62,186,124,62,False
+2025-12-02,Army,George Washington,-14,154,70,84,False
+2025-12-02,UT Martin,Charleston Southern,17,129,73,56,False
+2025-12-02,Penn St.,Campbell,11,163,87,76,False
+2025-12-02,Bryant,Stonehill,12,142,77,65,False
+2025-12-02,Miami OH,Indiana University East,44,174,109,65,False
+2025-12-02,Indiana St.,Eureka,42,156,99,57,False
+2025-12-02,South Alabama,New Mexico St.,2,152,77,75,False
+2025-12-02,UNC Asheville,UNC Greensboro,5,159,82,77,False
+2025-12-02,Kennesaw St.,Jackson St.,15,161,88,73,False
+2025-12-02,George Mason,Cornell,18,180,99,81,False
+2025-12-02,Mercer,Georgia St.,11,145,78,67,False
+2025-12-02,North Florida,SIUE,-9,135,63,72,False
+2025-12-02,Jacksonville,Florida A&M,3,167,85,82,True
+2025-12-02,Butler,Eastern Michigan,16,152,84,68,False
+2025-12-02,East Carolina,Maryland Eastern Shore,12,124,68,56,False
+2025-12-02,Charlotte,North Carolina A&T,17,131,74,57,False
+2025-12-02,Binghamton,Lehigh,9,151,80,71,True
+2025-12-02,Yale,SUNY-Maritime,64,170,117,53,False
+2025-12-02,Rhode Island,Brown,10,122,66,56,False
+2025-12-02,Duquesne,William & Mary,-4,162,79,83,False
+2025-12-02,Dayton,East Tennessee St.,17,159,88,71,False
+2025-12-02,Providence,Fairleigh Dickinson,30,158,94,64,False
+2025-12-02,South Carolina,Virginia Tech,-3,169,83,86,True
+2025-12-02,Wake Forest,Oklahoma,-18,154,68,86,False
+2025-12-02,Pittsburgh,Texas A&M,-8,154,73,81,False
+2025-12-02,Southeast Missouri St.,Saint Mary of the Woods College,31,145,88,57,False
+2025-12-02,Drake,Western Illinois,51,165,108,57,False
+2025-12-02,Wichita St.,Mount Marty College,26,164,95,69,False
+2025-12-02,Tulane,Grambling St.,2,128,65,63,False
+2025-12-02,Long Island University,Winthrop,-2,186,92,94,True
+2025-12-02,Tulsa,Manhattan Christian,51,171,111,60,False
+2025-12-02,North Texas,Houston Christian,2,152,77,75,False
+2025-12-02,Maryland,Wagner,26,152,89,63,False
+2025-12-02,Murray St.,Morehead St.,32,136,84,52,False
+2025-12-02,Bradley,Washington St.,4,124,64,60,False
+2025-12-02,Arkansas St.,UT Arlington,20,146,83,63,False
+2025-12-02,Northern Illinois,Lindenwood,-35,163,64,99,False
+2025-12-02,Marquette,Valparaiso,3,147,75,72,True
+2025-12-02,Baylor,Sacramento St.,22,198,110,88,False
+2025-12-02,Loyola Chicago,Central Michigan,11,155,83,72,False
+2025-12-02,Oklahoma St.,Sam Houston,10,176,93,83,False
+2025-12-02,Grand Canyon,Stetson,22,112,67,45,False
+2025-12-02,Pepperdine,Abilene Christian,-8,134,63,71,False
+2025-12-02,Creighton,Nicholls,20,172,96,76,False
+2025-12-02,Ole Miss,Miami,-9,141,66,75,False
+2025-12-02,Florida St.,Georgia,-34,180,73,107,False
+2025-12-02,Notre Dame,Missouri,5,147,76,71,False
+2025-12-02,Nevada,UC San Diego,6,146,76,70,False
+2025-12-02,California,Utah,7,151,79,72,False
+2025-12-02,Loyola Marymount,Saint Louis,-21,161,70,91,False
+2025-12-03,Arkansas,Louisville,9,169,89,80,False
+2025-12-03,BYU,California Baptist,31,151,91,60,False
+2025-12-03,Iowa St.,Alcorn St.,64,200,132,68,False
+2025-12-03,Alabama,Clemson,6,174,90,84,False
+2025-12-03,Vanderbilt,SMU,19,157,88,69,False
+2025-12-03,Auburn,N.C. State,10,156,83,73,False
+2025-12-03,Minnesota,Indiana,9,137,73,64,False
+2025-12-03,Illinois Chicago,Arkansas Pine Bluff,-1,125,62,63,False
+2025-12-03,Lipscomb,Tennessee Tech,3,163,83,80,False
+2025-12-03,Boston University,Vermont St. - Johnson,47,161,104,57,False
+2025-12-03,Holy Cross,Northeastern,17,135,76,59,False
+2025-12-03,App St.,Virginia-Lynchburg,88,178,133,45,False
+2025-12-03,Youngstown St.,Wright St.,1,137,69,68,False
+2025-12-03,Western Michigan,Southern Indiana,14,162,88,74,False
+2025-12-03,James Madison,North Carolina Central,5,129,67,62,False
+2025-12-03,Lamar,Louisiana,10,120,65,55,False
+2025-12-03,American University,Drexel,2,148,75,73,False
+2025-12-03,Towson,Cornell,13,173,93,80,False
+2025-12-03,Dartmouth,New Hampshire,1,137,69,68,False
+2025-12-03,USC Upstate,Coastal Carolina,7,163,85,78,True
+2025-12-03,Longwood,Pfeiffer,46,156,101,55,False
+2025-12-03,High Point,Southern Illinois,-2,170,84,86,False
+2025-12-03,Wofford,Presbyterian,7,119,63,56,False
+2025-12-03,Georgia Southern,Louisiana Tech,8,146,77,69,False
+2025-12-03,Radford,Southern Miss,-7,157,75,82,False
+2025-12-03,Elon,Furman,-9,185,88,97,False
+2025-12-03,UNC Wilmington,Marshall,1,139,70,69,False
+2025-12-03,Queens University,Gardner-Webb,33,181,107,74,False
+2025-12-03,Florida International,Florida Gulf Coast,6,172,89,83,False
+2025-12-03,Bellarmine,Midway University,39,159,99,60,False
+2025-12-03,Kent St.,Austin Peay,12,180,96,84,False
+2025-12-03,Ohio,Maine,22,136,79,57,False
+2025-12-03,Hampton,Loyola Maryland,22,164,93,71,False
+2025-12-03,Delaware St.,Navy,-7,125,59,66,False
+2025-12-03,West Virginia,Coppin St.,42,140,91,49,False
+2025-12-03,Columbia,Hofstra,2,142,72,70,False
+2025-12-03,Northern Kentucky,Cleveland St.,15,175,95,80,False
+2025-12-03,Oakland,Purdue Fort Wayne,9,193,101,92,False
+2025-12-03,Detroit Mercy,IU Indy,14,170,92,78,False
+2025-12-03,St. Bonaventure,Bloomsburg,40,126,83,43,False
+2025-12-03,Mount St. Mary's,Sacred Heart,-7,167,80,87,False
+2025-12-03,Seton Hall,Central Connecticut,16,138,77,61,False
+2025-12-03,Massachusetts,Harvard,7,149,78,71,False
+2025-12-03,Saint Francis,Penn St.-Shenango,59,141,100,41,False
+2025-12-03,Akron,Bucknell,20,174,97,77,False
+2025-12-03,Stephen F. Austin,UT Rio Grande Valley,13,133,73,60,False
+2025-12-03,Boston College,LSU,-9,147,69,78,True
+2025-12-03,UL Monroe,Mississippi Valley St.,14,118,66,52,False
+2025-12-03,Central Arkansas,Little Rock,38,132,85,47,False
+2025-12-03,Yale,Brandeis,18,140,79,61,False
+2025-12-03,Belmont,Richmond,-8,160,76,84,False
+2025-12-03,Alabama A&M,Tennessee St.,27,133,80,53,False
+2025-12-03,Tarleton St.,Howard Payne,65,173,119,54,False
+2025-12-03,Nebraska Omaha,Northern Colorado,-5,145,70,75,False
+2025-12-03,Northern Arizona,South Dakota St.,-13,137,62,75,False
+2025-12-03,Monmouth,Princeton,5,121,63,58,False
+2025-12-03,Kansas City,Idaho St.,-9,127,59,68,False
+2025-12-03,Georgetown,UMBC,9,171,90,81,False
+2025-12-03,Evansville,Ball St.,12,116,64,52,False
+2025-12-03,Illinois St.,Eastern Kentucky,11,167,89,78,False
+2025-12-03,South Dakota,Portland St.,-6,148,71,77,False
+2025-12-03,Memphis,New Orleans,16,156,86,70,False
+2025-12-03,Montana,North Dakota St.,-9,153,72,81,False
+2025-12-03,Weber St.,Oral Roberts,26,158,92,66,False
+2025-12-03,Rice,Texas St.,5,149,77,72,False
+2025-12-03,Montana St.,St. Thomas-Minnesota,8,156,82,74,False
+2025-12-03,Wisconsin,Northwestern,12,158,85,73,False
+2025-12-03,Idaho,North Dakota,32,148,90,58,False
+2025-12-03,Denver,Eastern Washington,4,182,93,89,False
+2025-12-03,Air Force,Pacific,-15,145,65,80,False
+2025-12-03,Texas,Virginia,-19,157,69,88,False
+2025-12-03,Georgia Tech,Mississippi St.,-12,158,73,85,False
+2025-12-03,Oregon St.,Vermont,22,138,80,58,False
+2025-12-03,Seattle U,Puget Sound,54,140,97,43,False
+2025-12-03,Santa Clara,Utah Tech,10,170,90,80,False
+2025-12-03,San Diego St.,Utah Valley,11,143,77,66,False
+2025-12-03,San Francisco,North Alabama,-2,128,63,65,False
+2025-12-03,Washington,UCLA,-2,162,80,82,False
+2025-12-04,Fairleigh Dickinson,Manor College,48,124,86,38,False
+2025-12-04,Davidson,The Citadel,16,142,79,63,False
+2025-12-04,South Florida,Utah St.,13,135,74,61,False
+2025-12-04,Merrimack,Rider,2,134,68,66,False
+2025-12-04,Charleston Southern,Warren Wilson,61,187,124,63,False
+2025-12-04,Green Bay,Robert Morris,-2,158,78,80,False
+2025-12-04,UC Santa Barbara,Long Beach St.,7,161,84,77,True
+2025-12-04,Cal St. Northridge,Cal St. Bakersfield,21,153,87,66,False
+2025-12-04,Cal St. Fullerton,Cal Poly,-3,185,91,94,False
+2025-12-04,UC Irvine,UC Riverside,13,133,73,60,False
+2025-12-04,Hawai'i,UC Davis,6,144,75,69,False
+2025-12-05,Connecticut,East Texas A&M,24,142,83,59,False
+2025-12-05,Kentucky,Gonzaga,-35,153,59,94,False
+2025-12-05,Bethune-Cookman,South Carolina St.,21,139,80,59,False
+2025-12-05,High Point,NJIT,17,161,89,72,False
+2025-12-05,East Tennessee St.,South Alabama,26,156,91,65,False
+2025-12-05,Portland,Lewis & Clark,17,191,104,87,False
+2025-12-05,VCU,Samford,26,140,83,57,False
+2025-12-05,Iona,Quinnipiac,-21,157,68,89,False
+2025-12-05,Lafayette,Mercyhurst,8,150,79,71,False
+2025-12-05,Brown,Bryant,19,131,75,56,False
+2025-12-05,Siena,Niagara,29,137,83,54,False
+2025-12-05,Saint Peter's,Canisius,12,126,69,57,False
+2025-12-05,Marist,Mount St. Mary's,8,120,64,56,False
+2025-12-05,Manhattan,Fairfield,4,136,70,66,False
+2025-12-05,Eastern Michigan,Cleary University,38,134,86,48,False
+2025-12-05,Drake,UAB,-5,143,69,74,False
+2025-12-05,VMI,Christendom,53,125,89,36,False
+2025-12-05,Xavier,Cincinnati,5,153,79,74,False
+2025-12-05,McNeese,Northwestern St.,38,146,92,54,False
+2025-12-05,TCU,Notre Dame,-2,172,85,87,True
+2025-12-05,San José St.,San Diego,17,155,86,69,False
+2025-12-06,Purdue,Iowa St.,-23,139,58,81,False
+2025-12-06,Arizona,Auburn,29,165,97,68,False
+2025-12-06,Michigan,Rutgers,41,161,101,60,False
+2025-12-06,Michigan St.,Duke,-6,126,60,66,False
+2025-12-06,Louisville,Indiana,9,165,87,78,False
+2025-12-06,Houston,Florida St.,15,149,82,67,False
+2025-12-06,Tennessee,Illinois,-13,137,62,75,False
+2025-12-06,St. John's,Ole Miss,5,121,63,58,False
+2025-12-06,USC,Washington,-8,160,76,84,False
+2025-12-06,Arkansas,Fresno St.,24,140,82,58,False
+2025-12-06,Georgia Tech,Monmouth,12,146,79,67,False
+2025-12-06,Boston College,New Haven,4,130,67,63,False
+2025-12-06,Providence,Rhode Island,19,161,90,71,False
+2025-12-06,Virginia,Dayton,13,159,86,73,False
+2025-12-06,Miami,Southern Miss,24,152,88,64,False
+2025-12-06,Bucknell,UMBC,-7,139,66,73,False
+2025-12-06,Richmond,Old Dominion,9,163,86,77,False
+2025-12-06,Wagner,Bryant Str-Alb,56,128,92,36,False
+2025-12-06,Bowling Green,Utah Valley,-11,153,71,82,False
+2025-12-06,Miami OH,Maine,32,154,93,61,False
+2025-12-06,N.C. State,UNC Asheville,12,138,75,63,False
+2025-12-06,La Salle,Drexel,5,133,69,64,False
+2025-12-06,Western Illinois,Hannibal-Lagrange,31,125,78,47,False
+2025-12-06,Colgate,St. John Fisher,44,144,94,50,False
+2025-12-06,SIUE,Western Michigan,-10,156,73,83,False
+2025-12-06,James Madison,Norfolk St.,1,135,68,67,False
+2025-12-06,Delaware St.,Delaware,3,147,75,72,True
+2025-12-06,Winthrop,Coastal Carolina,-4,172,84,88,False
+2025-12-06,Gardner-Webb,Georgia Southern,-4,172,84,88,False
+2025-12-06,Presbyterian,Morehead St.,8,152,80,72,False
+2025-12-06,USC Upstate,Western Carolina,11,145,78,67,False
+2025-12-06,Northwestern,Ohio St.,-4,168,82,86,False
+2025-12-06,West Georgia,Tennessee Tech,-28,146,59,87,False
+2025-12-06,South Carolina,Stetson,31,133,82,51,False
+2025-12-06,Florida International,Jacksonville,23,153,88,65,False
+2025-12-06,American University,Maryland Eastern Shore,18,138,78,60,False
+2025-12-06,Wisconsin,Marquette,20,172,96,76,False
+2025-12-06,Liberty,Coppin St.,42,142,92,50,False
+2025-12-06,Butler,Boise St.,-9,145,68,77,False
+2025-12-06,IU Indy,Youngstown St.,-23,133,55,78,False
+2025-12-06,Cleveland St.,Detroit Mercy,-12,130,59,71,False
+2025-12-06,Purdue Fort Wayne,Northern Kentucky,2,156,79,77,False
+2025-12-06,Buffalo,St. Bonaventure,-8,146,69,77,False
+2025-12-06,Duquesne,Stony Brook,9,159,84,75,False
+2025-12-06,Fordham,Holy Cross,-1,139,69,70,False
+2025-12-06,Furman,Harvard,10,148,79,69,False
+2025-12-06,Loyola Chicago,Princeton,5,141,73,68,False
+2025-12-06,Kennesaw St.,Georgia St.,23,161,92,69,False
+2025-12-06,South Dakota St.,Idaho,-3,165,81,84,False
+2025-12-06,Oakland,Toledo,1,195,98,97,False
+2025-12-06,Tulsa,Missouri St.,24,172,98,74,False
+2025-12-06,Murray St.,Bellarmine,13,149,81,68,False
+2025-12-06,Valparaiso,Calumet,40,156,98,58,False
+2025-12-06,Virginia Tech,George Mason,11,135,73,62,False
+2025-12-06,Eastern Kentucky,Indiana University East,55,189,122,67,False
+2025-12-06,North Carolina Central,North Carolina A&T,-15,123,54,69,False
+2025-12-06,Wofford,Elon,-21,125,52,73,False
+2025-12-06,Ohio,Marshall,7,169,88,81,False
+2025-12-06,Prairie View A&M,Champion Christian,62,186,124,62,False
+2025-12-06,Massachusetts,UMass Lowell,20,140,80,60,False
+2025-12-06,Iowa,Maryland,19,147,83,64,False
+2025-12-06,Wyoming,Dartmouth,13,173,93,80,False
+2025-12-06,Louisiana,UNC Wilmington,-7,133,63,70,False
+2025-12-06,Abilene Christian,New Mexico St.,8,146,77,69,False
+2025-12-06,Western Kentucky,Evansville,1,159,80,79,False
+2025-12-06,Kent St.,Roberts Wesleyan,43,179,111,68,False
+2025-12-06,East Carolina,UNC Greensboro,-4,160,78,82,False
+2025-12-06,Binghamton,Le Moyne,-15,141,63,78,False
+2025-12-06,Tulane,Akron,-17,159,71,88,False
+2025-12-06,Kansas St.,Seton Hall,-11,145,67,78,False
+2025-12-06,Morgan St.,Longwood,-4,164,80,84,False
+2025-12-06,Nicholls,Incarnate Word,7,141,74,67,False
+2025-12-06,Temple,Saint Joseph's,-1,139,69,70,False
+2025-12-06,Chattanooga,Southeast Missouri St.,-4,144,70,74,False
+2025-12-06,Troy,LaGrange,54,148,101,47,False
+2025-12-06,Memphis,Baylor,7,149,78,71,False
+2025-12-06,Portland St.,Nebraska Omaha,-5,115,55,60,False
+2025-12-06,Pepperdine,Vermont,-9,121,56,65,False
+2025-12-06,Oregon St.,Southern Utah,11,151,81,70,False
+2025-12-06,Eastern Washington,Kansas City,24,156,90,66,False
+2025-12-06,Texas Southern,Sam Houston,-12,152,70,82,False
+2025-12-06,Colorado St.,Colorado,5,177,91,86,False
+2025-12-06,Brown,Elms College,81,149,115,34,False
+2025-12-06,California,Pacific,6,128,67,61,False
+2025-12-06,Lehigh,Long Island University,-5,169,82,87,False
+2025-12-06,Florida A&M,Florida Memorial,2,118,60,58,False
+2025-12-06,Columbia,UAlbany,28,158,93,65,False
+2025-12-06,Howard,Bowie St.,16,154,85,69,False
+2025-12-06,UCLA,Oregon,11,137,74,63,False
+2025-12-06,Idaho St.,Denver,14,172,93,79,False
+2025-12-06,West Virginia,Wake Forest,-9,141,66,75,False
+2025-12-06,George Washington,William & Mary,13,185,99,86,False
+2025-12-06,New Orleans,Houston Christian,-9,161,76,85,False
+2025-12-06,New Hampshire,Boston University,6,170,88,82,True
+2025-12-06,Lamar,Texas A&M Corpus Chris,-8,106,49,57,False
+2025-12-06,Utah,California Baptist,6,176,91,85,False
+2025-12-06,Cal Poly,UC Riverside,-4,172,84,88,False
+2025-12-06,Villanova,Pennsylvania,27,153,90,63,False
+2025-12-06,Grand Canyon,Oklahoma St.,-6,162,78,84,False
+2025-12-06,North Dakota,Montana,-4,154,75,79,False
+2025-12-06,North Dakota St.,Northern Arizona,1,137,69,68,False
+2025-12-06,Oral Roberts,Montana St.,4,140,72,68,False
+2025-12-06,Bradley,Northern Illinois,29,139,84,55,False
+2025-12-06,Northern Iowa,Wichita St.,-5,143,69,74,True
+2025-12-06,Milwaukee,Robert Morris,2,146,74,72,False
+2025-12-06,Illinois St.,Chicago St.,42,148,95,53,False
+2025-12-06,Northern Colorado,South Dakota,2,176,89,87,True
+2025-12-06,Eastern Illinois,Lindenwood,-8,156,74,82,False
+2025-12-06,DePaul,Arkansas Pine Bluff,4,148,76,72,False
+2025-12-06,New Mexico,Santa Clara,27,169,98,71,False
+2025-12-06,UC Santa Barbara,Cal St. Bakersfield,25,193,109,84,False
+2025-12-06,Long Beach St.,UC San Diego,-6,154,74,80,False
+2025-12-06,Little Rock,Arkansas St.,-12,168,78,90,False
+2025-12-06,Arizona St.,Oklahoma,16,156,86,70,False
+2025-12-06,UC Irvine,Cal St. Northridge,14,156,85,71,False
+2025-12-06,Hawai'i,Cal St. Fullerton,10,128,69,59,False
+2025-12-07,Gonzaga,North Florida,51,167,109,58,False
+2025-12-07,Alabama,UTSA,42,152,97,55,False
+2025-12-07,North Carolina,Georgetown,20,142,81,61,False
+2025-12-07,Texas Tech,LSU,24,140,82,58,False
+2025-12-07,Kansas,Missouri,20,140,80,60,False
+2025-12-07,Army,Gallaudet,58,164,111,53,False
+2025-12-07,Navy,Air Force,5,117,61,56,False
+2025-12-07,Indiana St.,Southern Indiana,22,132,77,55,False
+2025-12-07,St. Thomas-Minnesota,Weber St.,23,153,88,65,False
+2025-12-07,Merrimack,Fairfield,11,137,74,63,False
+2025-12-07,Northeastern,Central Connecticut,17,129,73,56,False
+2025-12-07,UT Rio Grande Valley,Austin Peay,13,113,63,50,False
+2025-12-07,Davidson,Saint Mary's,-9,131,61,70,False
+2025-12-07,East Tennessee St.,Tusculum,16,140,78,62,False
+2025-12-07,Sacred Heart,Iona,-12,150,69,81,False
+2025-12-07,Mercer,Oglethorpe,50,150,100,50,False
+2025-12-07,Florida Gulf Coast,Florida Atlantic,-5,157,76,81,False
+2025-12-07,Charlotte,Utah St.,-26,132,53,79,False
+2025-12-07,Quinnipiac,Rider,14,130,72,58,False
+2025-12-07,Mercyhurst,Bethany (WV),29,131,80,51,False
+2025-12-07,Yale,Illinois Chicago,14,146,80,66,False
+2025-12-07,Saint Peter's,Niagara,28,114,71,43,False
+2025-12-07,Siena,Canisius,22,126,74,52,False
+2025-12-07,Marist,Manhattan,12,148,80,68,False
+2025-12-07,Radford,Saint Francis,33,145,89,56,False
+2025-12-07,Stephen F. Austin,UL Monroe,20,172,96,76,False
+2025-12-07,UT Martin,Alabama St.,10,138,74,64,False
+2025-12-07,Louisiana Tech,Ecclesia,52,126,89,37,False
+2025-12-07,Saint Louis,Central Michigan,42,172,107,65,False
+2025-12-07,Campbell,Virginia-Lynchburg,87,211,149,62,False
+2025-12-07,Mississippi St.,San Francisco,-3,127,62,65,False
+2025-12-07,UCF,Towson,25,147,86,61,False
+2025-12-07,Bowling Green,Aquinas,81,181,131,50,False
+2025-12-07,Stanford,UNLV,-1,149,74,75,False
+2025-12-07,Pittsburgh,Hofstra,-7,153,73,80,False
+2025-12-07,Middle Tennessee,Belmont,-21,145,62,83,False
+2025-12-07,Southeastern Louisiana,Northwestern St.,-8,144,68,76,False
+2025-12-07,Jacksonville St.,Auburn-Montgomery,27,105,66,39,False
+2025-12-07,Lipscomb,Alabama A&M,34,150,92,58,False
+2025-12-07,Washington St.,Nevada,-14,142,64,78,False
+2025-12-07,Nebraska,Creighton,21,121,71,50,False
+2025-12-07,Wright St.,Green Bay,28,144,86,58,False
+2025-12-07,SMU,Texas A&M,13,173,93,80,True
+2025-12-07,Tarleton St.,Cameron,30,156,93,63,False
+2025-12-07,North Texas,TCU,-10,120,55,65,False
+2025-12-07,East Texas A&M,Central Arkansas,7,143,75,68,False
+2025-12-07,Samford,Cornell,3,183,93,90,False
+2025-12-07,Seattle U,UTEP,7,143,75,68,False
+2025-12-08,Kennesaw St.,Southern Wesleyan,55,187,121,66,False
+2025-12-08,Pennsylvania,Lafayette,2,146,74,72,False
+2025-12-08,Charleston Southern,South Carolina St.,40,128,84,44,False
+2025-12-08,Southern Miss,Grambling St.,8,128,68,60,False
+2025-12-08,Texas,Southern,26,164,95,69,False
+2025-12-08,Kansas St.,Mississippi Valley St.,59,157,108,49,False
+2025-12-08,New Orleans,Incarnate Word,1,167,84,83,False
+2025-12-09,Michigan,Villanova,28,150,89,61,False
+2025-12-09,Connecticut,Florida,4,150,77,73,False
+2025-12-09,BYU,Clemson,3,131,67,64,False
+2025-12-09,Ohio St.,Illinois,-8,168,80,88,False
+2025-12-09,Virginia,Maryland Eastern Shore,24,144,84,60,False
+2025-12-09,UL Monroe,Arkansas Baptist,10,148,79,69,False
+2025-12-09,UMBC,Buffalo,-4,162,79,83,False
+2025-12-09,VMI,Loyola Maryland,16,156,86,70,False
+2025-12-09,Holy Cross,Regis,22,116,69,47,False
+2025-12-09,Winthrop,Toccoa Falls,49,173,111,62,False
+2025-12-09,Furman,Bob Jones,48,162,105,57,False
+2025-12-09,The Citadel,Southern Wesleyan,25,171,98,73,False
+2025-12-09,Chattanooga,Oakwood,57,149,103,46,False
+2025-12-09,Kentucky,North Carolina Central,36,170,103,67,False
+2025-12-09,Howard,North Carolina A&T,4,142,73,69,False
+2025-12-09,Temple,Georgian Court,46,160,103,57,False
+2025-12-09,Northern Kentucky,Brescia,39,145,92,53,False
+2025-12-09,Saint Joseph's,Coppin St.,22,152,87,65,False
+2025-12-09,Lindenwood,Culver-Stockton,66,154,110,44,False
+2025-12-09,Ball St.,South Dakota St.,-4,132,64,68,False
+2025-12-09,West Virginia,Little Rock,32,148,90,58,False
+2025-12-09,Stony Brook,Columbia,4,150,77,73,True
+2025-12-09,Rhode Island,McNeese,-2,130,64,66,False
+2025-12-09,Rider,Bucknell,-13,89,38,51,False
+2025-12-09,Providence,Brown,7,165,86,79,False
+2025-12-09,Nebraska Omaha,Doane,9,149,79,70,False
+2025-12-09,DePaul,Morgan St.,43,141,92,49,False
+2025-12-09,Indiana,Penn St.,41,185,113,72,False
+2025-12-09,Wyoming,South Dakota,27,185,106,79,False
+2025-12-09,Denver,Colorado Christian,36,154,95,59,False
+2025-12-09,San Diego,USC,-13,175,81,94,False
+2025-12-09,Colorado St.,Dartmouth,21,131,76,55,False
+2025-12-09,Arizona St.,Northern Arizona,25,121,73,48,False
+2025-12-09,San José St.,Long Beach St.,6,172,89,83,True
+2025-12-09,California,Dominican (CA),22,164,93,71,False
+2025-12-10,Purdue,Minnesota,28,142,85,57,False
+2025-12-10,Houston,Jackson St.,42,118,80,38,False
+2025-12-10,Nebraska,Wisconsin,30,150,90,60,False
+2025-12-10,Baylor,Norfolk St.,30,164,97,67,False
+2025-12-10,Yale,UAlbany,11,175,93,82,False
+2025-12-10,Princeton,Merrimack,-3,115,56,59,False
+2025-12-10,UNC Asheville,Miami OH,-3,177,87,90,True
+2025-12-10,UMass Lowell,Fisher College,49,195,122,73,False
+2025-12-10,Hofstra,Old Westbury,69,115,92,23,False
+2025-12-10,NJIT,New Haven,6,134,70,64,False
+2025-12-10,South Florida,Charleston,6,156,81,75,False
+2025-12-10,Florida Atlantic,Saint Leo,57,167,112,55,False
+2025-12-10,Marshall,Western Kentucky,16,138,77,61,False
+2025-12-10,VCU,New Mexico,-3,159,78,81,False
+2025-12-10,Boston University,Maine,-10,128,59,69,False
+2025-12-10,Iona,Bryant,6,132,69,63,False
+2025-12-10,Notre Dame,Idaho,15,145,80,65,False
+2025-12-10,N.C. State,Liberty,40,130,85,45,False
+2025-12-10,Boston College,Massachusetts,-2,150,74,76,False
+2025-12-10,St. Bonaventure,Colgate,8,162,85,77,False
+2025-12-10,George Washington,Delaware,-12,128,58,70,False
+2025-12-10,Fordham,Fairleigh Dickinson,21,129,75,54,False
+2025-12-10,Tulane,Tougaloo,12,156,84,72,False
+2025-12-10,Nicholls,College Of Biblical Studies,68,166,117,49,False
+2025-12-10,North Dakota,Crown College,46,132,89,43,False
+2025-12-10,Southern Illinois,UT Martin,29,137,83,54,False
+2025-12-10,Eastern Illinois,Eastern Kentucky,-9,127,59,68,False
+2025-12-10,Tulsa,Arkansas Pine Bluff,33,201,117,84,False
+2025-12-10,Kansas City,Weber St.,-4,124,60,64,False
+2025-12-10,Utah Valley,Idaho St.,4,142,73,69,False
+2025-12-10,Purdue Fort Wayne,Eastern Michigan,15,145,80,65,False
+2025-12-10,Texas St.,Southern,3,169,86,83,False
+2025-12-10,Boise St.,Duquesne,22,150,86,64,False
+2025-12-10,San Diego St.,Lamar,18,160,89,71,False
+2025-12-10,Cal St. Northridge,Fresno St.,2,176,89,87,False
+2025-12-10,Cal St. Fullerton,Bethesda University,50,182,116,66,False
+2025-12-10,Montana,Salish Kootenai,56,148,102,46,False
+2025-12-10,Hawai'i,Hawai'i Hilo,52,144,98,46,False
+2025-12-11,Iowa St.,Iowa,4,128,66,62,False
+2025-12-11,IU Indy,Green Bay,-10,160,75,85,False
+2025-12-11,Wagner,Bloomfield,2,188,95,93,True
+2025-12-11,Georgia Southern,Coastal Georgia,42,158,100,58,False
+2025-12-11,Jacksonville,Trinity College of Jacksonville,73,171,122,49,False
+2025-12-11,East Carolina,App St.,-13,121,54,67,False
+2025-12-11,Virginia Tech,Western Carolina,22,170,96,74,False
+2025-12-11,UT Rio Grande Valley,UT Arlington,-8,108,50,58,False
+2025-12-11,St. Thomas-Minnesota,Saint John's (MN),24,136,80,56,False
+2025-12-11,Missouri,Alabama St.,8,162,85,77,False
+2025-12-11,Denver,Alaska Anchorage,36,158,97,61,False
+2025-12-11,Syracuse,Saint Joseph's,8,134,71,63,False
+2025-12-11,Cal St. Bakersfield,North Dakota St.,-11,149,69,80,False
+2025-12-12,Connecticut,Texas,8,134,71,63,False
+2025-12-12,UMBC,Army,-3,123,60,63,False
+2025-12-12,UNC Greensboro,William Peace,28,152,90,62,False
+2025-12-12,Gardner-Webb,Brevard,14,140,77,63,False
+2025-12-12,Queens University,South Carolina St.,24,180,102,78,False
+2025-12-12,Xavier,Missouri St.,18,132,75,57,False
+2025-12-12,North Carolina A&T,Maryland Eastern Shore,3,161,82,79,False
+2025-12-12,Stonehill,Vermont St. - Johnson,41,161,101,60,False
+2025-12-12,South Dakota St.,Dakota Wesleyan,32,156,94,62,False
+2025-12-12,Austin Peay,East Tennessee St.,1,151,76,75,False
+2025-12-12,Texas A&M Corpus Chris,Dallas Christian,53,163,108,55,False
+2025-12-12,McNeese,East Texas A&M,36,168,102,66,False
+2025-12-12,Eastern Washington,California Baptist,-5,171,83,88,False
+2025-12-13,Alabama,Arizona,-21,171,75,96,False
+2025-12-13,Maryland,Michigan,-18,184,83,101,False
+2025-12-13,Purdue,Marquette,20,138,79,59,False
+2025-12-13,Houston,New Orleans,42,156,99,57,False
+2025-12-13,Gonzaga,UCLA,10,154,82,72,False
+2025-12-13,Penn St.,Michigan St.,-4,148,72,76,False
+2025-12-13,BYU,UC Riverside,47,153,100,53,False
+2025-12-13,Louisville,Memphis,26,172,99,73,False
+2025-12-13,Illinois,Nebraska,-3,163,80,83,False
+2025-12-13,North Carolina,USC Upstate,18,142,80,62,False
+2025-12-13,Vanderbilt,Central Arkansas,11,155,83,72,False
+2025-12-13,Arkansas,Texas Tech,7,179,93,86,False
+2025-12-13,Florida,George Washington,10,150,80,70,False
+2025-12-13,N.C. State,Kansas,-1,153,76,77,True
+2025-12-13,Auburn,Chattanooga,14,170,92,78,False
+2025-12-13,St. John's,Iona,27,155,91,64,False
+2025-12-13,Florida Atlantic,UAlbany,26,184,105,79,False
+2025-12-13,Florida St.,Massachusetts,-8,198,95,103,False
+2025-12-13,Wichita St.,DePaul,-3,119,58,61,False
+2025-12-13,Stony Brook,Central Michigan,23,133,78,55,False
+2025-12-13,Miami,UL Monroe,25,183,104,79,False
+2025-12-13,George Mason,Old Dominion,12,134,73,61,False
+2025-12-13,Elon,Northern Illinois,6,164,85,79,False
+2025-12-13,Robert Morris,Toledo,5,145,75,70,False
+2025-12-13,Oklahoma St.,Oklahoma,-9,161,76,85,False
+2025-12-13,Delaware,Cal St. Northridge,-22,154,66,88,False
+2025-12-13,UNC Asheville,St. Thomas-Minnesota,-21,139,59,80,False
+2025-12-13,North Dakota,Western Illinois,-3,135,66,69,True
+2025-12-13,Drake,North Dakota St.,-5,193,94,99,False
+2025-12-13,Georgia St.,Jacksonville St.,4,150,77,73,False
+2025-12-13,Utah Valley,UC Santa Barbara,15,121,68,53,False
+2025-12-13,Northwestern,Jackson St.,40,146,93,53,False
+2025-12-13,Dartmouth,Boston University,13,141,77,64,False
+2025-12-13,NJIT,Sacred Heart,-16,114,49,65,False
+2025-12-13,Bellarmine,Northern Kentucky,-4,156,76,80,False
+2025-12-13,Butler,Providence,3,223,113,110,True
+2025-12-13,Fordham,Manhattan,29,135,82,53,False
+2025-12-13,Quinnipiac,UMass Lowell,4,146,75,71,False
+2025-12-13,Davidson,Mercyhurst,33,127,80,47,False
+2025-12-13,Georgia,Cincinnati,19,149,84,65,False
+2025-12-13,Notre Dame,Evansville,24,140,82,58,False
+2025-12-13,Maine,Canisius,-27,113,43,70,False
+2025-12-13,South Dakota,Prairie View A&M,12,182,97,85,False
+2025-12-13,Georgetown,Saint Peter's,8,144,76,68,True
+2025-12-13,Eastern Kentucky,Miami OH,-10,148,69,79,False
+2025-12-13,New Mexico St.,Tulsa,-13,153,70,83,False
+2025-12-13,Howard,Hampton,4,118,61,57,False
+2025-12-13,Ole Miss,Southern Miss,4,138,71,67,False
+2025-12-13,Longwood,Delaware St.,-5,157,76,81,False
+2025-12-13,Louisiana Tech,Louisiana,21,109,65,44,False
+2025-12-13,Rice,Arkansas St.,1,153,77,76,False
+2025-12-13,Valparaiso,UNC Wilmington,-3,143,70,73,False
+2025-12-13,Creighton,Kansas St.,-7,159,76,83,False
+2025-12-13,Clemson,Mercer,7,133,70,63,False
+2025-12-13,Belmont,Illinois Chicago,3,171,87,84,False
+2025-12-13,Tennessee Tech,Bethel (TN),32,170,101,69,False
+2025-12-13,Oregon,UC Davis,42,166,104,62,False
+2025-12-13,Marshall,Wright St.,2,150,76,74,False
+2025-12-13,Denver,Cal St. Fullerton,-19,191,86,105,False
+2025-12-13,Akron,Murray St.,-15,215,100,115,False
+2025-12-13,Colorado,UTSA,24,152,88,64,False
+2025-12-13,Syracuse,Hofstra,-1,139,69,70,False
+2025-12-13,Bryant,Marist,-8,156,74,82,False
+2025-12-13,Morgan St.,Niagara,8,154,81,73,False
+2025-12-13,Binghamton,Central Connecticut,-17,151,67,84,False
+2025-12-13,Long Island University,La Salle,10,130,70,60,False
+2025-12-13,Villanova,Pittsburgh,18,140,79,61,False
+2025-12-13,Houston Christian,Southeastern Louisiana,-3,145,71,74,True
+2025-12-13,Alabama A&M,Arkansas Baptist,8,126,67,59,False
+2025-12-13,Portland St.,George Fox,44,144,94,50,False
+2025-12-13,Oregon St.,Montana St.,10,124,67,57,False
+2025-12-13,California,Northwestern St.,9,149,79,70,False
+2025-12-13,Ohio,St. Bonaventure,5,171,88,83,True
+2025-12-13,Utah St.,Illinois St.,5,161,83,78,False
+2025-12-13,San Diego,Northern Arizona,9,147,78,69,False
+2025-12-13,Washington,Southern Utah,36,174,105,69,False
+2025-12-13,Northern Iowa,Oakland,12,138,75,63,False
+2025-12-13,Richmond,Southern Illinois,9,177,93,84,True
+2025-12-13,Loyola Maryland,Mount St. Mary's,-8,154,73,81,False
+2025-12-13,Winthrop,Bob Jones,46,156,101,55,False
+2025-12-13,South Carolina,The Citadel,16,126,71,55,False
+2025-12-13,West Georgia,Georgia Southern,-6,176,85,91,False
+2025-12-13,Pacific,Simpson University (CA),54,154,104,50,False
+2025-12-13,Santa Clara,Arizona St.,-3,161,79,82,False
+2025-12-13,San José St.,Stanford,-4,168,82,86,False
+2025-12-13,Dayton,North Florida,23,145,84,61,False
+2025-12-13,Kentucky,Indiana,12,132,72,60,False
+2025-12-13,Kansas City,Spurgeon College,27,177,102,75,False
+2025-12-13,Oral Roberts,Ecclesia,45,149,97,52,False
+2025-12-13,Seton Hall,Rutgers,22,140,81,59,False
+2025-12-13,Seattle U,Warner Pacific,55,175,115,60,False
+2025-12-13,Grand Canyon,Coastal Carolina,21,143,82,61,False
+2025-12-13,Ohio St.,West Virginia,1,177,89,88,True
+2025-12-13,Saint Louis,San Francisco,10,160,85,75,False
+2025-12-13,LSU,SMU,12,166,89,77,False
+2025-12-13,Utah Tech,Justice College,41,137,89,48,False
+2025-12-13,Cal St. Bakersfield,Pepperdine,-8,132,62,70,False
+2025-12-13,UNLV,Tennessee St.,-3,123,60,63,False
+2025-12-13,Utah,Mississippi St.,-8,156,74,82,False
+2025-12-13,Nevada,Duquesne,3,153,78,75,False
+2025-12-13,UC San Diego,Tulane,26,160,93,67,False
+2025-12-13,Hawai'i,UTEP,5,127,66,61,False
+2025-12-14,Iowa St.,Eastern Illinois,25,131,78,53,False
+2025-12-14,Virginia Tech,Maryland Eastern Shore,29,135,82,53,False
+2025-12-14,Temple,Saint Francis,28,162,95,67,False
+2025-12-14,Minnesota,Texas Southern,36,142,89,53,False
+2025-12-14,East Carolina,Buffalo,3,143,73,70,False
+2025-12-14,Bradley,North Central College,33,139,86,53,False
+2025-12-14,SIUE,Eureka,43,151,97,54,False
+2025-12-14,Cleveland St.,Oakland City,44,148,96,52,False
+2025-12-14,Missouri,Bethune-Cookman,22,142,82,60,False
+2025-12-14,Vermont,Merrimack,7,125,66,59,False
+2025-12-14,App St.,High Point,8,164,86,78,True
+2025-12-14,Fairfield,Monmouth,8,138,73,65,False
+2025-12-14,Youngstown St.,Thiel,51,155,103,52,False
+2025-12-14,Campbell,Ball St.,5,133,69,64,False
+2025-12-14,Milwaukee,Indiana St.,-2,138,68,70,False
+2025-12-14,Radford,Coppin St.,30,184,107,77,False
+2025-12-14,Southeast Missouri St.,St. Xavier (IL),23,153,88,65,False
+2025-12-14,UAB,Troy,-1,171,85,86,False
+2025-12-14,Colorado St.,Northern New Mexico,50,158,104,54,False
+2025-12-14,Iowa,Western Michigan,40,142,91,51,False
+2025-12-14,New Mexico,Florida Gulf Coast,16,134,75,59,False
+2025-12-14,Charleston,Charlotte,7,141,74,67,False
+2025-12-14,Idaho,Evergreen St.,54,164,109,55,False
+2025-12-14,Portland,Kent St.,10,166,88,78,False
+2025-12-14,Wake Forest,Queens University,38,184,111,73,False
+2025-12-14,Purdue Fort Wayne,Detroit Mercy,4,158,81,77,False
+2025-12-14,Loyola Chicago,Chicago St.,-9,159,75,84,False
+2025-12-14,UT Martin,Champion Christian,44,148,96,52,False
+2025-12-14,South Alabama,North Texas,-1,115,57,58,False
+2025-12-14,Boise St.,Saint Mary's,1,135,68,67,False
+2025-12-14,Texas A&M,Jacksonville,37,187,112,75,False
+2025-12-14,USC,Washington St.,7,129,68,61,False
+2025-12-15,Samford,Bryan (TN),55,157,106,51,False
+2025-12-15,Florida A&M,Albany St (GA),16,170,93,77,False
+2025-12-15,Arkansas Pine Bluff,Ecclesia,50,178,114,64,False
+2025-12-15,Gardner-Webb,Wofford,-26,140,57,83,False
+2025-12-15,Stetson,Rhodes,19,171,95,76,False
+2025-12-15,VCU,Niagara,26,142,84,58,False
+2025-12-15,Southeastern Louisiana,East Texas A&M,-1,139,69,70,False
+2025-12-15,Western Kentucky,Campbellsville,43,161,102,59,False
+2025-12-15,North Dakota St.,Minnesota Crookston,34,168,101,67,False
+2025-12-15,South Dakota St.,Wyoming,-15,159,72,87,False
+2025-12-15,Alabama A&M,North Alabama,8,128,68,60,False
+2025-12-15,Houston Christian,McNeese,-10,146,68,78,False
+2025-12-15,TCU,Incarnate Word,4,134,69,65,False
+2025-12-16,Arizona,Abilene Christian,34,158,96,62,False
+2025-12-16,Duke,Lipscomb,24,170,97,73,False
+2025-12-16,Connecticut,Butler,19,139,79,60,False
+2025-12-16,Michigan St.,Toledo,23,161,92,69,False
+2025-12-16,BYU,Pacific,36,150,93,57,False
+2025-12-16,Tennessee,Louisville,21,145,83,62,False
+2025-12-16,North Carolina,East Tennessee St.,19,135,77,58,False
+2025-12-16,Arkansas,Queens University,28,188,108,80,False
+2025-12-16,Kansas,Towson,24,122,73,49,False
+2025-12-16,Texas Tech,Northern Colorado,11,191,101,90,False
+2025-12-16,St. John's,DePaul,13,145,79,66,False
+2025-12-16,Drexel,Howard,-8,140,66,74,False
+2025-12-16,Liberty,Midway University,38,152,95,57,False
+2025-12-16,South Carolina St.,USC Upstate,-6,150,72,78,False
+2025-12-16,UMass Lowell,Sacred Heart,5,169,87,82,False
+2025-12-16,Holy Cross,Dartmouth,-25,153,64,89,False
+2025-12-16,UNC Asheville,Kentucky Christian,10,156,83,73,False
+2025-12-16,IU Indy,Miami (OH)-Middletown,53,199,126,73,False
+2025-12-16,Evansville,Belmont,-5,161,78,83,False
+2025-12-16,Ohio,Ohio Wesleyan,33,145,89,56,False
+2025-12-16,UNC Greensboro,North Carolina A&T,-6,136,65,71,False
+2025-12-16,Mississippi Valley St.,Tarleton St.,-24,152,64,88,False
+2025-12-16,High Point,Mary Baldwin,82,176,129,47,False
+2025-12-16,Oklahoma,Kansas City,22,156,89,67,False
+2025-12-16,Delaware,Rider,8,122,65,57,False
+2025-12-16,Wright St.,Miami OH,-7,159,76,83,False
+2025-12-16,Bowling Green,Chicago St.,21,131,76,55,False
+2025-12-16,Dayton,Florida St.,28,166,97,69,False
+2025-12-16,Rhode Island,Canisius,17,107,62,45,False
+2025-12-16,Clemson,South Carolina,7,129,68,61,False
+2025-12-16,Miami,Florida International,17,179,98,81,False
+2025-12-16,Lamar,UT Rio Grande Valley,-11,155,72,83,False
+2025-12-16,Georgia Tech,Marist,11,163,87,76,False
+2025-12-16,Mississippi St.,Long Island University,4,170,87,83,False
+2025-12-16,Morehead St.,Little Rock,14,142,78,64,False
+2025-12-16,Nebraska Omaha,York College Nebraska,47,163,105,58,False
+2025-12-16,Texas,Le Moyne,42,148,95,53,False
+2025-12-16,Northern Illinois,East-West University,48,176,112,64,False
+2025-12-16,Missouri St.,Oral Roberts,1,125,63,62,False
+2025-12-16,Northwestern,Valparaiso,16,156,86,70,False
+2025-12-16,Denver,Colorado-Colorado Springs,36,222,129,93,False
+2025-12-16,UC Riverside,Stanton,25,165,95,70,False
+2025-12-16,Cal Poly,Montana St.,-3,163,80,83,False
+2025-12-16,California Baptist,Southern,8,142,75,67,False
+2025-12-16,Loyola Marymount,UC San Diego,-10,124,57,67,False
+2025-12-17,Gonzaga,Campbell,28,168,98,70,False
+2025-12-17,Memphis,Vanderbilt,-7,147,70,77,True
+2025-12-17,Alabama,South Florida,11,197,104,93,False
+2025-12-17,Florida,Saint Francis,41,163,102,61,False
+2025-12-17,Central Arkansas,Kansas Christian,55,149,102,47,False
+2025-12-17,Rice,Southwestern Christian,47,141,94,47,False
+2025-12-17,Arkansas Pine Bluff,Champion Christian,65,211,138,73,False
+2025-12-17,Illinois Chicago,Northern Iowa,-6,114,54,60,False
+2025-12-17,New Hampshire,Stonehill,1,117,59,58,False
+2025-12-17,Xavier,Creighton,-41,155,57,98,False
+2025-12-17,North Carolina Central,Mid-Atlantic Christian,34,158,96,62,False
+2025-12-17,Green Bay,UC Santa Barbara,3,131,67,64,False
+2025-12-17,Jacksonville St.,Eastern Kentucky,-3,121,59,62,False
+2025-12-17,Stony Brook,UAlbany,-16,126,55,71,False
+2025-12-17,Charleston,The Citadel,4,160,82,78,False
+2025-12-17,USC Upstate,Southern Wesleyan,35,161,98,63,False
+2025-12-17,West Georgia,Brewton-Parker,21,119,70,49,False
+2025-12-17,UCF,Mercer,18,144,81,63,False
+2025-12-17,Central Michigan,Olivet,20,150,85,65,False
+2025-12-17,Florida A&M,Jacksonville,7,137,72,65,False
+2025-12-17,Bellarmine,Chattanooga,15,143,79,64,False
+2025-12-17,Wagner,Maryland Eastern Shore,14,142,78,64,False
+2025-12-17,Vermont,Siena,14,152,83,69,False
+2025-12-17,East Carolina,Presbyterian,21,127,74,53,False
+2025-12-17,Monmouth,Quinnipiac,-10,160,75,85,False
+2025-12-17,Cincinnati,Alabama St.,37,139,88,51,False
+2025-12-17,Robert Morris,Youngstown St.,3,157,80,77,True
+2025-12-17,Northern Kentucky,Oakland,-5,159,77,82,False
+2025-12-17,Wake Forest,Longwood,3,139,71,68,False
+2025-12-17,Syracuse,Mercyhurst,14,138,76,62,False
+2025-12-17,Pittsburgh,Binghamton,40,166,103,63,False
+2025-12-17,N.C. State,Texas Southern,36,180,108,72,False
+2025-12-17,Elon,Richmond,3,143,73,70,False
+2025-12-17,Wichita St.,Wofford,11,157,84,73,False
+2025-12-17,UAB,Cleveland St.,24,178,101,77,False
+2025-12-17,Tulane,Louisiana Tech,8,114,61,53,False
+2025-12-17,Middle Tennessee,Kennesaw St.,1,135,68,67,False
+2025-12-17,Nicholls,Houston Christian,15,143,79,64,False
+2025-12-17,UL Monroe,South Alabama,-4,188,92,96,True
+2025-12-17,Ole Miss,Alabama A&M,14,146,80,66,False
+2025-12-17,Utah Valley,Weber St.,16,164,90,74,False
+2025-12-17,Saint Louis,Bethune-Cookman,59,165,112,53,False
+2025-12-17,South Dakota,Dakota St.,9,151,80,71,False
+2025-12-17,Old Dominion,James Madison,9,145,77,68,False
+2025-12-17,Marquette,Georgetown,-9,147,69,78,False
+2025-12-17,Texas St.,Arkansas St.,-19,159,70,89,False
+2025-12-17,Montana,Montana Tech,-7,157,75,82,False
+2025-12-17,USC,UTSA,27,167,97,70,False
+2025-12-17,UC Davis,Seattle U,-1,157,78,79,False
+2025-12-17,Santa Clara,North Texas,3,123,63,60,False
+2025-12-17,Colorado,Portland St.,11,157,84,73,False
+2025-12-17,Stephen F. Austin,Texas A&M Corpus Chris,9,129,69,60,False
+2025-12-17,Oregon St.,Sam Houston,-10,160,75,85,False
+2025-12-17,Eastern Washington,Washington St.,-15,141,63,78,False
+2025-12-17,San Diego St.,Air Force,23,139,81,58,False
+2025-12-17,Stanford,UT Arlington,16,136,76,60,False
+2025-12-17,San Francisco,Loyola Chicago,14,156,85,71,False
+2025-12-17,UCLA,Arizona St.,13,167,90,77,False
+2025-12-17,Oregon,Portland,25,163,94,69,False
+2025-12-18,Georgia,Western Carolina,30,194,112,82,False
+2025-12-18,Gardner-Webb,Toccoa Falls,40,170,105,65,False
+2025-12-18,Charleston Southern,North Florida,23,203,113,90,False
+2025-12-18,Jackson St.,Hampton,-7,161,77,84,False
+2025-12-18,UNC Asheville,Morris College,33,145,89,56,False
+2025-12-18,App St.,Coastal Carolina,18,116,67,49,False
+2025-12-18,Eastern Illinois,SIUE,4,148,76,72,True
+2025-12-18,Indiana St.,Bradley,-9,207,99,108,True
+2025-12-18,Lehigh,Penn St. Hazleton,9,157,83,74,False
+2025-12-18,Davidson,Temple,-5,131,63,68,False
+2025-12-18,William & Mary,Radford,13,179,96,83,False
+2025-12-18,Manhattan,Furman,-7,143,68,75,False
+2025-12-18,Northern Arizona,Southern Utah,8,122,65,57,False
+2025-12-18,VCU,American University,22,188,105,83,False
+2025-12-18,Saint Joseph's,Delaware St.,16,118,67,51,False
+2025-12-18,Charlotte,Lafayette,14,148,81,67,False
+2025-12-18,Central Connecticut,Fairfield,-14,154,70,84,False
+2025-12-18,Grambling St.,Norfolk St.,12,148,80,68,False
+2025-12-18,Murray St.,Drake,9,153,81,72,False
+2025-12-18,North Dakota,Winthrop,2,178,90,88,False
+2025-12-18,Oklahoma St.,Kansas City,12,170,91,79,False
+2025-12-18,TCU,Oral Roberts,19,125,72,53,False
+2025-12-18,Georgia Southern,Georgia St.,23,157,90,67,False
+2025-12-18,Southern Miss,Louisiana,8,116,62,54,False
+2025-12-18,Tennessee St.,UT Martin,7,149,78,71,False
+2025-12-18,Southern Indiana,Little Rock,-15,139,62,77,False
+2025-12-18,Lindenwood,Western Illinois,16,168,92,76,False
+2025-12-18,Southern Illinois,Illinois St.,-7,143,68,75,False
+2025-12-18,Idaho St.,Montana-Western,16,144,80,64,False
+2025-12-18,Tennessee Tech,Southeast Missouri St.,11,159,85,74,False
+2025-12-18,Cal St. Bakersfield,Nobel,31,163,97,66,False
+2025-12-18,Long Beach St.,Pepperdine,3,159,81,78,False
+2025-12-19,BYU,Abilene Christian,18,152,85,67,False
+2025-12-19,Sacred Heart,Dartmouth,22,148,85,63,False
+2025-12-19,South Carolina St.,Brewton-Parker,14,122,68,54,False
+2025-12-19,Samford,Reinhardt,36,134,85,49,False
+2025-12-19,Fairleigh Dickinson,Lehman College,34,118,76,42,False
+2025-12-19,Hampton,Grambling St.,-9,153,72,81,False
+2025-12-19,Cal St. Northridge,La Sierra,35,141,88,53,False
+2025-12-19,Milwaukee,South Dakota St.,1,175,88,87,False
+2025-12-19,Navy,Coppin St.,33,143,88,55,False
+2025-12-19,Towson,Notre Dame (MD),47,167,107,60,False
+2025-12-19,Providence,Seton Hall,-5,139,67,72,False
+2025-12-19,Florida St.,Mississippi Valley St.,47,145,96,49,False
+2025-12-19,High Point,La Salle,12,156,84,72,False
+2025-12-19,Akron,Eastern Michigan,21,165,93,72,False
+2025-12-19,Drexel,Mount St. Mary's,8,142,75,67,False
+2025-12-19,Jackson St.,Norfolk St.,-10,154,72,82,False
+2025-12-19,Western Kentucky,Tulsa,-1,163,81,82,False
+2025-12-19,Tarleton St.,Florida A&M,24,132,78,54,False
+2025-12-19,Villanova,Wisconsin,10,142,76,66,True
+2025-12-19,Baylor,Alcorn St.,57,169,113,56,False
+2025-12-19,LSU,Southeastern Louisiana,13,143,78,65,False
+2025-12-19,UC Irvine,Belmont,-26,142,58,84,False
+2025-12-19,Saint Mary's,Florida Atlantic,13,163,88,75,False
+2025-12-19,UC San Diego,San Diego,-2,162,80,82,False
+2025-12-19,Loyola Marymount,North Alabama,34,148,91,57,False
+2025-12-19,UCLA,Cal Poly,21,195,108,87,False
+2025-12-19,California,Morgan St.,47,147,97,50,False
+2025-12-19,Seattle U,Washington,4,136,70,66,False

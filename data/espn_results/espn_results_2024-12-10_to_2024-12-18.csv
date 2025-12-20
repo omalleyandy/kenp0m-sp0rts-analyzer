@@ -1,0 +1,353 @@
+game_date,home_team,away_team,margin,total,home_score,away_score,overtime
+2024-12-10,Tennessee,Miami,13,137,75,62,False
+2024-12-10,Duke,Incarnate Word,26,118,72,46,False
+2024-12-10,Arkansas,Michigan,2,176,89,87,False
+2024-12-10,Houston,Troy,20,104,62,42,False
+2024-12-10,Illinois,Wisconsin,6,166,86,80,False
+2024-12-10,Southern,Lindsey Wilson,25,163,94,69,False
+2024-12-10,UMBC,Cairn University,46,160,103,57,False
+2024-12-10,Delaware,Chestnut Hill College,27,129,78,51,False
+2024-12-10,Butler,North Dakota St.,-3,139,68,71,False
+2024-12-10,Lindenwood,Harris-Stowe St.,46,152,99,53,False
+2024-12-10,Hampton,Apprentice School,18,154,86,68,False
+2024-12-10,N.C. State,Coppin St.,10,122,66,56,False
+2024-12-10,Temple,Holy Family University,29,191,110,81,False
+2024-12-10,Florida Atlantic,Jacksonville,22,148,85,63,False
+2024-12-10,Davidson,Charlotte,4,146,75,71,False
+2024-12-10,Princeton,Monmouth,4,138,71,67,False
+2024-12-10,Rutgers,Penn St.,4,156,80,76,False
+2024-12-10,Mercyhurst,Penn St.-Altoona,26,128,77,51,False
+2024-12-10,Brown,Rhode Island,4,164,84,80,True
+2024-12-10,Xavier,Morgan St.,61,177,119,58,False
+2024-12-10,Queens University,Carolina University,38,144,91,53,False
+2024-12-10,West Virginia,North Carolina Central,34,124,79,45,False
+2024-12-10,Syracuse,UAlbany,17,187,102,85,False
+2024-12-10,Saint Joseph's,Charleston,-3,153,75,78,False
+2024-12-10,Nicholls,Southern-New Orleans,44,176,110,66,False
+2024-12-10,Western Kentucky,Tennessee St.,24,144,84,60,False
+2024-12-10,Little Rock,Ouachita Baptist,23,137,80,57,False
+2024-12-10,South Dakota,Wyoming,1,163,82,81,False
+2024-12-10,Tulane,Southern Miss,28,144,86,58,False
+2024-12-10,DePaul,Providence,-7,133,63,70,True
+2024-12-10,Denver,Colorado-Colorado Springs,7,181,94,87,False
+2024-12-10,Cal St. Fullerton,La Sierra,6,116,61,55,False
+2024-12-10,Montana,Montana Tech,29,149,89,60,False
+2024-12-10,Portland,Kansas City,-5,133,64,69,False
+2024-12-10,California,Cornell,-8,168,80,88,False
+2024-12-10,San Diego,Long Beach St.,-6,146,70,76,False
+2024-12-10,Washington,Eastern Washington,18,156,87,69,False
+2024-12-11,Kentucky,Colgate,11,145,78,67,False
+2024-12-11,San Diego St.,California Baptist,6,156,81,75,False
+2024-12-11,Presbyterian,Columbia College (SC),40,154,97,57,False
+2024-12-11,Baylor,Norfolk St.,25,163,94,69,False
+2024-12-11,UNC Asheville,Bluefield University,46,138,92,46,False
+2024-12-11,UMass Lowell,Long Island University,7,131,69,62,False
+2024-12-11,Howard,Virginia-Lynchburg,74,174,124,50,False
+2024-12-11,Northern Kentucky,Cumberland (KY),19,177,98,79,False
+2024-12-11,Alabama St.,UT Martin,10,196,103,93,True
+2024-12-11,Wright St.,Marshall,9,167,88,79,False
+2024-12-11,Coastal Carolina,Southern Virginia,25,139,82,57,False
+2024-12-11,Delaware St.,NJIT,12,130,71,59,False
+2024-12-11,Duquesne,Maine,-5,117,56,61,False
+2024-12-11,Stonehill,Lesley University,44,150,97,53,False
+2024-12-11,Notre Dame,Dartmouth,12,142,77,65,False
+2024-12-11,Villanova,Fairleigh Dickinson,14,158,86,72,False
+2024-12-11,St. John's,Bryant,22,176,99,77,False
+2024-12-11,Purdue Fort Wayne,IU Indy,2,154,78,76,False
+2024-12-11,Green Bay,Milwaukee,-21,155,67,88,False
+2024-12-11,East Carolina,North Alabama,-7,141,67,74,False
+2024-12-11,Pittsburgh,Eastern Kentucky,40,152,96,56,False
+2024-12-11,Louisville,UTEP,3,151,77,74,False
+2024-12-11,UL Monroe,Arkansas Pine Bluff,16,162,89,73,False
+2024-12-11,Utah Valley,North Dakota,23,137,80,57,False
+2024-12-11,Louisiana,Southeastern Louisiana,7,129,68,61,False
+2024-12-11,BYU,Fresno St.,28,162,95,67,False
+2024-12-11,San Francisco,Stanislaus St.,16,120,68,52,False
+2024-12-11,Nevada,South Dakota St.,14,140,77,63,False
+2024-12-12,Iowa,Iowa St.,-9,169,80,89,False
+2024-12-12,VMI,Regent,39,161,100,61,False
+2024-12-12,Winthrop,Bob Jones,48,158,103,55,False
+2024-12-12,The Citadel,Campbell,-28,144,58,86,False
+2024-12-12,Virginia Tech,North Carolina A&T,28,162,95,67,False
+2024-12-12,Virginia,Bethune-Cookman,18,100,59,41,False
+2024-12-12,Arkansas St.,UT Arlington,4,162,83,79,False
+2024-12-12,Evansville,Chattanooga,-8,142,67,75,False
+2024-12-12,Texas,New Mexico St.,24,158,91,67,False
+2024-12-12,Drake,St. Ambrose,55,125,90,35,False
+2024-12-13,North Dakota St.,Wisconsin-Stout,29,153,91,62,False
+2024-12-13,Merrimack,Boston University,3,125,64,61,False
+2024-12-13,George Washington,Army,15,135,75,60,False
+2024-12-13,Louisiana Tech,Georgia Southern,14,140,77,63,False
+2024-12-13,UTSA,North Dakota,4,156,80,76,False
+2024-12-13,Nebraska,Indiana,17,153,85,68,False
+2024-12-13,Northern Iowa,Nebraska Omaha,20,136,78,58,False
+2024-12-13,St. Thomas-Minnesota,Western Michigan,6,148,77,71,False
+2024-12-13,Utah Tech,Weber St.,-2,144,71,73,False
+2024-12-13,Colorado,South Dakota St.,11,151,81,70,False
+2024-12-14,Illinois,Tennessee,-2,130,64,66,False
+2024-12-14,Auburn,Ohio St.,38,144,91,53,False
+2024-12-14,Kentucky,Louisville,8,178,93,85,False
+2024-12-14,Dayton,Marquette,8,134,71,63,False
+2024-12-14,Alabama,Creighton,8,158,83,75,False
+2024-12-14,Connecticut,Gonzaga,6,148,77,71,False
+2024-12-14,Florida,Arizona St.,17,149,83,66,False
+2024-12-14,Kansas,N.C. State,15,135,75,60,False
+2024-12-14,Purdue,Texas A&M,-4,136,66,70,False
+2024-12-14,Oklahoma,Oklahoma St.,15,145,80,65,False
+2024-12-14,Clemson,Memphis,-5,169,82,87,True
+2024-12-14,Ole Miss,Southern Miss,31,123,77,46,False
+2024-12-14,Butler,Wisconsin,-9,157,74,83,False
+2024-12-14,Cincinnati,Xavier,3,133,68,65,False
+2024-12-14,Arizona,UCLA,-3,111,54,57,False
+2024-12-14,Mississippi St.,McNeese,3,129,66,63,False
+2024-12-14,South Dakota,Western Illinois,23,155,89,66,False
+2024-12-14,Furman,South Carolina St.,4,132,68,64,False
+2024-12-14,Massachusetts,Massachusetts-Boston,34,138,86,52,False
+2024-12-14,Missouri,Long Island University,27,149,88,61,False
+2024-12-14,Penn St.,Coppin St.,48,150,99,51,False
+2024-12-14,Youngstown St.,Toledo,6,180,93,87,False
+2024-12-14,Louisiana,Lamar,-29,119,45,74,False
+2024-12-14,DePaul,Wichita St.,19,163,91,72,False
+2024-12-14,Jacksonville,East Tennessee St.,8,112,60,52,False
+2024-12-14,Canisius,Maine,-5,163,79,84,False
+2024-12-14,Rider,Stony Brook,-17,127,55,72,False
+2024-12-14,Western Kentucky,Murray St.,5,157,81,76,True
+2024-12-14,UCF,Tulsa,13,163,88,75,False
+2024-12-14,Florida Atlantic,Texas St.,9,169,89,80,False
+2024-12-14,Georgia St.,Charlotte,-14,140,63,77,False
+2024-12-14,Le Moyne,SUNY Delhi,55,157,106,51,False
+2024-12-14,UMass Lowell,Dartmouth,9,175,92,83,False
+2024-12-14,Longwood,North Carolina Central,-7,147,70,77,False
+2024-12-14,High Point,App St.,6,124,65,59,False
+2024-12-14,UNC Asheville,Western Carolina,17,139,78,61,False
+2024-12-14,South Carolina,USC Upstate,20,126,73,53,False
+2024-12-14,Gardner-Webb,Queens University,-2,168,83,85,False
+2024-12-14,Bryant,Fordham,-2,170,84,86,False
+2024-12-14,Syracuse,Georgetown,-4,146,71,75,False
+2024-12-14,Tennessee St.,Johnson University (TN),31,147,89,58,False
+2024-12-14,Cleveland St.,Brescia,66,140,103,37,False
+2024-12-14,Howard,UNC Wilmington,5,171,88,83,False
+2024-12-14,UT Arlington,UL Monroe,9,145,77,68,False
+2024-12-14,Bellarmine,Ball St.,-4,168,82,86,False
+2024-12-14,California,Northwestern St.,18,150,84,66,False
+2024-12-14,Rutgers,Seton Hall,3,129,66,63,False
+2024-12-14,Valparaiso,Central Michigan,16,170,93,77,False
+2024-12-14,Maryland Eastern Shore,Bryn Athyn,26,156,91,65,False
+2024-12-14,Utah St.,South Florida,21,155,88,67,False
+2024-12-14,NJIT,Wagner,-7,93,43,50,False
+2024-12-14,Arkansas,Central Arkansas,25,139,82,57,False
+2024-12-14,Marshall,Ohio,9,149,79,70,False
+2024-12-14,Pepperdine,Northern Arizona,10,162,86,76,False
+2024-12-14,SMU,LSU,10,138,74,64,False
+2024-12-14,North Carolina,La Salle,26,160,93,67,False
+2024-12-14,Stetson,Florida International,-9,153,72,81,False
+2024-12-14,Lindenwood,IU Indy,18,144,81,63,False
+2024-12-14,Santa Clara,Bradley,10,158,84,74,False
+2024-12-14,Florida St.,Tulane,13,141,77,64,False
+2024-12-14,Jacksonville St.,Utah Valley,4,136,70,66,False
+2024-12-14,Washington St.,Missouri St.,13,169,91,78,False
+2024-12-14,Austin Peay,Southern Illinois,-5,125,60,65,False
+2024-12-14,Oregon St.,UC Irvine,12,122,67,55,False
+2024-12-14,Portland St.,Northwest Indian,62,158,110,48,False
+2024-12-14,North Florida,UNC Greensboro,12,166,89,77,False
+2024-12-14,West Virginia,Bethune-Cookman,23,145,84,61,False
+2024-12-14,Providence,St. Bonaventure,-4,144,70,74,False
+2024-12-14,Troy,Middle Georgia St.,34,140,87,53,False
+2024-12-14,UT Rio Grande Valley,Northern New Mexico,12,132,72,60,False
+2024-12-14,Duquesne,Towson,18,112,65,47,False
+2024-12-14,Niagara,Saint Francis,3,135,69,66,False
+2024-12-14,Richmond,Belmont,-7,179,86,93,False
+2024-12-14,Georgia,Grand Canyon,5,141,73,68,False
+2024-12-14,Elon,Virginia-Lynchburg,62,166,114,52,False
+2024-12-14,Abilene Christian,Hardin-Simmons,31,155,93,62,False
+2024-12-14,UC Santa Barbara,Green Bay,17,149,83,66,False
+2024-12-14,New Mexico,Western New Mexico,52,192,122,70,False
+2024-12-14,Fresno St.,San Diego,8,138,73,65,False
+2024-12-14,UAlbany,Drexel,-7,147,70,77,False
+2024-12-14,Mount St. Mary's,Loyola Maryland,-8,146,69,77,False
+2024-12-14,Davidson,Detroit Mercy,35,137,86,51,False
+2024-12-14,Utah,Radford,18,144,81,63,False
+2024-12-14,Liberty,North Carolina A&T,9,157,83,74,False
+2024-12-14,Colorado St.,VCU,-8,144,68,76,False
+2024-12-14,Eastern Kentucky,Eastern Illinois,15,147,81,66,False
+2024-12-14,Seattle U,Pacific (OR),67,155,111,44,False
+2024-12-14,Kansas City,Bowling Green,8,162,85,77,False
+2024-12-14,Idaho St.,Walla Walla,54,140,97,43,False
+2024-12-14,Boise St.,Saint Mary's,2,132,67,65,True
+2024-12-14,Loyola Marymount,Prairie View A&M,1,151,76,75,False
+2024-12-14,BYU,Wyoming,19,117,68,49,False
+2024-12-14,San José St.,Cal Poly,7,207,107,100,True
+2024-12-14,Nevada,Texas Southern,32,178,105,73,False
+2024-12-14,Sacramento St.,UC Davis,-7,131,62,69,False
+2024-12-14,UNLV,Pacific,7,137,72,65,False
+2024-12-14,Hawai'i,Texas A&M Corpus Chris,9,133,71,62,False
+2024-12-15,Iowa St.,Nebraska Omaha,32,134,83,51,False
+2024-12-15,Oregon,Stephen F. Austin,18,140,79,61,False
+2024-12-15,East Texas A&M,South Alabama,-9,153,72,81,False
+2024-12-15,Hofstra,Temple,-18,102,42,60,False
+2024-12-15,Virginia Tech,Navy,8,152,80,72,False
+2024-12-15,Morehead St.,Kentucky Christian,23,149,86,63,False
+2024-12-15,Old Dominion,Northeastern,-4,146,71,75,False
+2024-12-15,Northern Kentucky,Norfolk St.,9,133,71,62,False
+2024-12-15,Miami OH,Bethany (WV),42,182,112,70,False
+2024-12-15,Rhode Island,Central Connecticut,8,146,77,69,False
+2024-12-15,Milwaukee,Akron,19,181,100,81,False
+2024-12-15,SIUE,Eureka,48,152,100,52,False
+2024-12-15,Southern Indiana,Shawnee St.,35,147,91,56,False
+2024-12-15,Little Rock,Illinois Chicago,-8,146,69,77,True
+2024-12-15,Morgan St.,Campbell,10,162,86,76,False
+2024-12-15,Binghamton,Lancasater Bible College,25,145,85,60,False
+2024-12-15,Colgate,Vermont,5,125,65,60,False
+2024-12-15,Chattanooga,Alabama A&M,22,148,85,63,False
+2024-12-15,Mercer,Chicago St.,12,138,75,63,False
+2024-12-15,North Dakota St.,Western Michigan,36,160,98,62,False
+2024-12-15,Eastern Michigan,Purdue Fort Wayne,-23,175,76,99,False
+2024-12-15,Miami,Presbyterian,19,169,94,75,False
+2024-12-15,Iowa,New Orleans,47,161,104,57,False
+2024-12-15,Southeast Missouri St.,Saint Mary of the Woods College,37,149,93,56,False
+2024-12-15,St. Thomas-Minnesota,Crown College,39,161,100,61,False
+2024-12-15,North Dakota,UTSA,-10,180,85,95,False
+2024-12-15,Texas,Arkansas Pine Bluff,64,178,121,57,False
+2024-12-15,Incarnate Word,Our Lady Of The Lake,24,162,93,69,False
+2024-12-15,Northwestern,Georgia Tech,11,131,71,60,False
+2024-12-15,Boston College,Stonehill,4,142,73,69,False
+2024-12-15,UT Martin,Champion Christian,67,179,123,56,False
+2024-12-15,UC Riverside,St. Francis (IL),23,133,78,55,False
+2024-12-15,Cal St. Fullerton,Denver,15,133,74,59,False
+2024-12-15,Kent St.,Mercyhurst,25,139,82,57,False
+2024-12-15,Illinois St.,Saint Louis,4,158,81,77,False
+2024-12-15,UAB,Arkansas St.,-9,187,89,98,True
+2024-12-15,Loyola Chicago,San Francisco,-10,142,66,76,False
+2024-12-15,Idaho,UC San Diego,-24,136,56,80,False
+2024-12-15,Cal St. Bakersfield,La Sierra,49,143,96,47,False
+2024-12-15,USC,Montana St.,26,152,89,63,False
+2024-12-16,Marshall,West Virginia Wesleyan,30,156,93,63,False
+2024-12-16,Charleston,Wofford,10,144,77,67,False
+2024-12-16,Maryland Eastern Shore,Cairn University,17,145,81,64,False
+2024-12-16,Central Arkansas,The Citadel,2,144,73,71,False
+2024-12-16,Grambling St.,Southeastern Louisiana,-10,140,65,75,False
+2024-12-16,Sam Houston,St. Thomas (TX),26,134,80,54,False
+2024-12-16,Louisiana Tech,Grand Canyon,8,140,74,66,False
+2024-12-16,Middle Tennessee,California Baptist,11,139,75,64,False
+2024-12-16,Lipscomb,Truett-McConnell,32,166,99,67,False
+2024-12-16,Rice,Alcorn St.,2,152,77,75,False
+2024-12-16,Northern Colorado,Air Force,5,157,81,76,False
+2024-12-16,Northern Iowa,Montana,28,180,104,76,False
+2024-12-16,Texas Tech,Oral Roberts,36,136,86,50,False
+2024-12-16,TCU,South Alabama,9,107,58,49,False
+2024-12-16,UTEP,Tarleton St.,5,129,67,62,False
+2024-12-16,Utah Tech,Whittier,34,166,100,66,False
+2024-12-16,New Mexico St.,Southern Utah,3,141,72,69,False
+2024-12-16,Portland,Willamette,31,169,100,69,False
+2024-12-17,Tennessee,Western Carolina,48,120,84,36,False
+2024-12-17,Auburn,Georgia St.,41,159,100,59,False
+2024-12-17,Duke,George Mason,21,115,68,47,False
+2024-12-17,North Carolina,Florida,-6,174,84,90,False
+2024-12-17,Ole Miss,Southern,13,135,74,61,False
+2024-12-17,UCLA,Prairie View A&M,36,186,111,75,False
+2024-12-17,Oakland,Michigan St.,-19,135,58,77,False
+2024-12-17,Dayton,UNLV,1,131,66,65,False
+2024-12-17,South Carolina,Clemson,3,179,91,88,True
+2024-12-17,Delaware,Misericordia,17,167,92,75,False
+2024-12-17,Arkansas Pine Bluff,Ecclesia,59,181,120,61,False
+2024-12-17,Howard,Drexel,-3,133,65,68,False
+2024-12-17,St. John's,DePaul,28,150,89,61,False
+2024-12-17,UNC Asheville,North Florida,14,176,95,81,False
+2024-12-17,UNC Greensboro,William Peace,49,123,86,37,False
+2024-12-17,North Carolina Central,Mid-Atlantic Christian,45,179,112,67,False
+2024-12-17,Troy,LaGrange,45,165,105,60,False
+2024-12-17,Georgia Southern,Gardner-Webb,5,167,86,81,False
+2024-12-17,Robert Morris,Towson,1,135,68,67,False
+2024-12-17,Stony Brook,Marist,-2,134,66,68,False
+2024-12-17,North Carolina A&T,Coastal Carolina,-5,141,68,73,False
+2024-12-17,East Carolina,Florida International,11,139,75,64,False
+2024-12-17,Charlotte,West Georgia,5,145,75,70,False
+2024-12-17,Quinnipiac,Holy Cross,-1,139,69,70,False
+2024-12-17,High Point,Carolina University,68,130,99,31,False
+2024-12-17,Siena,St. Bonaventure,-17,113,48,65,False
+2024-12-17,Liberty,St. Andrews,74,174,124,50,False
+2024-12-17,Florida St.,Winthrop,18,146,82,64,False
+2024-12-17,Wake Forest,James Madison,17,133,75,58,False
+2024-12-17,Mississippi St.,Central Michigan,24,142,83,59,False
+2024-12-17,Wichita St.,Kansas City,-10,138,64,74,False
+2024-12-17,Villanova,Seton Hall,12,146,79,67,False
+2024-12-17,Missouri,Jacksonville St.,11,155,83,72,False
+2024-12-17,Maryland,Saint Francis,54,168,111,57,False
+2024-12-17,Western Kentucky,Seattle U,13,159,86,73,False
+2024-12-17,Southern Miss,Lamar,-4,134,65,69,False
+2024-12-17,Ohio St.,Valparaiso,22,168,95,73,False
+2024-12-17,Kansas St.,Drake,-3,143,70,73,True
+2024-12-17,UL Monroe,Houston Christian,-6,142,68,74,False
+2024-12-17,Western Illinois,Tennessee Tech,3,139,71,68,False
+2024-12-17,Utah St.,UC San Diego,-2,148,73,75,False
+2024-12-17,Colorado St.,Radford,10,146,78,68,False
+2024-12-17,Boise St.,Texas Southern,31,133,82,51,False
+2024-12-17,Utah,Florida A&M,30,148,89,59,False
+2024-12-17,LSU,Stetson,46,152,99,53,False
+2024-12-17,Cal Poly,Denver,1,189,95,94,True
+2024-12-17,Oregon St.,Sacramento St.,37,127,82,45,False
+2024-12-17,Stanford,Merrimack,6,142,74,68,False
+2024-12-18,North Dakota,Alabama,-7,187,90,97,False
+2024-12-18,Marquette,Butler,10,150,80,70,False
+2024-12-18,Connecticut,Xavier,5,183,94,89,True
+2024-12-18,Gonzaga,Nicholls,30,174,102,72,False
+2024-12-18,Oklahoma,Michigan,1,173,87,86,False
+2024-12-18,Houston,Toledo,29,127,78,49,False
+2024-12-18,Virginia,Memphis,-2,126,62,64,False
+2024-12-18,Sacred Heart,UAlbany,-8,140,66,74,False
+2024-12-18,Dartmouth,Le Moyne,-4,156,76,80,False
+2024-12-18,Green Bay,Michigan Tech,-2,142,70,72,False
+2024-12-18,East Texas A&M,Abilene Christian,1,135,68,67,False
+2024-12-18,Texas A&M Corpus Chris,Southwestern Adventist,54,180,117,63,False
+2024-12-18,Presbyterian,Virginia-Lynchburg,63,169,116,53,False
+2024-12-18,Binghamton,Mercyhurst,2,122,62,60,False
+2024-12-18,UMass Lowell,Stonehill,11,145,78,67,False
+2024-12-18,USC Upstate,South Carolina St.,-15,155,70,85,False
+2024-12-18,Georgetown,Creighton,24,138,81,57,False
+2024-12-18,La Salle,Fairleigh Dickinson,5,149,77,72,False
+2024-12-18,Furman,Montreat,25,175,100,75,False
+2024-12-18,Chattanooga,Tennessee Wesleyan,47,151,99,52,False
+2024-12-18,UNC Wilmington,Florida Gulf Coast,13,145,79,66,False
+2024-12-18,Hampton,Regent,43,173,108,65,False
+2024-12-18,Long Island University,Mount St. Mary's,-8,152,72,80,False
+2024-12-18,Indiana St.,Murray St.,10,158,84,74,False
+2024-12-18,South Florida,Bethune-Cookman,-8,146,69,77,False
+2024-12-18,Wagner,Manhattan,-14,146,66,80,False
+2024-12-18,Temple,Davidson,1,123,62,61,False
+2024-12-18,Fairfield,Central Connecticut,-1,127,63,64,False
+2024-12-18,Ohio,Austin Peay,20,136,78,58,False
+2024-12-18,Vermont,Miami OH,8,142,75,67,False
+2024-12-18,East Tennessee St.,Elon,26,142,84,58,False
+2024-12-18,Campbell,Longwood,-22,132,55,77,False
+2024-12-18,William & Mary,Richmond,6,180,93,87,False
+2024-12-18,Massachusetts,Northeastern,5,149,77,72,False
+2024-12-18,George Washington,Lafayette,20,144,82,62,False
+2024-12-18,Wright St.,Youngstown St.,-10,150,70,80,False
+2024-12-18,Northern Kentucky,Detroit Mercy,13,133,73,60,False
+2024-12-18,Queens University,Mercer,7,139,73,66,False
+2024-12-18,Saint Joseph's,American University,27,141,84,57,False
+2024-12-18,UAB,Alabama A&M,29,163,96,67,False
+2024-12-18,UT Rio Grande Valley,Southern Utah,5,151,78,73,False
+2024-12-18,Georgia Tech,UMBC,9,173,91,82,False
+2024-12-18,Vanderbilt,The Citadel,52,158,105,53,False
+2024-12-18,Missouri St.,Lincoln (MO),12,110,61,49,False
+2024-12-18,UT Arlington,Evansville,26,134,80,54,False
+2024-12-18,Bradley,San Francisco,2,130,66,64,False
+2024-12-18,North Texas,Mississippi Valley St.,41,125,83,42,False
+2024-12-18,Illinois St.,Northern Illinois,21,141,81,60,False
+2024-12-18,Saint Louis,Wofford,-3,145,71,74,False
+2024-12-18,Oklahoma St.,Tarleton St.,5,127,66,61,False
+2024-12-18,Louisiana,App St.,6,130,68,62,False
+2024-12-18,Loyola Chicago,Canisius,12,132,72,60,False
+2024-12-18,Arizona,Samford,32,160,96,64,False
+2024-12-18,Idaho St.,Utah Valley,-14,126,56,70,False
+2024-12-18,UC Davis,Idaho,8,140,74,66,False
+2024-12-18,Weber St.,Lincoln University (CA),70,186,128,58,False
+2024-12-18,New Mexico,VCU,7,149,78,71,False
+2024-12-18,Loyola Marymount,UC Santa Barbara,2,118,60,58,False
+2024-12-18,Portland,Cal St. Bakersfield,-17,145,64,81,False
+2024-12-18,USC,Cal St. Northridge,21,159,90,69,False
+2024-12-18,UC Riverside,Montana St.,3,163,83,80,False
+2024-12-18,Pacific,Portland St.,-6,156,75,81,False
+2024-12-18,Santa Clara,Kennesaw St.,20,168,94,74,False
+2024-12-18,Washington,Washington St.,16,162,89,73,False

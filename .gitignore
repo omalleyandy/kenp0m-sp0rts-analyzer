@@ -234,3 +234,7 @@ __marimo__/
 
 # Claude Code local settings (personal, not shared)
 .claude/settings.local.json
+
+# ESPN scraper debug files
+data/espn_results/debug_*.html
+data/espn_results/error_*.png
