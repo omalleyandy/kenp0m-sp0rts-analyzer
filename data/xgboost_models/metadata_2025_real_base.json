@@ -1,0 +1,12 @@
+{
+  "season": 2025,
+  "enhanced_features": false,
+  "trained_on_real_data": true,
+  "training_games": 281,
+  "created_at": "2025-12-20T23:47:53.660207",
+  "feature_count": 14,
+  "quantile_models": {
+    "upper_quantile": 0.75,
+    "lower_quantile": 0.25
+  }
+}

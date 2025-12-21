@@ -164,9 +164,18 @@ def generate_synthetic_games(
         base_margin = em_diff + home_adv
         actual_margin = base_margin + np.random.normal(0, 10 * tempo_factor)
 
-        # Predicted total (with noise)
-        base_total = features["tempo_avg"] * 2 + 140
-        actual_total = base_total + np.random.normal(0, 12)
+        # Predicted total using KenPom-style calculation
+        # Each team's expected score = ((own_AdjO + opponent_AdjD) / 2) * (tempo / 100)
+        tempo_pct = features["tempo_avg"] / 100.0
+        team1_oe = float(team1["AdjO"])
+        team1_de = float(team1["AdjD"])
+        team2_oe = float(team2["AdjO"])
+        team2_de = float(team2["AdjD"])
+
+        team1_expected = ((team1_oe + team2_de) / 2) * tempo_pct
+        team2_expected = ((team2_oe + team1_de) / 2) * tempo_pct
+        base_total = team1_expected + team2_expected
+        actual_total = base_total + np.random.normal(0, 8)
 
         # Add outcomes to features
         features["actual_margin"] = actual_margin
@@ -271,9 +280,18 @@ def generate_enhanced_synthetic_games(
         base_margin = em_diff + home_adv + luck_regression
         actual_margin = base_margin + np.random.normal(0, 10 * tempo_factor)
 
-        # Predicted total (with noise)
-        base_total = features["tempo_avg"] * 2 + 140
-        actual_total = base_total + np.random.normal(0, 12)
+        # Predicted total using KenPom-style calculation
+        # Each team's expected score = ((own_AdjO + opponent_AdjD) / 2) * (tempo / 100)
+        tempo_pct = features["tempo_avg"] / 100.0
+        team1_oe = float(team1["AdjO"])
+        team1_de = float(team1["AdjD"])
+        team2_oe = float(team2["AdjO"])
+        team2_de = float(team2["AdjD"])
+
+        team1_expected = ((team1_oe + team2_de) / 2) * tempo_pct
+        team2_expected = ((team2_oe + team1_de) / 2) * tempo_pct
+        base_total = team1_expected + team2_expected
+        actual_total = base_total + np.random.normal(0, 8)
 
         # Add outcomes
         features["actual_margin"] = actual_margin
